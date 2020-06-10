@@ -1,25 +1,76 @@
 version: 2.1
-
-workflows:
-  post-merge:
-    jobs:
-      - build:
-        filters:
-          branches:
-            ignore: gh-pages
-jobs:
-  build:
+executors:
+  docker-py3-ghp:
     docker:
       - image: circleci/python:3.7
+    resource_class: small
+jobs:
+  build:
+    executor: docker-py3-ghp
     steps:
       - checkout
       - run:
-          name: Install requirements
+          name: Checkout git submodules
           command: |
-            sudo pip install -r requirements.txt
+            git submodule sync
+            git submodule update --init --init --recursive
+      - restore_cache:
+          keys:
+            - deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+            - deps1-{{ .Branch }}-
+            - deps1-
+      - run:
+          name: Install Python requirements
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            deactivate
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - venv
+      # - setup_remote_docker:
+      #     docker_layer_caching: true
       - run:
           name: Generate static pages
           command: |
-            pelican content -o output -s publishconf.py
+            . venv/bin/activate
+            pelican -D content -o output -s publishconf.py
+            deactivate
       - store_artifacts:
           path: output
+      - persist_to_workspace:
+          root: .
+          paths:
+            - venv
+            - output
+  publish:
+    executor: docker-py3-ghp
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish static pages
+          command: |
+            . venv/bin/activate
+            ghp-import -n output -m "[skip ci] Update pages"
+            git push origin gh-pages
+            deactivate
+workflows:
+  version: 2
+  build-publish:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - publish:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
