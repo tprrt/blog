@@ -15,16 +15,21 @@ Use commands below to install required Python modules to build static pages and 
 
 ::
 
+   # To checkout submodules
+   git submodule sync
+   git submodule update --init --recursive
+
    # To install required Python modules
    pip install -r requirements.txt
-
-   # To generate static pages
-   pelican content -o output -s publishconf.py
 
    # To view generated files before to push them, once the simple built-in web
    # service has been started, the site can be preview at:
    # http://http://localhost:8000/
-   pelican -l content -o output -s publishconf.py -p 8000
+   pelican [-D] content -o output -s pelicanconf.py
+   pelican -l content -o output -s pelicanconf.py -p 8000
+
+   # To generate static pages should be published
+   pelican [-D] content -o output -s publishconf.py
 
    # To publish pages to gh-pages
    ghp-import -n output -m "[skip ci] Update pages"
