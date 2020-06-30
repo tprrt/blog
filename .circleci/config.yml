@@ -48,6 +48,9 @@ jobs:
   publish:
     executor: docker-py3-ghp
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "99:9e:01:1c:a5:16:1f:b7:6a:b8:f1:6b:b1:f6:ef:60"
       - checkout
       - attach_workspace:
           at: .
