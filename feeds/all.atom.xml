@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-04-28T15:04:11.448812+00:00</updated></feed>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-06-30T05:21:55Z</updated><subtitle>Yet another  blog about Linux embedded</subtitle></feed>
