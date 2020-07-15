@@ -124,7 +124,7 @@ PLUGINS = ["html_rst_directive"]
 
 # Specify a customized theme, via path relative to the settings file
 THEME = "pelican-themes/attila"
-#HEADER_COVER = 'static/header_cover.png'
+HEADER_COVER = 'static/header_cover.png'
 HEADER_COLOR = 'black'
 #COLOR_SCHEME_CSS = 'monokai.css'
 #CSS_OVERRIDE = ['css/myblog.css']
@@ -142,14 +142,14 @@ JINJA_ENVIRONMENT = {
 JINJA_FILTERS = {'max': max}
 
 AUTHORS_BIO = {
-  "zutrinken": {
-    "name": "Zutrinken",
-    "cover": "https://casper.ghost.org/v1.0.0/images/team.jpg",
-    "image": "assets/images/avatar.png",
-    "website": "http://blog.arulraj.net",
-    "linkedin": "unavailable",
-    "github": "arulrajnet",
-    "location": "Chennai",
+  "tperrot": {
+    "name": "Thomas Perrot",
+    "cover": "static/header_cover.png",
+    "image": "static/avatar.png",
+    "website": "https://tprrt.tupi.fr",
+    "linkedin": "www.linkedin.com/in/tprrt",
+    "github": "tprrt",
+    "location": "Toulouse",
     "bio": "This is the place for a small biography with max 200 characters. Well, now 100 are left. Cool, hugh?"
   }
 }
