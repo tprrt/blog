@@ -94,7 +94,6 @@ PLUGINS = [
   'sitemap',
   'neighbors',
   'assets',
-  'html_rst_directive'
 ]
 
 # Sitemap
@@ -154,3 +153,5 @@ AUTHORS_BIO = {
     "bio": "This is the place for a small biography with max 200 characters. Well, now 100 are left. Cool, hugh?"
   }
 }
+
+THEME_TEMPLATES_OVERRIDES = ["templates"]
