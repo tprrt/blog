@@ -91,9 +91,11 @@ PLUGIN_PATHS = [
 ]
 
 PLUGINS = [
-  'sitemap',
-  'neighbors',
   'assets',
+  'html_rst_directive',
+  'neighbors',
+  'pdf',
+  'sitemap',
 ]
 
 # Sitemap
@@ -118,9 +120,6 @@ DEFAULT_METADATA = {
 
 # code blocks with line numbers
 PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
-
-PLUGIN_PATHS = ["pelican-plugins"]
-PLUGINS = ["html_rst_directive"]
 
 # Specify a customized theme, via path relative to the settings file
 THEME = "pelican-themes/attila"
