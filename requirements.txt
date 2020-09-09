@@ -1,2 +1,12 @@
+# core
 pelican>=4.0.1
+
+# Required to publish pages on Github
 ghp-import2>=1.0.1
+
+# Required by the pdf plugin
+rst2pdf>=0.95
+xhtml2pdf>=0.2.4
+
+# Required by the Asset plugin
+webassets>=2.0

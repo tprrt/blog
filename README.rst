@@ -19,6 +19,10 @@ Use commands below to install required Python modules to build static pages and 
    git submodule sync
    git submodule update --init --recursive
 
+   # To create a Python2 virtual environment
+   python3 -m venv venv
+   . venv/bin/activate
+
    # To install required Python modules
    pip install -r requirements.txt
 
@@ -34,3 +38,6 @@ Use commands below to install required Python modules to build static pages and 
    # To publish pages to gh-pages
    ghp-import -n output -m "[skip ci] Update pages"
    git push origin gh-pages
+
+   # To quit the Python3 virtual environment
+   deactivate
