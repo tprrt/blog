@@ -4,24 +4,24 @@ How the Busybox's chrt applet works
 
 :date: 2020-09-08 19:20
 :modified: 2020-09-09 07:05
-:tags: busybox, chrt
+:tags: busybox, chrt, dissection, beginner
 :category: busybox
 :slug: busybox-chrt-dissection
 :authors: tperrot
-:summary: This article details the implementation of the *chrt* applet from Busybox
+:summary: This article details the implementation of the *chrt* applet from `Busybox`_.
 :lang: en
-:status: draft
+:status: published
 
 Introduction
 ============
 
-In this article, I will dissect how the *chrt* applet from the release 1.32.0 of Busybox works, what it does, etc.
+In this article, I will dissect how the *chrt* applet from the release 1.32.0 of `Busybox`_ works, what it does, etc.
 
 This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.
 
-::
+.. code-block:: bash
 
-   $ chrt -m
+   chrt -m
    SCHED_OTHER min/max priority    : 0/0
    SCHED_FIFO min/max priority     : 1/99
    SCHED_RR min/max priority       : 1/99
@@ -29,28 +29,27 @@ This command is a Linux utils allowing to consult or to modify the scheduling at
    SCHED_IDLE min/max priority     : 0/0
    SCHED_DEADLINE min/max priority : 0/0
 
-   $ pidof firefox
+   pidof firefox
    6987 6851 6825 6816 6800 6771 6767 6761 6720 6611
 
-   $ chrt -p 6987
+   chrt -p 6987
    pid 6987's current scheduling policy: SCHED_OTHER
    pid 6987's current scheduling priority: 0
 
-   $ sudo chrt -f -p 1 6987
-   $ chrt -p 6987
+   sudo chrt -f -p 1 6987
+   chrt -p 6987
    pid 6987's current scheduling policy: SCHED_FIFO
    pid 6987's current scheduling priority: 1
 
-Busybox provides an applet which size, once compiled, and ten times smaller than that of the binary implementation and with
-some limitations.
+`Busybox`_ provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
+and with some limitations.
 
 
 The dissection
 ==============
 
-The implementation of the *chrt* applet is in the file
-`util-linux/chrt.c <https://elixir.free-electrons.com/busybox/1.32.0/source/util-linux/chrt.c>`_ that containing several
-functions which are called in the main function of this applet.
+The implementation of the *chrt* applet is in the file `util-linux/chrt.c`_ that containing several functions which are
+called in the main function of this applet.
 
 The main function of this applet is divised in three main parts:
 - the first parses the command options
@@ -59,7 +58,7 @@ The main function of this applet is divised in three main parts:
 
 At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:
 
-::
+.. code-block:: c
 
         opt = getopt32(argv, "^"
                         "+" "mprfobi"
@@ -70,7 +69,7 @@ At start of main, the character string containing the options are parsed to obta
 
 If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:
 
-::
+.. code-block:: c
 
         if (opt & OPT_m) { /* print min/max and exit */
                 show_min_max(SCHED_OTHER);
@@ -84,7 +83,7 @@ If the (-m) is set then the min and max valid priorities for each scheduling pol
 The function *show_min_max* sends use the Posix functions *sched_get_priority_max* and *sched_get_priority_min* from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:
 
-::
+.. code-block:: c
 
     max = sched_get_priority_max(pol);
     min = sched_get_priority_min(pol);
@@ -93,7 +92,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 
 Otherwise the required options and arguments to show or to apply real-time attributes of a process:
 
-::
+.. code-block:: c
 
     //if (opt & OPT_r)
     //  policy = SCHED_RR; - default, already set
@@ -125,7 +124,7 @@ Otherwise the required options and arguments to show or to apply real-time attri
 
 Then the applet uses the Posix function *sched_getscheduler* provides by the standard C library to obtain the scheduling attributes of the process specified by the pid.
 
-::
+.. code-block:: c
 
     print_rt_info:
         pol = sched_getscheduler(pid);
@@ -134,7 +133,7 @@ Then the applet uses the Posix function *sched_getscheduler* provides by the sta
 
 Finally, when the *chrt* applet is used to modify scheduling attributes then the Posix function *sched_getscheduler* is used and the new scheduling attributes are showed:
 
-::
+.. code-block:: c
 
     if (sched_setscheduler(pid, policy, &sp) < 0)
         bb_perror_msg_and_die("can't %cet pid %u's policy", 's', (int)pid);
@@ -145,9 +144,9 @@ Finally, when the *chrt* applet is used to modify scheduling attributes then the
 The function *sched_getscheduler* and *sched_getscheduler* will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from */proc*:
 
-::
+.. code-block:: bash
 
-    $ cat /proc/6987/sched
+    cat /proc/6987/sched
     WebExtensions (6987, #threads: 23)
     -------------------------------------------------------------------
     se.exec_start                                :       4421312.640001
@@ -195,3 +194,7 @@ Deadline support
 ----------------
 
 The *chrt* applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.
+
+.. _Busybox: https://www.busybox.net
+.. _Busybox: https://www.busybox.net
+.. _util-linux/chrt.c: https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c
