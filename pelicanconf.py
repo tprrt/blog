@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Thomas Perrot'
 SITENAME = "Tprrt's Blog"
-SITESUBTITLE = "Yet another  blog about Linux embedded"
+SITESUBTITLE = "Yet another blog about embedded Linux, the open source and hardware"
 SITEURL = ''
 
 PATH = 'content'
@@ -32,29 +32,6 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 
-# Blogroll
-# LINKS = (('Pelican', 'http://getpelican.com/'),
-#          ('Python.org', 'http://python.org/'),
-#          ('Jinja2', 'http://jinja.pocoo.org/'),
-#          ('You can modify those links in your config file', '#'),)
-
-# Social widget
-SOCIAL = (('github', 'https://github.com/tprrt'),
-          ('linkedin', 'https://www.linkedin.com/in/tprrt/'),
-          ('instagram','https://www.instagram.com/thomas.prrt'),
-          ('facebook','https://facebook.com/tperrot31'),
-          ('twitter', 'https://twitter.com/tprrt31'),
-          ('envelope','mailto:tprrt@tupi.fr'))
-
-DEFAULT_PAGINATION = 3
-PAGINATION_PATTERNS = (
-    (1, '{base_name}/', '{base_name}/index.html'),
-    (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
-)
-
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
-
 STATIC_PATHS = ['static']
 
 EXTRA_PATH_METADATA = {
@@ -63,94 +40,47 @@ EXTRA_PATH_METADATA = {
     'static/CNAME': {'path': 'CNAME'}
 }
 
-# Post and Pages path
-ARTICLE_URL = '{date:%Y}/{date:%m}/{slug}.html'
-ARTICLE_SAVE_AS = '{date:%Y}/{date:%m}/{slug}.html'
-PAGE_URL = 'pages/{slug}/'
-PAGE_SAVE_AS = 'pages/{slug}/index.html'
-YEAR_ARCHIVE_SAVE_AS = '{date:%Y}/index.html'
-MONTH_ARCHIVE_SAVE_AS = '{date:%Y}/{date:%m}/index.html'
+# all defaults to True.
+DISPLAY_HEADER = True
+DISPLAY_FOOTER = True
+DISPLAY_HOME   = True
+DISPLAY_MENU   = True
 
-# Tags and Category path
-CATEGORY_URL = 'category/{slug}'
-CATEGORY_SAVE_AS = 'category/{slug}/index.html'
-CATEGORIES_SAVE_AS = 'catgegories.html'
-TAG_URL = 'tag/{slug}'
-TAG_SAVE_AS = 'tag/{slug}/index.html'
-TAGS_SAVE_AS = 'tags.html'
+# urls
+TAGS_URL           = 'tags'
+TAGS_SAVE_AS       = 'tags/index.html'
+AUTHORS_URL        = 'authors'
+AUTHORS_SAVE_AS    = 'authors/index.html'
+CATEGORIES_URL     = 'categories'
+CATEGORIES_SAVE_AS = 'categories/index.html'
+ARCHIVES_URL       = 'archives'
+ARCHIVES_SAVE_AS   = 'archives/index.html'
 
-# Author
-AUTHOR_URL = 'author/{slug}'
-AUTHOR_SAVE_AS = 'author/{slug}/index.html'
-AUTHORS_SAVE_AS = 'authors.html'
+# Menu
+MENU_INTERNAL_PAGES = (
+    ('Tags', TAGS_URL, TAGS_SAVE_AS),
+    ('Authors', AUTHORS_URL, AUTHORS_SAVE_AS),
+    ('Categories', CATEGORIES_URL, CATEGORIES_SAVE_AS),
+    ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
+)
 
-### Plugins
-
+# Plugins
 PLUGIN_PATHS = [
-  'pelican-plugins'
+    'pelican-plugins'
 ]
 
-PLUGINS = [
-  'assets',
-  'html_rst_directive',
-  'neighbors',
-  'pdf',
-  'sitemap',
-]
-
-# Sitemap
-SITEMAP = {
-    'format': 'xml',
-    'priorities': {
-        'articles': 0.5,
-        'indexes': 0.5,
-        'pages': 0.5
-    },
-    'changefreqs': {
-        'articles': 'monthly',
-        'indexes': 'daily',
-        'pages': 'monthly'
-    }
-}
+# PLUGINS = [
+#     'assets',
+#     'neighbors',
+#     'sitemap',
+# ]
 
 # Publish draft to review before publising
 DEFAULT_METADATA = {
     'status': 'draft',
 }
 
-# code blocks with line numbers
-PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
-
 # Specify a customized theme, via path relative to the settings file
-THEME = "pelican-themes/attila"
-HEADER_COVER = 'static/header_cover.png'
-HEADER_COLOR = 'black'
-#COLOR_SCHEME_CSS = 'monokai.css'
-#CSS_OVERRIDE = ['css/myblog.css']
-#JS_OVERRIDE = ['']
-
-# Jinja config - Pelican 4
-JINJA_ENVIRONMENT = {
-  'extensions' :[
-    'jinja2.ext.loopcontrols',
-    'jinja2.ext.i18n',
-    'jinja2.ext.with_',
-    'jinja2.ext.do'
-  ]
-}
-JINJA_FILTERS = {'max': max}
-
-AUTHORS_BIO = {
-  "tperrot": {
-    "name": "Thomas Perrot",
-    "cover": "static/header_cover.png",
-    "image": "static/avatar.png",
-    "website": "https://tprrt.tupi.fr",
-    "linkedin": "www.linkedin.com/in/tprrt",
-    "github": "tprrt",
-    "location": "Toulouse",
-    "bio": "This is the place for a small biography with max 200 characters. Well, now 100 are left. Cool, hugh?"
-  }
-}
+THEME = "pelican-themes/blue-penguin"
 
 THEME_TEMPLATES_OVERRIDES = ["templates"]
