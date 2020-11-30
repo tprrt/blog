@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-09-09T07:05:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2020-09-09T07:05:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-11-30T16:11:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2020-09-09T07:05:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In this article, I will dissect how the &lt;em&gt;chrt&lt;/em&gt; applet from the release 1.32.0 of &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; works, what it does, etc.&lt;/p&gt;
@@ -150,7 +150,259 @@ build of busybox and it is applied on all scheduling attributes modifications do
 &lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="busybox"></category><category term="busybox"></category><category term="chrt"></category><category term="dissection"></category><category term="beginner"></category></entry><entry><title>My blog opening</title><link href="https://tprrt.tupi.fr/my-blog-opening.html" rel="alternate"></link><published>2020-05-28T16:50:00+02:00</published><updated>2020-05-28T16:50:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-05-28:/my-blog-opening.html</id><summary type="html">&lt;p class="first last"&gt;Why do I choose to open a new blog and a quick description about the subject that will be treated.&lt;/p&gt;
+</content><category term="busybox"></category><category term="busybox"></category><category term="chrt"></category><category term="dissection"></category><category term="beginner"></category></entry><entry><title>Build an embedded Linux in less than 15 minutes</title><link href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html" rel="alternate"></link><published>2020-06-27T13:01:00+02:00</published><updated>2020-11-30T16:11:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-06-27:/build-an-embedded-linux-in-fifteen-min.html</id><summary type="html">&lt;p class="first last"&gt;This article will explain how to build a minimal embedded Linux, in less than 15 minutes, and without a build framework.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Since some years, I no longer built a embedded Linux without using a framework, like &lt;a class="reference external" href="https://openembedded.org"&gt;Open Embedded&lt;/a&gt; from the &lt;a class="reference external" href="https://yoctoproject.org"&gt;Yocto&lt;/a&gt;
+project.
+Then here, I wanted to make a guide to help you to build quickly, from &amp;quot;scratch&amp;quot; a very minimal embedded Linux to boot a
+target.
+The following examples have been writen to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be boot strapped with a prebuilt cross-toolchain, I have chosen to use one provided
+by &lt;a class="reference external" href="https://toolchains.bootlin.com"&gt;Bootlin&lt;/a&gt; and using glibc.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="setup-the-environment"&gt;
+&lt;h2&gt;Setup the environment&lt;/h2&gt;
+&lt;p&gt;First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
+- The Ncurses libraries are only required to execute the command &lt;cite&gt;make menuconfig&lt;/cite&gt;.
+- The certificates and wget will be used to download the prebuilt toolchain.
+- In the same way, git will be used to checkout the source of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.
+- The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt update
+apt install -y --no-install-recommends &lt;span class="se"&gt;\&lt;/span&gt;
+    bc &lt;span class="se"&gt;\&lt;/span&gt;
+    build-essential &lt;span class="se"&gt;\&lt;/span&gt;
+    ca-certificates &lt;span class="se"&gt;\&lt;/span&gt;
+    cpio &lt;span class="se"&gt;\&lt;/span&gt;
+    file &lt;span class="se"&gt;\&lt;/span&gt;
+    flex &lt;span class="se"&gt;\&lt;/span&gt;
+    git &lt;span class="se"&gt;\&lt;/span&gt;
+    ipxe-qemu &lt;span class="se"&gt;\&lt;/span&gt;
+    libncurses5-dev &lt;span class="se"&gt;\&lt;/span&gt;
+    libncursesw5-dev &lt;span class="se"&gt;\&lt;/span&gt;
+    libssl-dev &lt;span class="se"&gt;\&lt;/span&gt;
+    qemu &lt;span class="se"&gt;\&lt;/span&gt;
+    qemu-system-aarch64 &lt;span class="se"&gt;\&lt;/span&gt;
+    qemu-user-static &lt;span class="se"&gt;\&lt;/span&gt;
+    wget
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now, it is time to download and install the prebuild toolchain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir ~/src
+&lt;span class="nb"&gt;cd&lt;/span&gt; ~/src
+wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
+tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
+- &lt;em&gt;PATH&lt;/em&gt;: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
+- &lt;em&gt;CROSS_COMPILE&lt;/em&gt;: In order to clarify the prefix used by the cross-tools
+- &lt;em&gt;ARCH&lt;/em&gt;: The architecture of the target platform&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
+~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
+
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;CROSS_COMPILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;aarch64-linux-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now, it is possible to call the cross-tools from the shell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aarch64-linux-gcc -v
+Using built-in specs.
+&lt;span class="nv"&gt;COLLECT_GCC&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc.br_real
+&lt;span class="nv"&gt;COLLECT_LTO_WRAPPER&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/9.3.0/lto-wrapper
+Target: aarch64-buildroot-linux-gnu
+&amp;lt;...&amp;gt;
+Thread model: posix
+gcc version &lt;span class="m"&gt;9&lt;/span&gt;.3.0 &lt;span class="o"&gt;(&lt;/span&gt;Buildroot &lt;span class="m"&gt;2020&lt;/span&gt;.08-14-ge5a2a90&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Concerning the variable &lt;cite&gt;PATH&lt;/cite&gt; this one will be set afterwards because its value depends of the binary that will be built.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="build-the-linux-kernel"&gt;
+&lt;h2&gt;Build the Linux kernel&lt;/h2&gt;
+&lt;p&gt;So, the environment is ready to pull the sources of the latest stable branch of the kernel &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt; and to build them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+&lt;span class="nb"&gt;cd&lt;/span&gt; linux
+git checkout -b local/linux-5.4.y origin/linux-5.4.y
+&lt;span class="c1"&gt;# git show HEAD&lt;/span&gt;
+
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;arm64
+
+make defconfig
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.&lt;span class="o"&gt;[&lt;/span&gt;ch&lt;span class="o"&gt;]&lt;/span&gt;
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTLD  scripts/kconfig/conf
+*** Default configuration is based on &lt;span class="s1"&gt;&amp;#39;defconfig&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;#&lt;/span&gt;
+&lt;span class="c1"&gt;# configuration written to .config&lt;/span&gt;
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;# make menuconfig&lt;/span&gt;
+
+make -j&lt;span class="k"&gt;$(&lt;/span&gt;nproc&lt;span class="k"&gt;)&lt;/span&gt;
+  &amp;lt;...&amp;gt;
+  AR      drivers/net/ethernet/built-in.a
+  AR      drivers/net/built-in.a
+  AR      drivers/built-in.a
+  GEN     .version
+  CHK     include/generated/compile.h
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  MODINFO modules.builtin.modinfo
+  LD      .tmp_vmlinux.kallsyms1
+  KSYM    .tmp_vmlinux.kallsyms1.o
+  LD      .tmp_vmlinux.kallsyms2
+  KSYM    .tmp_vmlinux.kallsyms2.o
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  Building modules, stage &lt;span class="m"&gt;2&lt;/span&gt;.
+  MODPOST &lt;span class="m"&gt;531&lt;/span&gt; modules
+  OBJCOPY arch/arm64/boot/Image
+  GZIP    arch/arm64/boot/Image.gz
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The command &lt;cite&gt;make defconfig&lt;/cite&gt; will apply the default configuration for the target platform (cf.`ARCH=arm64`), and the
+compilation will be performed by &lt;cite&gt;make -j$(nproc)&lt;/cite&gt;.&lt;/p&gt;
+&lt;p&gt;The commands &lt;cite&gt;git show HEAD&lt;/cite&gt; and &lt;cite&gt;make defconfig&lt;/cite&gt; are optional:
+- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch &lt;cite&gt;linux-5.4.y&lt;/cite&gt;.
+- the second can be used if you want to customize the kernel configuration.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;NB. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options&lt;/em&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="populate-the-sysroot"&gt;
+&lt;h2&gt;Populate the sysroot&lt;/h2&gt;
+&lt;p&gt;The easy way to bootstrap a sysroot is to use &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; that has been created to offer common UNIX tools into a single
+executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.&lt;/p&gt;
+&lt;p&gt;The steps to pull and build &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; are similar to those of the kernel &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone git://git.busybox.net/busybox
+&lt;span class="nb"&gt;cd&lt;/span&gt; busybox
+git checkout -b local/1_32_stable origin/1_32_stable
+&lt;span class="c1"&gt;# git show HEAD&lt;/span&gt;
+
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;ARCH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;aarch64
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LDFLAGS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;--static&amp;quot;&lt;/span&gt;
+
+make defconfig
+&lt;span class="c1"&gt;# make menuconfig&lt;/span&gt;
+make -j&lt;span class="k"&gt;$(&lt;/span&gt;nproc&lt;span class="k"&gt;)&lt;/span&gt;
+
+make install
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here, the &lt;cite&gt;LDFLAGS&lt;/cite&gt; is set to force the static link of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; quickly, but it is also possible to use
+&lt;cite&gt;make menuconfig&lt;/cite&gt; to set &lt;cite&gt;CONFIG_STATIC=y&lt;/cite&gt;. The advantage of the static executable is that it can be tested with Qemu:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;qemu-aarch64-static busybox &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello!&amp;quot;&lt;/span&gt;
+Hello!
+qemu-aarch64-static busybox date
+Sat Jun &lt;span class="m"&gt;27&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:06:41 UTC &lt;span class="m"&gt;2020&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The binary &lt;cite&gt;qemu-aarch64-static&lt;/cite&gt; allows to execute a binary built for another architecture on the host computer, for
+example here it allows to execute the &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; binary compiled for an aarch64 target on a x86-64 host.&lt;/p&gt;
+&lt;p&gt;The last command &lt;cite&gt;make install&lt;/cite&gt; created a tree into the &lt;cite&gt;_install&lt;/cite&gt; directory that can be used to populate the sysroot:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l _install
+total &lt;span class="m"&gt;4&lt;/span&gt;
+drwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot &lt;span class="m"&gt;974&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 bin
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot  &lt;span class="m"&gt;11&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 linuxrc -&amp;gt; bin/busybox
+drwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot &lt;span class="m"&gt;986&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 sbin
+drwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot  &lt;span class="m"&gt;14&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 usr
+
+ls -l _install/bin
+&amp;lt;...&amp;gt;
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 umount -&amp;gt; busybox
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 uname -&amp;gt; busybox
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 usleep -&amp;gt; busybox
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 vi -&amp;gt; busybox
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 watch -&amp;gt; busybox
+lrwxrwxrwx. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot       &lt;span class="m"&gt;7&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 zcat -&amp;gt; busybox
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In order, to finalize this minimal sysroot, it is required to create a rcS init script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir _install/proc _install/sys _install/dev _install/etc _install/etc/init.d
+cat &amp;gt; _install/etc/init.d/rcS &lt;span class="s"&gt;&amp;lt;&amp;lt; EOF&lt;/span&gt;
+&lt;span class="s"&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class="s"&gt;mount -t proc none /proc&lt;/span&gt;
+&lt;span class="s"&gt;mount -t sysfs none /sys&lt;/span&gt;
+&lt;span class="s"&gt;/sbin/mdev -s&lt;/span&gt;
+&lt;span class="s"&gt;[ ! -h /etc/mtab ]  &amp;amp;&amp;amp; ln -s /proc/mounts /etc/mtab&lt;/span&gt;
+&lt;span class="s"&gt;[ ! -f /etc/resolv.conf ] &amp;amp;&amp;amp; cat /proc/net/pnp &amp;gt; /etc/resolv.conf&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+chmod +x _install/etc/init.d/rcS
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="build-the-filesystem"&gt;
+&lt;h2&gt;Build the filesystem&lt;/h2&gt;
+&lt;p&gt;The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
+There is two available possibilities, either build a &lt;cite&gt;ramfs&lt;/cite&gt; or a &lt;cite&gt;rootfs&lt;/cite&gt;.&lt;/p&gt;
+&lt;p&gt;Globally, the difference between both is that:
+- the &lt;cite&gt;ramfs&lt;/cite&gt; is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
+- the &lt;cite&gt;rootfs&lt;/cite&gt; is a filesystem mounted from a non volatile device by the kernel.&lt;/p&gt;
+&lt;p&gt;For more information about the difference between the &lt;cite&gt;ramfs&lt;/cite&gt; and the &lt;cite&gt;rootfs&lt;/cite&gt;, you can you refer to the &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html"&gt;kernel documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="build-a-ramfs"&gt;
+&lt;h3&gt;Build a ramfs&lt;/h3&gt;
+&lt;p&gt;To build the ramfs we will use &lt;cite&gt;cpio&lt;/cite&gt; and &lt;cite&gt;gzip&lt;/cite&gt; to construct the compressed archive after modifying the rights:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir _rootfs
+rsync -a _install/ _rootfs
+chown -R root:root _rootfs
+&lt;span class="nb"&gt;cd&lt;/span&gt; _rootfs
+find . &lt;span class="p"&gt;|&lt;/span&gt; cpio -o --format&lt;span class="o"&gt;=&lt;/span&gt;newc &amp;gt; ../rootfs.cpio
+&lt;span class="nb"&gt;cd&lt;/span&gt; ..
+gzip -c rootfs.cpio &amp;gt; rootfs.cpio.gz
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="build-a-rootfs"&gt;
+&lt;h3&gt;Build a rootfs&lt;/h3&gt;
+&lt;p&gt;To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
+formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dd &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/zero &lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;rootfs.img &lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1M &lt;span class="nv"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;
+mke2fs -j rootfs.img
+mkdir _rootfs
+mount -o loop rootfs.img _rootfs
+rsync -a _install/ _rootfs
+chown -R root:root _rootfs
+sync
+umount _rootfs
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="boot-the-target"&gt;
+&lt;h2&gt;Boot the target&lt;/h2&gt;
+&lt;p&gt;Following, the qemu commands to boot the minimal embedded Linux system that has been built.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# With the ramfs&lt;/span&gt;
+qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp &lt;span class="m"&gt;2&lt;/span&gt; -m &lt;span class="m"&gt;256&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -kernel ~/src/linux/arch/arm64/boot/Image &lt;span class="se"&gt;\&lt;/span&gt;
+    -initrd ~/src/busybox/rootfs.cpio.gz &lt;span class="se"&gt;\&lt;/span&gt;
+    -append &lt;span class="s2"&gt;&amp;quot;panic=5 ro ip=dhcp root=/dev/ram rdinit=/sbin/init&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# With the rootfs&lt;/span&gt;
+qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp &lt;span class="m"&gt;2&lt;/span&gt; -m &lt;span class="m"&gt;256&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -kernel ~/src/linux/arch/arm64/boot/Image &lt;span class="se"&gt;\&lt;/span&gt;
+    -append &lt;span class="s2"&gt;&amp;quot;panic=5 ro ip=dhcp root=/dev/vda&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/busybox/rootfs.img,format&lt;span class="o"&gt;=&lt;/span&gt;raw,if&lt;span class="o"&gt;=&lt;/span&gt;none,id&lt;span class="o"&gt;=&lt;/span&gt;hd0 -device virtio-blk-device,drive&lt;span class="o"&gt;=&lt;/span&gt;hd0
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then the target will be boot to shell, &amp;quot;It's alive!&amp;quot;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Booting Linux on physical CPU 0x0000000000 &lt;span class="o"&gt;[&lt;/span&gt;0x411fd070&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Linux version &lt;span class="m"&gt;5&lt;/span&gt;.10.0-rc5 &lt;span class="o"&gt;(&lt;/span&gt;tperrot@27ea4a863f61&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;aarch64-linux-gcc.br_real &lt;span class="o"&gt;(&lt;/span&gt;Buildroot &lt;span class="m"&gt;2020&lt;/span&gt;.08-14-ge5a2a90&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;9&lt;/span&gt;.3.0, GNU ld &lt;span class="o"&gt;(&lt;/span&gt;GNU Binutils&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;.33.1&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Machine model: linux,dummy-virt
+&amp;lt;...&amp;gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.858346&lt;span class="o"&gt;]&lt;/span&gt; Sending DHCP requests ., OK
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.870558&lt;span class="o"&gt;]&lt;/span&gt; IP-Config: Got DHCP answer from &lt;span class="m"&gt;10&lt;/span&gt;.0.2.2, my address is &lt;span class="m"&gt;10&lt;/span&gt;.0.2.15
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.870909&lt;span class="o"&gt;]&lt;/span&gt; IP-Config: Complete:
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.871199&lt;span class="o"&gt;]&lt;/span&gt;      &lt;span class="nv"&gt;device&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;eth0, &lt;span class="nv"&gt;hwaddr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;52&lt;/span&gt;:54:00:12:34:56, &lt;span class="nv"&gt;ipaddr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.15, &lt;span class="nv"&gt;mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;255&lt;/span&gt;.255.255.0, &lt;span class="nv"&gt;gw&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.2
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.871566&lt;span class="o"&gt;]&lt;/span&gt;      &lt;span class="nv"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.15, &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;, nis-domain&lt;span class="o"&gt;=(&lt;/span&gt;none&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.871825&lt;span class="o"&gt;]&lt;/span&gt;      &lt;span class="nv"&gt;bootserver&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.2, &lt;span class="nv"&gt;rootserver&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.2, &lt;span class="nv"&gt;rootpath&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.871866&lt;span class="o"&gt;]&lt;/span&gt;      &lt;span class="nv"&gt;nameserver0&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;.0.2.3
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.872389&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.875863&lt;span class="o"&gt;]&lt;/span&gt; ALSA device list:
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.876151&lt;span class="o"&gt;]&lt;/span&gt;   No soundcards found.
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.879353&lt;span class="o"&gt;]&lt;/span&gt; uart-pl011 &lt;span class="m"&gt;9000000&lt;/span&gt;.pl011: no DMA platform data
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.920237&lt;span class="o"&gt;]&lt;/span&gt; Freeing unused kernel memory: 5952K
+&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.921223&lt;span class="o"&gt;]&lt;/span&gt; Run /sbin/init as init process
+
+Please press Enter to activate this console.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</content><category term="linux"></category><category term="busybox"></category><category term="embedded"></category><category term="intermediate"></category><category term="linux"></category><category term="qemu"></category></entry><entry><title>My blog opening</title><link href="https://tprrt.tupi.fr/my-blog-opening.html" rel="alternate"></link><published>2020-05-28T16:50:00+02:00</published><updated>2020-05-28T16:50:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-05-28:/my-blog-opening.html</id><summary type="html">&lt;p class="first last"&gt;Why do I choose to open a new blog and a quick description about the subject that will be treated.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;Welcome,&lt;/p&gt;
 &lt;p&gt;After closing my last blog since seventeen years, in order to share my knowledges and my little experiments about
 embedded open source. You would have understood it, this blog will mainly speak about embedded Linux operating system,

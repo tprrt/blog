@@ -207,6 +207,280 @@ build of busybox and it is applied on all scheduling attributes modifications do
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/dissection.html" class="tags">dissection</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/beginner.html" class="tags">beginner</a>
                 </div>
+            </article>            <h4 class="date">Jun 27, 2020</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html" rel="bookmark" title="Permanent Link to &quot;Build an embedded Linux in less than 15 minutes&quot;">Build an embedded Linux in less than 15 minutes</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Since some years, I no longer built a embedded Linux without using a framework, like <a class="reference external" href="https://openembedded.org">Open Embedded</a> from the <a class="reference external" href="https://yoctoproject.org">Yocto</a>
+project.
+Then here, I wanted to make a guide to help you to build quickly, from &quot;scratch&quot; a very minimal embedded Linux to boot a
+target.
+The following examples have been writen to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be boot strapped with a prebuilt cross-toolchain, I have chosen to use one provided
+by <a class="reference external" href="https://toolchains.bootlin.com">Bootlin</a> and using glibc.</p>
+</div>
+<div class="section" id="setup-the-environment">
+<h2>Setup the environment</h2>
+<p>First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
+- The Ncurses libraries are only required to execute the command <cite>make menuconfig</cite>.
+- The certificates and wget will be used to download the prebuilt toolchain.
+- In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.
+- The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</p>
+<div class="highlight"><pre><span></span>apt update
+apt install -y --no-install-recommends <span class="se">\</span>
+    bc <span class="se">\</span>
+    build-essential <span class="se">\</span>
+    ca-certificates <span class="se">\</span>
+    cpio <span class="se">\</span>
+    file <span class="se">\</span>
+    flex <span class="se">\</span>
+    git <span class="se">\</span>
+    ipxe-qemu <span class="se">\</span>
+    libncurses5-dev <span class="se">\</span>
+    libncursesw5-dev <span class="se">\</span>
+    libssl-dev <span class="se">\</span>
+    qemu <span class="se">\</span>
+    qemu-system-aarch64 <span class="se">\</span>
+    qemu-user-static <span class="se">\</span>
+    wget
+</pre></div>
+<p>Now, it is time to download and install the prebuild toolchain:</p>
+<div class="highlight"><pre><span></span>mkdir ~/src
+<span class="nb">cd</span> ~/src
+wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
+tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
+</pre></div>
+<p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
+- <em>PATH</em>: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
+- <em>CROSS_COMPILE</em>: In order to clarify the prefix used by the cross-tools
+- <em>ARCH</em>: The architecture of the target platform</p>
+<div class="highlight"><pre><span></span>ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
+~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
+
+<span class="nb">export</span> <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span> <span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-
+</pre></div>
+<p>Now, it is possible to call the cross-tools from the shell:</p>
+<div class="highlight"><pre><span></span>aarch64-linux-gcc -v
+Using built-in specs.
+<span class="nv">COLLECT_GCC</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc.br_real
+<span class="nv">COLLECT_LTO_WRAPPER</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/9.3.0/lto-wrapper
+Target: aarch64-buildroot-linux-gnu
+&lt;...&gt;
+Thread model: posix
+gcc version <span class="m">9</span>.3.0 <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
+</pre></div>
+<p>Concerning the variable <cite>PATH</cite> this one will be set afterwards because its value depends of the binary that will be built.</p>
+</div>
+<div class="section" id="build-the-linux-kernel">
+<h2>Build the Linux kernel</h2>
+<p>So, the environment is ready to pull the sources of the latest stable branch of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a> and to build them:</p>
+<div class="highlight"><pre><span></span>git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+<span class="nb">cd</span> linux
+git checkout -b local/linux-5.4.y origin/linux-5.4.y
+<span class="c1"># git show HEAD</span>
+
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>arm64
+
+make defconfig
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.<span class="o">[</span>ch<span class="o">]</span>
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTLD  scripts/kconfig/conf
+*** Default configuration is based on <span class="s1">&#39;defconfig&#39;</span>
+<span class="c1">#</span>
+<span class="c1"># configuration written to .config</span>
+<span class="c1">#</span>
+
+<span class="c1"># make menuconfig</span>
+
+make -j<span class="k">$(</span>nproc<span class="k">)</span>
+  &lt;...&gt;
+  AR      drivers/net/ethernet/built-in.a
+  AR      drivers/net/built-in.a
+  AR      drivers/built-in.a
+  GEN     .version
+  CHK     include/generated/compile.h
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  MODINFO modules.builtin.modinfo
+  LD      .tmp_vmlinux.kallsyms1
+  KSYM    .tmp_vmlinux.kallsyms1.o
+  LD      .tmp_vmlinux.kallsyms2
+  KSYM    .tmp_vmlinux.kallsyms2.o
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  Building modules, stage <span class="m">2</span>.
+  MODPOST <span class="m">531</span> modules
+  OBJCOPY arch/arm64/boot/Image
+  GZIP    arch/arm64/boot/Image.gz
+</pre></div>
+<p>The command <cite>make defconfig</cite> will apply the default configuration for the target platform (cf.`ARCH=arm64`), and the
+compilation will be performed by <cite>make -j$(nproc)</cite>.</p>
+<p>The commands <cite>git show HEAD</cite> and <cite>make defconfig</cite> are optional:
+- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch <cite>linux-5.4.y</cite>.
+- the second can be used if you want to customize the kernel configuration.</p>
+<p><em>NB. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options</em></p>
+</div>
+<div class="section" id="populate-the-sysroot">
+<h2>Populate the sysroot</h2>
+<p>The easy way to bootstrap a sysroot is to use <a class="reference external" href="https://busybox.net">Busybox</a> that has been created to offer common UNIX tools into a single
+executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.</p>
+<p>The steps to pull and build <a class="reference external" href="https://busybox.net">Busybox</a> are similar to those of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a>.</p>
+<div class="highlight"><pre><span></span>git clone git://git.busybox.net/busybox
+<span class="nb">cd</span> busybox
+git checkout -b local/1_32_stable origin/1_32_stable
+<span class="c1"># git show HEAD</span>
+
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>aarch64
+<span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;--static&quot;</span>
+
+make defconfig
+<span class="c1"># make menuconfig</span>
+make -j<span class="k">$(</span>nproc<span class="k">)</span>
+
+make install
+</pre></div>
+<p>Here, the <cite>LDFLAGS</cite> is set to force the static link of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
+<cite>make menuconfig</cite> to set <cite>CONFIG_STATIC=y</cite>. The advantage of the static executable is that it can be tested with Qemu:</p>
+<div class="highlight"><pre><span></span>qemu-aarch64-static busybox <span class="nb">echo</span> <span class="s2">&quot;Hello!&quot;</span>
+Hello!
+qemu-aarch64-static busybox date
+Sat Jun <span class="m">27</span> <span class="m">15</span>:06:41 UTC <span class="m">2020</span>
+</pre></div>
+<p>The binary <cite>qemu-aarch64-static</cite> allows to execute a binary built for another architecture on the host computer, for
+example here it allows to execute the <a class="reference external" href="https://busybox.net">Busybox</a> binary compiled for an aarch64 target on a x86-64 host.</p>
+<p>The last command <cite>make install</cite> created a tree into the <cite>_install</cite> directory that can be used to populate the sysroot:</p>
+<div class="highlight"><pre><span></span>ls -l _install
+total <span class="m">4</span>
+drwxr-xr-x. <span class="m">1</span> tperrot tperrot <span class="m">974</span> Nov <span class="m">30</span> <span class="m">15</span>:22 bin
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot  <span class="m">11</span> Nov <span class="m">30</span> <span class="m">15</span>:22 linuxrc -&gt; bin/busybox
+drwxr-xr-x. <span class="m">1</span> tperrot tperrot <span class="m">986</span> Nov <span class="m">30</span> <span class="m">15</span>:22 sbin
+drwxr-xr-x. <span class="m">1</span> tperrot tperrot  <span class="m">14</span> Nov <span class="m">30</span> <span class="m">15</span>:22 usr
+
+ls -l _install/bin
+&lt;...&gt;
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 umount -&gt; busybox
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 uname -&gt; busybox
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 usleep -&gt; busybox
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 vi -&gt; busybox
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 watch -&gt; busybox
+lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 zcat -&gt; busybox
+</pre></div>
+<p>In order, to finalize this minimal sysroot, it is required to create a rcS init script:</p>
+<div class="highlight"><pre><span></span>mkdir _install/proc _install/sys _install/dev _install/etc _install/etc/init.d
+cat &gt; _install/etc/init.d/rcS <span class="s">&lt;&lt; EOF</span>
+<span class="s">#!/bin/sh</span>
+<span class="s">mount -t proc none /proc</span>
+<span class="s">mount -t sysfs none /sys</span>
+<span class="s">/sbin/mdev -s</span>
+<span class="s">[ ! -h /etc/mtab ]  &amp;&amp; ln -s /proc/mounts /etc/mtab</span>
+<span class="s">[ ! -f /etc/resolv.conf ] &amp;&amp; cat /proc/net/pnp &gt; /etc/resolv.conf</span>
+<span class="s">EOF</span>
+chmod +x _install/etc/init.d/rcS
+</pre></div>
+</div>
+<div class="section" id="build-the-filesystem">
+<h2>Build the filesystem</h2>
+<p>The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
+There is two available possibilities, either build a <cite>ramfs</cite> or a <cite>rootfs</cite>.</p>
+<p>Globally, the difference between both is that:
+- the <cite>ramfs</cite> is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
+- the <cite>rootfs</cite> is a filesystem mounted from a non volatile device by the kernel.</p>
+<p>For more information about the difference between the <cite>ramfs</cite> and the <cite>rootfs</cite>, you can you refer to the <a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html">kernel documentation</a>.</p>
+<div class="section" id="build-a-ramfs">
+<h3>Build a ramfs</h3>
+<p>To build the ramfs we will use <cite>cpio</cite> and <cite>gzip</cite> to construct the compressed archive after modifying the rights:</p>
+<div class="highlight"><pre><span></span>mkdir _rootfs
+rsync -a _install/ _rootfs
+chown -R root:root _rootfs
+<span class="nb">cd</span> _rootfs
+find . <span class="p">|</span> cpio -o --format<span class="o">=</span>newc &gt; ../rootfs.cpio
+<span class="nb">cd</span> ..
+gzip -c rootfs.cpio &gt; rootfs.cpio.gz
+</pre></div>
+</div>
+<div class="section" id="build-a-rootfs">
+<h3>Build a rootfs</h3>
+<p>To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
+formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.</p>
+<div class="highlight"><pre><span></span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>rootfs.img <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">10</span>
+mke2fs -j rootfs.img
+mkdir _rootfs
+mount -o loop rootfs.img _rootfs
+rsync -a _install/ _rootfs
+chown -R root:root _rootfs
+sync
+umount _rootfs
+</pre></div>
+</div>
+</div>
+<div class="section" id="boot-the-target">
+<h2>Boot the target</h2>
+<p>Following, the qemu commands to boot the minimal embedded Linux system that has been built.</p>
+<div class="highlight"><pre><span></span><span class="c1"># With the ramfs</span>
+qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp <span class="m">2</span> -m <span class="m">256</span> <span class="se">\</span>
+    -kernel ~/src/linux/arch/arm64/boot/Image <span class="se">\</span>
+    -initrd ~/src/busybox/rootfs.cpio.gz <span class="se">\</span>
+    -append <span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/ram rdinit=/sbin/init&quot;</span>
+
+<span class="c1"># With the rootfs</span>
+qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp <span class="m">2</span> -m <span class="m">256</span> <span class="se">\</span>
+    -kernel ~/src/linux/arch/arm64/boot/Image <span class="se">\</span>
+    -append <span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/vda&quot;</span> <span class="se">\</span>
+    -drive <span class="nv">file</span><span class="o">=</span>~/src/busybox/rootfs.img,format<span class="o">=</span>raw,if<span class="o">=</span>none,id<span class="o">=</span>hd0 -device virtio-blk-device,drive<span class="o">=</span>hd0
+</pre></div>
+<p>Then the target will be boot to shell, &quot;It's alive!&quot;:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Booting Linux on physical CPU 0x0000000000 <span class="o">[</span>0x411fd070<span class="o">]</span>
+<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Linux version <span class="m">5</span>.10.0-rc5 <span class="o">(</span>tperrot@27ea4a863f61<span class="o">)</span> <span class="o">(</span>aarch64-linux-gcc.br_real <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span> <span class="m">9</span>.3.0, GNU ld <span class="o">(</span>GNU Binutils<span class="o">)</span> <span class="m">2</span>.33.1<span class="o">)</span> <span class="c1">#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020</span>
+<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Machine model: linux,dummy-virt
+&lt;...&gt;
+<span class="o">[</span>    <span class="m">0</span>.858346<span class="o">]</span> Sending DHCP requests ., OK
+<span class="o">[</span>    <span class="m">0</span>.870558<span class="o">]</span> IP-Config: Got DHCP answer from <span class="m">10</span>.0.2.2, my address is <span class="m">10</span>.0.2.15
+<span class="o">[</span>    <span class="m">0</span>.870909<span class="o">]</span> IP-Config: Complete:
+<span class="o">[</span>    <span class="m">0</span>.871199<span class="o">]</span>      <span class="nv">device</span><span class="o">=</span>eth0, <span class="nv">hwaddr</span><span class="o">=</span><span class="m">52</span>:54:00:12:34:56, <span class="nv">ipaddr</span><span class="o">=</span><span class="m">10</span>.0.2.15, <span class="nv">mask</span><span class="o">=</span><span class="m">255</span>.255.255.0, <span class="nv">gw</span><span class="o">=</span><span class="m">10</span>.0.2.2
+<span class="o">[</span>    <span class="m">0</span>.871566<span class="o">]</span>      <span class="nv">host</span><span class="o">=</span><span class="m">10</span>.0.2.15, <span class="nv">domain</span><span class="o">=</span>, nis-domain<span class="o">=(</span>none<span class="o">)</span>
+<span class="o">[</span>    <span class="m">0</span>.871825<span class="o">]</span>      <span class="nv">bootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2, <span class="nv">rootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2, <span class="nv">rootpath</span><span class="o">=</span>
+<span class="o">[</span>    <span class="m">0</span>.871866<span class="o">]</span>      <span class="nv">nameserver0</span><span class="o">=</span><span class="m">10</span>.0.2.3
+<span class="o">[</span>    <span class="m">0</span>.872389<span class="o">]</span>
+<span class="o">[</span>    <span class="m">0</span>.875863<span class="o">]</span> ALSA device list:
+<span class="o">[</span>    <span class="m">0</span>.876151<span class="o">]</span>   No soundcards found.
+<span class="o">[</span>    <span class="m">0</span>.879353<span class="o">]</span> uart-pl011 <span class="m">9000000</span>.pl011: no DMA platform data
+<span class="o">[</span>    <span class="m">0</span>.920237<span class="o">]</span> Freeing unused kernel memory: 5952K
+<span class="o">[</span>    <span class="m">0</span>.921223<span class="o">]</span> Run /sbin/init as init process
+
+Please press Enter to activate this console.
+</pre></div>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html">posted at 13:01</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/busybox.html" class="tags">busybox</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/intermediate.html" class="tags">intermediate</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/qemu.html" class="tags">qemu</a>
+                </div>
             </article>            <h4 class="date">May 28, 2020</h4>
 
             <article class="post">
