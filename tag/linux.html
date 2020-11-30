@@ -56,11 +56,13 @@ by <a class="reference external" href="https://toolchains.bootlin.com">Bootlin</
 </div>
 <div class="section" id="setup-the-environment">
 <h2>Setup the environment</h2>
-<p>First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
-- The Ncurses libraries are only required to execute the command <cite>make menuconfig</cite>.
-- The certificates and wget will be used to download the prebuilt toolchain.
-- In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.
-- The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</p>
+<p>First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:</p>
+<ul class="simple">
+<li>The Ncurses libraries are only required to execute the command <cite>make menuconfig</cite>.</li>
+<li>The certificates and wget will be used to download the prebuilt toolchain.</li>
+<li>In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.</li>
+<li>The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</li>
+</ul>
 <div class="highlight"><pre><span></span>apt update
 apt install -y --no-install-recommends <span class="se">\</span>
     bc <span class="se">\</span>
@@ -85,10 +87,12 @@ apt install -y --no-install-recommends <span class="se">\</span>
 wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
 tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
 </pre></div>
-<p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
-- <em>PATH</em>: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
-- <em>CROSS_COMPILE</em>: In order to clarify the prefix used by the cross-tools
-- <em>ARCH</em>: The architecture of the target platform</p>
+<p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:</p>
+<ul class="simple">
+<li><tt class="docutils literal">PATH</tt>: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment</li>
+<li><tt class="docutils literal">CROSS_COMPILE</tt>: In order to clarify the prefix used by the cross-tools</li>
+<li><tt class="docutils literal">ARCH</tt>: The architecture of the target platform</li>
+</ul>
 <div class="highlight"><pre><span></span>ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
 ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
@@ -105,7 +109,7 @@ Target: aarch64-buildroot-linux-gnu
 Thread model: posix
 gcc version <span class="m">9</span>.3.0 <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
 </pre></div>
-<p>Concerning the variable <cite>PATH</cite> this one will be set afterwards because its value depends of the binary that will be built.</p>
+<p>Concerning the variable <tt class="docutils literal">PATH</tt> this one will be set afterwards because its value depends of the binary that will be built.</p>
 </div>
 <div class="section" id="build-the-linux-kernel">
 <h2>Build the Linux kernel</h2>
@@ -158,12 +162,12 @@ make -j<span class="k">$(</span>nproc<span class="k">)</span>
   OBJCOPY arch/arm64/boot/Image
   GZIP    arch/arm64/boot/Image.gz
 </pre></div>
-<p>The command <cite>make defconfig</cite> will apply the default configuration for the target platform (cf.`ARCH=arm64`), and the
-compilation will be performed by <cite>make -j$(nproc)</cite>.</p>
-<p>The commands <cite>git show HEAD</cite> and <cite>make defconfig</cite> are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch <cite>linux-5.4.y</cite>.
+<p>The command <tt class="docutils literal">make defconfig</tt> will apply the default configuration for the target platform (cf. <tt class="docutils literal">ARCH=arm64</tt>), and the
+compilation will be performed by <tt class="docutils literal">make <span class="pre">-j$(nproc)</span></tt>.</p>
+<p>The commands <tt class="docutils literal">git show HEAD</tt> and <tt class="docutils literal">make defconfig</tt> are optional:
+- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch <tt class="docutils literal"><span class="pre">linux-5.4.y</span></tt>.
 - the second can be used if you want to customize the kernel configuration.</p>
-<p><em>NB. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options</em></p>
+<p><em>NB</em>. The kernel <a class="reference external" href="https://www.kernel.org">Linux</a> but also <a class="reference external" href="https://busybox.net">Busybox</a> and some projects use <a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kbuild.html">Kbuild</a> to manage the build options</p>
 </div>
 <div class="section" id="populate-the-sysroot">
 <h2>Populate the sysroot</h2>
@@ -184,16 +188,16 @@ make -j<span class="k">$(</span>nproc<span class="k">)</span>
 
 make install
 </pre></div>
-<p>Here, the <cite>LDFLAGS</cite> is set to force the static link of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
-<cite>make menuconfig</cite> to set <cite>CONFIG_STATIC=y</cite>. The advantage of the static executable is that it can be tested with Qemu:</p>
+<p>Here, the <em>LDFLAGS</em> is set to force the static link of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
+<em>make menuconfig</em> to set <em>CONFIG_STATIC=y</em>. The advantage of the static executable is that it can be tested with Qemu:</p>
 <div class="highlight"><pre><span></span>qemu-aarch64-static busybox <span class="nb">echo</span> <span class="s2">&quot;Hello!&quot;</span>
 Hello!
 qemu-aarch64-static busybox date
 Sat Jun <span class="m">27</span> <span class="m">15</span>:06:41 UTC <span class="m">2020</span>
 </pre></div>
-<p>The binary <cite>qemu-aarch64-static</cite> allows to execute a binary built for another architecture on the host computer, for
+<p>The binary <em>qemu-aarch64-static</em> allows to execute a binary built for another architecture on the host computer, for
 example here it allows to execute the <a class="reference external" href="https://busybox.net">Busybox</a> binary compiled for an aarch64 target on a x86-64 host.</p>
-<p>The last command <cite>make install</cite> created a tree into the <cite>_install</cite> directory that can be used to populate the sysroot:</p>
+<p>The last command <em>make install</em> created a tree into the <em>_install</em> directory that can be used to populate the sysroot:</p>
 <div class="highlight"><pre><span></span>ls -l _install
 total <span class="m">4</span>
 drwxr-xr-x. <span class="m">1</span> tperrot tperrot <span class="m">974</span> Nov <span class="m">30</span> <span class="m">15</span>:22 bin
@@ -226,14 +230,16 @@ chmod +x _install/etc/init.d/rcS
 <div class="section" id="build-the-filesystem">
 <h2>Build the filesystem</h2>
 <p>The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
-There is two available possibilities, either build a <cite>ramfs</cite> or a <cite>rootfs</cite>.</p>
-<p>Globally, the difference between both is that:
-- the <cite>ramfs</cite> is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
-- the <cite>rootfs</cite> is a filesystem mounted from a non volatile device by the kernel.</p>
-<p>For more information about the difference between the <cite>ramfs</cite> and the <cite>rootfs</cite>, you can you refer to the <a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html">kernel documentation</a>.</p>
+There is two available possibilities, either build a <em>ramfs</em> or a <em>rootfs</em>.</p>
+<p>Globally, the difference between both is that:</p>
+<ul class="simple">
+<li>the ramfs is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.</li>
+<li>the rootfs is a filesystem mounted from a non volatile device by the kernel.</li>
+</ul>
+<p>For more information about the difference between the ramfs and the rootfs, you can you refer to the <a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html">kernel documentation</a>.</p>
 <div class="section" id="build-a-ramfs">
 <h3>Build a ramfs</h3>
-<p>To build the ramfs we will use <cite>cpio</cite> and <cite>gzip</cite> to construct the compressed archive after modifying the rights:</p>
+<p>To build the ramfs we will use <em>cpio</em> and <em>gzip</em> to construct the compressed archive after modifying the rights:</p>
 <div class="highlight"><pre><span></span>mkdir _rootfs
 rsync -a _install/ _rootfs
 chown -R root:root _rootfs
@@ -273,7 +279,7 @@ qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp <sp
     -append <span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/vda&quot;</span> <span class="se">\</span>
     -drive <span class="nv">file</span><span class="o">=</span>~/src/busybox/rootfs.img,format<span class="o">=</span>raw,if<span class="o">=</span>none,id<span class="o">=</span>hd0 -device virtio-blk-device,drive<span class="o">=</span>hd0
 </pre></div>
-<p>Then the target will be boot to shell, &quot;It's alive!&quot;:</p>
+<p>Then the target will be boot to shell, <em>&quot;It's alive!&quot;</em>:</p>
 <div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Booting Linux on physical CPU 0x0000000000 <span class="o">[</span>0x411fd070<span class="o">]</span>
 <span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Linux version <span class="m">5</span>.10.0-rc5 <span class="o">(</span>tperrot@27ea4a863f61<span class="o">)</span> <span class="o">(</span>aarch64-linux-gcc.br_real <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span> <span class="m">9</span>.3.0, GNU ld <span class="o">(</span>GNU Binutils<span class="o">)</span> <span class="m">2</span>.33.1<span class="o">)</span> <span class="c1">#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020</span>
 <span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Machine model: linux,dummy-virt

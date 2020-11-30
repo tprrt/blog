@@ -163,11 +163,13 @@ by &lt;a class="reference external" href="https://toolchains.bootlin.com"&gt;Boo
 &lt;/div&gt;
 &lt;div class="section" id="setup-the-environment"&gt;
 &lt;h2&gt;Setup the environment&lt;/h2&gt;
-&lt;p&gt;First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
-- The Ncurses libraries are only required to execute the command &lt;cite&gt;make menuconfig&lt;/cite&gt;.
-- The certificates and wget will be used to download the prebuilt toolchain.
-- In the same way, git will be used to checkout the source of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.
-- The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.&lt;/p&gt;
+&lt;p&gt;First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The Ncurses libraries are only required to execute the command &lt;cite&gt;make menuconfig&lt;/cite&gt;.&lt;/li&gt;
+&lt;li&gt;The certificates and wget will be used to download the prebuilt toolchain.&lt;/li&gt;
+&lt;li&gt;In the same way, git will be used to checkout the source of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt update
 apt install -y --no-install-recommends &lt;span class="se"&gt;\&lt;/span&gt;
     bc &lt;span class="se"&gt;\&lt;/span&gt;
@@ -192,10 +194,12 @@ apt install -y --no-install-recommends &lt;span class="se"&gt;\&lt;/span&gt;
 wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
 tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
-- &lt;em&gt;PATH&lt;/em&gt;: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
-- &lt;em&gt;CROSS_COMPILE&lt;/em&gt;: In order to clarify the prefix used by the cross-tools
-- &lt;em&gt;ARCH&lt;/em&gt;: The architecture of the target platform&lt;/p&gt;
+&lt;p&gt;Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt;: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;CROSS_COMPILE&lt;/tt&gt;: In order to clarify the prefix used by the cross-tools&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;ARCH&lt;/tt&gt;: The architecture of the target platform&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
 ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
@@ -212,7 +216,7 @@ Target: aarch64-buildroot-linux-gnu
 Thread model: posix
 gcc version &lt;span class="m"&gt;9&lt;/span&gt;.3.0 &lt;span class="o"&gt;(&lt;/span&gt;Buildroot &lt;span class="m"&gt;2020&lt;/span&gt;.08-14-ge5a2a90&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Concerning the variable &lt;cite&gt;PATH&lt;/cite&gt; this one will be set afterwards because its value depends of the binary that will be built.&lt;/p&gt;
+&lt;p&gt;Concerning the variable &lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt; this one will be set afterwards because its value depends of the binary that will be built.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="build-the-linux-kernel"&gt;
 &lt;h2&gt;Build the Linux kernel&lt;/h2&gt;
@@ -265,12 +269,12 @@ make -j&lt;span class="k"&gt;$(&lt;/span&gt;nproc&lt;span class="k"&gt;)&lt;/spa
   OBJCOPY arch/arm64/boot/Image
   GZIP    arch/arm64/boot/Image.gz
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The command &lt;cite&gt;make defconfig&lt;/cite&gt; will apply the default configuration for the target platform (cf.`ARCH=arm64`), and the
-compilation will be performed by &lt;cite&gt;make -j$(nproc)&lt;/cite&gt;.&lt;/p&gt;
-&lt;p&gt;The commands &lt;cite&gt;git show HEAD&lt;/cite&gt; and &lt;cite&gt;make defconfig&lt;/cite&gt; are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch &lt;cite&gt;linux-5.4.y&lt;/cite&gt;.
+&lt;p&gt;The command &lt;tt class="docutils literal"&gt;make defconfig&lt;/tt&gt; will apply the default configuration for the target platform (cf. &lt;tt class="docutils literal"&gt;ARCH=arm64&lt;/tt&gt;), and the
+compilation will be performed by &lt;tt class="docutils literal"&gt;make &lt;span class="pre"&gt;-j$(nproc)&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;The commands &lt;tt class="docutils literal"&gt;git show HEAD&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;make defconfig&lt;/tt&gt; are optional:
+- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;linux-5.4.y&lt;/span&gt;&lt;/tt&gt;.
 - the second can be used if you want to customize the kernel configuration.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;NB. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;NB&lt;/em&gt;. The kernel &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt; but also &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and some projects use &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kbuild.html"&gt;Kbuild&lt;/a&gt; to manage the build options&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="populate-the-sysroot"&gt;
 &lt;h2&gt;Populate the sysroot&lt;/h2&gt;
@@ -291,16 +295,16 @@ make -j&lt;span class="k"&gt;$(&lt;/span&gt;nproc&lt;span class="k"&gt;)&lt;/spa
 
 make install
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Here, the &lt;cite&gt;LDFLAGS&lt;/cite&gt; is set to force the static link of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; quickly, but it is also possible to use
-&lt;cite&gt;make menuconfig&lt;/cite&gt; to set &lt;cite&gt;CONFIG_STATIC=y&lt;/cite&gt;. The advantage of the static executable is that it can be tested with Qemu:&lt;/p&gt;
+&lt;p&gt;Here, the &lt;em&gt;LDFLAGS&lt;/em&gt; is set to force the static link of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; quickly, but it is also possible to use
+&lt;em&gt;make menuconfig&lt;/em&gt; to set &lt;em&gt;CONFIG_STATIC=y&lt;/em&gt;. The advantage of the static executable is that it can be tested with Qemu:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;qemu-aarch64-static busybox &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello!&amp;quot;&lt;/span&gt;
 Hello!
 qemu-aarch64-static busybox date
 Sat Jun &lt;span class="m"&gt;27&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:06:41 UTC &lt;span class="m"&gt;2020&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The binary &lt;cite&gt;qemu-aarch64-static&lt;/cite&gt; allows to execute a binary built for another architecture on the host computer, for
+&lt;p&gt;The binary &lt;em&gt;qemu-aarch64-static&lt;/em&gt; allows to execute a binary built for another architecture on the host computer, for
 example here it allows to execute the &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; binary compiled for an aarch64 target on a x86-64 host.&lt;/p&gt;
-&lt;p&gt;The last command &lt;cite&gt;make install&lt;/cite&gt; created a tree into the &lt;cite&gt;_install&lt;/cite&gt; directory that can be used to populate the sysroot:&lt;/p&gt;
+&lt;p&gt;The last command &lt;em&gt;make install&lt;/em&gt; created a tree into the &lt;em&gt;_install&lt;/em&gt; directory that can be used to populate the sysroot:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l _install
 total &lt;span class="m"&gt;4&lt;/span&gt;
 drwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; tperrot tperrot &lt;span class="m"&gt;974&lt;/span&gt; Nov &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt;:22 bin
@@ -333,14 +337,16 @@ chmod +x _install/etc/init.d/rcS
 &lt;div class="section" id="build-the-filesystem"&gt;
 &lt;h2&gt;Build the filesystem&lt;/h2&gt;
 &lt;p&gt;The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
-There is two available possibilities, either build a &lt;cite&gt;ramfs&lt;/cite&gt; or a &lt;cite&gt;rootfs&lt;/cite&gt;.&lt;/p&gt;
-&lt;p&gt;Globally, the difference between both is that:
-- the &lt;cite&gt;ramfs&lt;/cite&gt; is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
-- the &lt;cite&gt;rootfs&lt;/cite&gt; is a filesystem mounted from a non volatile device by the kernel.&lt;/p&gt;
-&lt;p&gt;For more information about the difference between the &lt;cite&gt;ramfs&lt;/cite&gt; and the &lt;cite&gt;rootfs&lt;/cite&gt;, you can you refer to the &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html"&gt;kernel documentation&lt;/a&gt;.&lt;/p&gt;
+There is two available possibilities, either build a &lt;em&gt;ramfs&lt;/em&gt; or a &lt;em&gt;rootfs&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Globally, the difference between both is that:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;the ramfs is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.&lt;/li&gt;
+&lt;li&gt;the rootfs is a filesystem mounted from a non volatile device by the kernel.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For more information about the difference between the ramfs and the rootfs, you can you refer to the &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html"&gt;kernel documentation&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="build-a-ramfs"&gt;
 &lt;h3&gt;Build a ramfs&lt;/h3&gt;
-&lt;p&gt;To build the ramfs we will use &lt;cite&gt;cpio&lt;/cite&gt; and &lt;cite&gt;gzip&lt;/cite&gt; to construct the compressed archive after modifying the rights:&lt;/p&gt;
+&lt;p&gt;To build the ramfs we will use &lt;em&gt;cpio&lt;/em&gt; and &lt;em&gt;gzip&lt;/em&gt; to construct the compressed archive after modifying the rights:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir _rootfs
 rsync -a _install/ _rootfs
 chown -R root:root _rootfs
@@ -380,7 +386,7 @@ qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp &lt
     -append &lt;span class="s2"&gt;&amp;quot;panic=5 ro ip=dhcp root=/dev/vda&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -drive &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/busybox/rootfs.img,format&lt;span class="o"&gt;=&lt;/span&gt;raw,if&lt;span class="o"&gt;=&lt;/span&gt;none,id&lt;span class="o"&gt;=&lt;/span&gt;hd0 -device virtio-blk-device,drive&lt;span class="o"&gt;=&lt;/span&gt;hd0
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Then the target will be boot to shell, &amp;quot;It's alive!&amp;quot;:&lt;/p&gt;
+&lt;p&gt;Then the target will be boot to shell, &lt;em&gt;&amp;quot;It's alive!&amp;quot;&lt;/em&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Booting Linux on physical CPU 0x0000000000 &lt;span class="o"&gt;[&lt;/span&gt;0x411fd070&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Linux version &lt;span class="m"&gt;5&lt;/span&gt;.10.0-rc5 &lt;span class="o"&gt;(&lt;/span&gt;tperrot@27ea4a863f61&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;aarch64-linux-gcc.br_real &lt;span class="o"&gt;(&lt;/span&gt;Buildroot &lt;span class="m"&gt;2020&lt;/span&gt;.08-14-ge5a2a90&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;9&lt;/span&gt;.3.0, GNU ld &lt;span class="o"&gt;(&lt;/span&gt;GNU Binutils&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;.33.1&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;    &lt;span class="m"&gt;0&lt;/span&gt;.000000&lt;span class="o"&gt;]&lt;/span&gt; Machine model: linux,dummy-virt
