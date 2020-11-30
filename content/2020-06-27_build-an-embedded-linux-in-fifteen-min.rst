@@ -27,6 +27,7 @@ Setup the environment
 =====================
 
 First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
+
 - The Ncurses libraries are only required to execute the command `make menuconfig`.
 - The certificates and wget will be used to download the prebuilt toolchain.
 - In the same way, git will be used to checkout the source of `Busybox`_ and `Linux`_.
@@ -62,9 +63,10 @@ Now, it is time to download and install the prebuild toolchain:
    tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
 
 Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
-- *PATH*: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
-- *CROSS_COMPILE*: In order to clarify the prefix used by the cross-tools
-- *ARCH*: The architecture of the target platform
+
+- ``PATH``: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
+- ``CROSS_COMPILE``: In order to clarify the prefix used by the cross-tools
+- ``ARCH``: The architecture of the target platform
   
 .. code-block:: bash
 
@@ -87,7 +89,7 @@ Now, it is possible to call the cross-tools from the shell:
     Thread model: posix
     gcc version 9.3.0 (Buildroot 2020.08-14-ge5a2a90)
 
-Concerning the variable `PATH` this one will be set afterwards because its value depends of the binary that will be built.
+Concerning the variable ``PATH`` this one will be set afterwards because its value depends of the binary that will be built.
 
 Build the Linux kernel
 ======================
@@ -144,14 +146,14 @@ So, the environment is ready to pull the sources of the latest stable branch of 
       OBJCOPY arch/arm64/boot/Image
       GZIP    arch/arm64/boot/Image.gz
 
-The command `make defconfig` will apply the default configuration for the target platform (cf.`ARCH=arm64`), and the
-compilation will be performed by `make -j$(nproc)`.
+The command ``make defconfig`` will apply the default configuration for the target platform (cf. ``ARCH=arm64``), and the
+compilation will be performed by ``make -j$(nproc)``.
 
-The commands `git show HEAD` and `make defconfig` are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch `linux-5.4.y`.
+The commands ``git show HEAD`` and ``make defconfig`` are optional:
+- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch ``linux-5.4.y``.
 - the second can be used if you want to customize the kernel configuration.
 
-*NB. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options*
+*NB*. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options
 
 Populate the sysroot
 ====================
@@ -177,8 +179,8 @@ The steps to pull and build `Busybox`_ are similar to those of the kernel `Linux
 
    make install
 
-Here, the `LDFLAGS` is set to force the static link of `Busybox`_ quickly, but it is also possible to use
-`make menuconfig` to set `CONFIG_STATIC=y`. The advantage of the static executable is that it can be tested with Qemu:
+Here, the *LDFLAGS* is set to force the static link of `Busybox`_ quickly, but it is also possible to use
+*make menuconfig* to set *CONFIG_STATIC=y*. The advantage of the static executable is that it can be tested with Qemu:
 
 .. code-block:: bash
 
@@ -187,10 +189,10 @@ Here, the `LDFLAGS` is set to force the static link of `Busybox`_ quickly, but i
     qemu-aarch64-static busybox date
     Sat Jun 27 15:06:41 UTC 2020
 
-The binary `qemu-aarch64-static` allows to execute a binary built for another architecture on the host computer, for
+The binary *qemu-aarch64-static* allows to execute a binary built for another architecture on the host computer, for
 example here it allows to execute the `Busybox`_ binary compiled for an aarch64 target on a x86-64 host.
 
-The last command `make install` created a tree into the `_install` directory that can be used to populate the sysroot:
+The last command *make install* created a tree into the *\_install* directory that can be used to populate the sysroot:
 
 .. code-block:: bash
 
@@ -230,18 +232,19 @@ Build the filesystem
 ====================
 
 The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
-There is two available possibilities, either build a `ramfs` or a `rootfs`.
+There is two available possibilities, either build a *ramfs* or a *rootfs*.
 
 Globally, the difference between both is that:
-- the `ramfs` is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
-- the `rootfs` is a filesystem mounted from a non volatile device by the kernel.
 
-For more information about the difference between the `ramfs` and the `rootfs`, you can you refer to the `kernel documentation`_.
+- the ramfs is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
+- the rootfs is a filesystem mounted from a non volatile device by the kernel.
+
+For more information about the difference between the ramfs and the rootfs, you can you refer to the `kernel documentation`_.
 
 Build a ramfs
 -------------
 
-To build the ramfs we will use `cpio` and `gzip` to construct the compressed archive after modifying the rights:
+To build the ramfs we will use *cpio* and *gzip* to construct the compressed archive after modifying the rights:
 
 .. code-block:: bash
 
@@ -289,7 +292,7 @@ Following, the qemu commands to boot the minimal embedded Linux system that has 
 	-append "panic=5 ro ip=dhcp root=/dev/vda" \
 	-drive file=~/src/busybox/rootfs.img,format=raw,if=none,id=hd0 -device virtio-blk-device,drive=hd0
 
-Then the target will be boot to shell, "It's alive!":
+Then the target will be boot to shell, *"It's alive!"*:
 
 .. code-block:: bash
 
