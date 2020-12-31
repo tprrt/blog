@@ -1,3 +1,5 @@
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.2
 version: 2.1
 executors:
   docker-py3-ghp:
@@ -9,6 +11,7 @@ jobs:
     executor: docker-py3-ghp
     steps:
       - checkout
+      - sonarcloud/scan
       - run:
           name: Checkout git submodules
           command: |
@@ -68,6 +71,8 @@ workflows:
   build-publish:
     jobs:
       - build:
+          context:
+            - sonarcloud.io
           filters:
             branches:
               ignore:
