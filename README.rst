@@ -2,7 +2,7 @@
     :alt: Circle badge
     :target: https://app.circleci.com/pipelines/github/tprrt/blog
 
-.. image:: https://sonarcloud.io/api/project_badges/measure?project=tprrt_blog&metric=alert_status)](https://sonarcloud.io/dashboard?id=tprrt_blog
+.. image:: https://sonarcloud.io/api/project_badges/measure?project=tprrt_blog&metric=alert_status
     :alt: Quality Gate Status
     :target: https://sonarcloud.io/dashboard?id=tprrt_blog
 
