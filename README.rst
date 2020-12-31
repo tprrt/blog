@@ -47,7 +47,7 @@ Use commands below to install required Python modules to build static pages and 
     deactivate
 
 
-Use the following command to the circle-ci pipeline:
+Use the following command to validate the circle-ci pipeline:
 
 ::
 
