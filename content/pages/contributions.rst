@@ -17,9 +17,9 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
 Dec 2020
 ========
 
-- `meta-erlang`: `message/88433 <https://lists.openembedded.org/g/openembedded-devel/message/88433/>`_
+- `meta-erlang`: `message/88433 <https://lists.openembedded.org/g/openembedded-devel/message/88433>`_
 - `meta-iot-cloud`: `pull/80 <https://github.com/intel-iot-devkit/meta-iot-cloud/pull/80/>`_
-- `meta-oe`: `message/88262 <https://lists.openembedded.org/g/openembedded-devel/message/88262/>`_
+- `meta-oe`: `message/88262 <https://lists.openembedded.org/g/openembedded-devel/message/88262>`_
 - `meta-st-stm32mp`: `pull/23 <https://github.com/STMicroelectronics/meta-st-stm32mp/pull/23/>`_
 
 .. _meta-erlang: https://github.com/meta-erlang/meta-erlang
