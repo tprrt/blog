@@ -60,7 +60,7 @@ jobs:
           name: Publish static pages
           command: |
             . venv/bin/activate
-            ghp-import -n output -m "[skip ci] Update pages"
+            ghp-import -n output -m "[skip ci] Update of $(date)"
             git push origin gh-pages
             deactivate
 workflows:
