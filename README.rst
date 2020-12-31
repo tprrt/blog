@@ -2,6 +2,10 @@
     :alt: Circle badge
     :target: https://app.circleci.com/pipelines/github/tprrt/blog
 
+.. image:: https://sonarcloud.io/api/project_badges/measure?project=tprrt_blog&metric=alert_status)](https://sonarcloud.io/dashboard?id=tprrt_blog
+    :alt: Quality Gate Status
+    :target: https://sonarcloud.io/dashboard?id=tprrt_blog
+
 ==============
 My static blog
 ==============
@@ -41,3 +45,10 @@ Use commands below to install required Python modules to build static pages and 
 
     # To quit the Python3 virtual environment
     deactivate
+
+
+Use the following command to the circle-ci pipeline:
+
+::
+
+    podman run --rm --security-opt seccomp=unconfined --security-opt label=disable -v $(pwd):/data circleci/circleci-cli:alpine config validate /data/.circleci/config.yml --token $TOKEN
