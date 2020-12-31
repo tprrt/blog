@@ -41,3 +41,10 @@ Use commands below to install required Python modules to build static pages and 
 
     # To quit the Python3 virtual environment
     deactivate
+
+
+Use the following command to the circle-ci pipeline:
+
+::
+
+    podman run --rm --security-opt seccomp=unconfined --security-opt label=disable -v $(pwd):/data circleci/circleci-cli:alpine config validate /data/.circleci/config.yml --token $TOKEN
