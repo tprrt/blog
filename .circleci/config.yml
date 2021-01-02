@@ -5,13 +5,20 @@ executors:
   docker-py3-ghp:
     docker:
       - image: circleci/python:3.7
+  docker-sonarcloud:
+    docker:
+      - image: circleci/node:buster
     resource_class: small
 jobs:
+  static-analysis:
+    executor: docker-sonarcloud
+    steps:
+      - checkout
+      - sonarcloud/scan
   build:
     executor: docker-py3-ghp
     steps:
       - checkout
-      - sonarcloud/scan
       - run:
           name: Checkout git submodules
           command: |
@@ -70,13 +77,20 @@ workflows:
   version: 2
   build-publish:
     jobs:
-      - build:
+      - static-analysis:
           context:
             - sonarcloud.io
           filters:
             branches:
               ignore:
                 - gh-pages
+      - build:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+          requires:
+            - static-analysis
       - publish:
           filters:
             branches:
