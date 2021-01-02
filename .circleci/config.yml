@@ -2,9 +2,10 @@ orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.2
 version: 2.1
 executors:
-  docker-py3-ghp:
+  docker-python3:
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.9.1-buster
+    resource_class: small
   docker-sonarcloud:
     docker:
       - image: circleci/node:buster
@@ -16,7 +17,7 @@ jobs:
       - checkout
       - sonarcloud/scan
   build:
-    executor: docker-py3-ghp
+    executor: docker-python3
     steps:
       - checkout
       - run:
@@ -58,7 +59,7 @@ jobs:
             - venv
             - output
   publish:
-    executor: docker-py3-ghp
+    executor: docker-python3
     steps:
       - add_ssh_keys:
           fingerprints:
