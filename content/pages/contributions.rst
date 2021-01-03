@@ -26,6 +26,7 @@ Nov 2020
 ========
 
 - `elinux`:
+
   - `diff/540736 <https://elinux.org/index.php?title=Logic_Analyzers&diff=prev&oldid=540736>`_
   - `diff/540506 <https://elinux.org/index.php?title=QEMU&diff=prev&oldid=540506>`_
   - `diff/540456 <https://elinux.org/index.php?title=QEMU&diff=prev&oldid=540456>`_
