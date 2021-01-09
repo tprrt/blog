@@ -19,9 +19,10 @@ Use commands below to install required Python modules to build static pages and 
 
 ::
 
-    # To checkout submodules
+    # To pull submodules' sources
     git submodule sync
-    git submodule update --init --recursive
+    git submodule update --init
+    cd pelican-themes && git submodule update --init --recursive -- blue-penguin && cd -
 
     # To create a Python3 virtual environment
     python3 -m venv venv
