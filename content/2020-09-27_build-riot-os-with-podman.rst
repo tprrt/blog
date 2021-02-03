@@ -3,16 +3,25 @@ Build RIOT-OS with Podman
 =========================
 
 :date: 2020-09-27 13:01
-:modified: 2021-09-30 14:43
+:modified: 2021-02-03 11:37
 :tags: container, podman, riot-os
 :category: riot-os
 :slug: build-riot-oswith-podman
 :authors: tperrot
-:summary: This article is a quick guide that explains how it is possible to
-	  build a `RIOT-OS`_ application with `Podman`_ and the official build
-	  container.
+:summary: This article is a tip that explains how it is possible to build a
+	  `RIOT-OS`_ application with `Podman`_.
 :lang: en
 :status: published
+
+Summary
+=======
+
+This article is a tip that explains how it is possible to build a `RIOT-OS`_
+application with `Podman`_ and the official build container. And I would like to
+take this opportunity to introduce you to `Podman`_ and `RIOT-OS`_.
+
+Podman
+======
 
 Some Linux distribution, like `Fedora`_ chosen to officially only support
 `Podman`_ instead of `Docker`_ for some available reason:
@@ -33,6 +42,9 @@ However, most of the time the `Podman`_ commands are identical to that of
 
 But as `Podman`_ is rootless and safer than `Docker`_, then sometimes it is
 necessary to specify additional security parameters.
+
+RIOT-OS
+=======
 
 `RIOT-OS`_ is a memory-constrained `RTOS`_, such as `Contiki`_, that provides
 real-time and multithreading abilities, and it runs on processors from 8bits to
@@ -61,6 +73,9 @@ custom engine parameters.
 
 Then here, we will use these environments variable to instantiate a container
 with `Podman`_ (instead of `Docker`_) and with the required parameters.
+
+Tip of the day
+==============
 
 In the following example, we build the Helloworld application for a STM32
 Discovery board.
