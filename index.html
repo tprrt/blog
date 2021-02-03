@@ -44,7 +44,15 @@
                 
                 
 
-                <p>Some Linux distribution, like <a class="reference external" href="https://getfedora.org">Fedora</a> chosen to officially only support
+                <div class="section" id="summary">
+<h2>Summary</h2>
+<p>This article is a tip that explains how it is possible to build a <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>
+application with <a class="reference external" href="https://podman.io">Podman</a> and the official build container. And I would like to
+take this opportunity to introduce you to <a class="reference external" href="https://podman.io">Podman</a> and <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>.</p>
+</div>
+<div class="section" id="podman">
+<h2>Podman</h2>
+<p>Some Linux distribution, like <a class="reference external" href="https://getfedora.org">Fedora</a> chosen to officially only support
 <a class="reference external" href="https://podman.io">Podman</a> instead of <a class="reference external" href="https://www.docker.com">Docker</a> for some available reason:</p>
 <ul class="simple">
 <li>It is daemonless container engine.</li>
@@ -58,9 +66,12 @@ or network resources.</li>
 has been stored in <a class="reference external" href="https://www.docker.com">Docker</a> registry.</p>
 <p>However, most of the time the <a class="reference external" href="https://podman.io">Podman</a> commands are identical to that of
 <a class="reference external" href="https://www.docker.com">Docker</a>, the a simple alias is enough to be misleading:
-<tt class="docutils literal">alias docker=podman</tt>.</p>
+<em>alias docker=podman</em>.</p>
 <p>But as <a class="reference external" href="https://podman.io">Podman</a> is rootless and safer than <a class="reference external" href="https://www.docker.com">Docker</a>, then sometimes it is
 necessary to specify additional security parameters.</p>
+</div>
+<div class="section" id="riot-os">
+<h2>RIOT-OS</h2>
 <p><a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> is a memory-constrained <a class="reference external" href="https://en.wikipedia.org/wiki/Real-time_operating_system">RTOS</a>, such as <a class="reference external" href="https://en.wikipedia.org/wiki/Contiki">Contiki</a>, that provides
 real-time and multithreading abilities, and it runs on processors from 8bits to
 32bits.</p>
@@ -75,8 +86,8 @@ provides three very complete network stacks including some protocols as:</p>
 <p>The <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> project also provides some useful tools including a build
 container (<a class="reference external" href="https://github.com/RIOT-OS/riotdocker">riotdocker</a>).</p>
 <p>And the build environment of <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> offers a <a class="reference external" href="https://en.wikipedia.org/wiki/Makefile">Makefile</a> to build an
-application with this container simply by setting the variable <cite>BUILD_IN_DOCKER</cite>
-to  <cite>1</cite>. Then the prebuilt image is downloaded and instantiated to execute the
+application with this container simply by setting the variable <em>BUILD_IN_DOCKER</em>
+to  <em>1</em>. Then the prebuilt image is downloaded and instantiated to execute the
 <a class="reference external" href="https://en.wikipedia.org/wiki/Make_(software)">make</a> command.</p>
 <p>By default, this feature is configured to be used with the <a class="reference external" href="https://www.docker.com">Docker</a> engine,
 but it is possible to override some variables from the build environment
@@ -84,11 +95,14 @@ either to use a custom prebuilt image, either use another engine or to use
 custom engine parameters.</p>
 <p>Then here, we will use these environments variable to instantiate a container
 with <a class="reference external" href="https://podman.io">Podman</a> (instead of <a class="reference external" href="https://www.docker.com">Docker</a>) and with the required parameters.</p>
+</div>
+<div class="section" id="tip-of-the-day">
+<h2>Tip of the day</h2>
 <p>In the following example, we build the Helloworld application for a STM32
 Discovery board.
-To do that we specify the engine by setting the variable <cite>DOCKER</cite> to the value
-<cite>podman</cite>. The variable <cite>DOCKER_USER</cite> is set empty because in the variable
-<cite>DOCKER_RUN_FLAGS</cite> the parameter <cite>--userns</cite> is set to <cite>keep-id</cite> to map the
+To do that we specify the engine by setting the variable <em>DOCKER</em> to the value
+<em>podman</em>. The variable <em>DOCKER_USER</em> is set empty because in the variable
+<em>DOCKER_RUN_FLAGS</em> the parameter <em>--userns</em> is set to <em>keep-id</em> to map the
 uid:gid of the current rootless user (from host) with the values that will be
 used into the container.</p>
 <div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">BUILD_IN_DOCKER</span><span class="o">=</span><span class="m">1</span>
@@ -134,6 +148,7 @@ HEAD is now at e442c72 Release v1.6.1
    text    data     bss     dec     hex filename
    <span class="m">8900</span>     <span class="m">112</span>    <span class="m">2300</span>   <span class="m">11312</span>    2c30 /data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
 </pre></div>
+</div>
 
                 <div class="clear"></div>
 
