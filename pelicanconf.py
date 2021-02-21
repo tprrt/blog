@@ -64,16 +64,18 @@ MENU_INTERNAL_PAGES = (
     ('Authors', AUTHORS_URL, AUTHORS_SAVE_AS),
 )
 
+# additional menu items
+MENUITEMS = ()
+
 # Plugins
 PLUGIN_PATHS = [
     'pelican-plugins'
 ]
 
-# PLUGINS = [
-#     'assets',
-#     'neighbors',
-#     'sitemap',
-# ]
+PLUGINS = [
+    'assets',
+    'sitemap',
+]
 
 # Publish draft to review before publising
 DEFAULT_METADATA = {
