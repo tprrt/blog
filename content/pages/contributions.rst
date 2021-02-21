@@ -40,7 +40,7 @@ Last submissions
 
 * Jan 2021
     * `meta-erlang`: `message/88595 <https://lists.openembedded.org/g/openembedded-devel/message/88595>`_
-    * `meta-openembedded`: `message/88677 <https://lists.openembedded.org/g/openembedded-devel/message/88677>`
+    * `meta-openembedded`: `message/88677 <https://lists.openembedded.org/g/openembedded-devel/message/88677>`_
     * `openembedded-core`: `message/146530 <https://lists.openembedded.org/g/openembedded-core/message/146530>`_
 * Dec 2020
     * `meta-erlang`: `message/88433 <https://lists.openembedded.org/g/openembedded-devel/message/88433>`_
