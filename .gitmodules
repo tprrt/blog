@@ -1,8 +1,8 @@
 [submodule "pelican-themes"]
         path = pelican-themes
-        url = git@github.com:getpelican/pelican-themes.git
+        url = https://github.com/getpelican/pelican-themes.git
         branch = master
 [submodule "pelican-plugins"]
         path = pelican-plugins
-        url = git@github.com:getpelican/pelican-plugins.git
+        url = https://github.com/getpelican/pelican-plugins.git
         branch = master
