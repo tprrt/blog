@@ -16,21 +16,22 @@ DEFAULT_DATE = 'fs'
 DEFAULT_DATE_FORMAT = '%d %b %Y'
 
 GOOGLE_ANALYTICS = ""
+GOOGLE_ADSENSE = ""
 
 GITHUB_URL = "https://github.com/tprrt"
 
 # Feed generation is usually not desired when developing
 FEED_DOMAIN = SITEURL
 
-FEED_ALL_RSS = None
-CATEGORY_FEED_RSS = None
-TRANSLATION_FEED_RSS = None
-AUTHOR_FEED_RSS = None
+FEED_ALL_RSS = 'feeds/all.rss.xml'
+CATEGORY_FEED_RSS = 'feeds/{slug}.rss.xml'
+TRANSLATION_FEED_RSS = 'feeds/all-{lang}.rss.xml'
+AUTHOR_FEED_RSS = 'feeds/{slug}.rss.xml'
 
-FEED_ALL_ATOM= None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
-AUTHOR_FEED_ATOM = None
+FEED_ALL_ATOM= 'feeds/all.atom.xml'
+CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
+TRANSLATION_FEED_ATOM = 'feeds/all-{lang}.atom.xml'
+AUTHOR_FEED_ATOM = 'feeds/{slug}.atom.xml'
 
 STATIC_PATHS = ['static']
 
@@ -64,16 +65,18 @@ MENU_INTERNAL_PAGES = (
     ('Authors', AUTHORS_URL, AUTHORS_SAVE_AS),
 )
 
+# additional menu items
+MENUITEMS = ()
+
 # Plugins
 PLUGIN_PATHS = [
     'pelican-plugins'
 ]
 
-# PLUGINS = [
-#     'assets',
-#     'neighbors',
-#     'sitemap',
-# ]
+PLUGINS = [
+    'assets',
+    'sitemap',
+]
 
 # Publish draft to review before publising
 DEFAULT_METADATA = {
@@ -84,3 +87,14 @@ DEFAULT_METADATA = {
 THEME = "pelican-themes/blue-penguin"
 
 THEME_TEMPLATES_OVERRIDES = ["templates"]
+
+TWITTER_USERNAME = '@tprrt31'
+
+SOCIAL = (
+    ('email', 'mailto:thomas.perrot@tupi.fr'),
+    ('github', 'https://github.com/tprrt'),
+    ('gitlab', 'https://gitlab.com/tprrt'),
+    ('gnupg', 'https://keys.openpgp.org/vks/v1/by-fingerprint/088FDE87B7F1F018B520666B53A3D309F9177FB2'),
+    ('linkedin', 'https://www.linkedin.com/in/tprrt'),
+    ('twitter', 'https://twitter.com/tprrt31'),
+)

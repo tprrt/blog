@@ -27,6 +27,7 @@ jobs:
             # git submodule update --init --recursive
             git submodule update --init
             cd pelican-themes && git submodule update --init --recursive -- blue-penguin && cd -
+            cd pelican-plugins && git submodule update --init --recursive -- assets sitemap && cd -
       - restore_cache:
           keys:
             - deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
