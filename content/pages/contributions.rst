@@ -11,6 +11,7 @@ Contributions
 :summary: A non-exhaustive list of my last contributions to opensource projects.
 :lang: en
 :status: published
+:save_as: contributions.html
 
 Summary
 =======

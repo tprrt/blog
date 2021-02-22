@@ -48,23 +48,28 @@ DISPLAY_HOME   = True
 DISPLAY_MENU   = True
 
 # urls
-TAGS_URL           = 'tags'
-TAGS_SAVE_AS       = 'tags/index.html'
-AUTHORS_URL        = 'authors'
-AUTHORS_SAVE_AS    = 'authors/index.html'
-CATEGORIES_URL     = 'categories'
-CATEGORIES_SAVE_AS = 'categories/index.html'
 ARCHIVES_URL       = 'archives'
 ARCHIVES_SAVE_AS   = 'archives/index.html'
+# AUTHORS_URL        = 'authors'
+# AUTHORS_SAVE_AS    = 'authors/index.html'
+CATEGORIES_URL     = 'categories'
+CATEGORIES_SAVE_AS = 'categories/index.html'
+CONTRIBUTIONS_URL     = 'contributions'
+CONTRIBUTIONS_SAVE_AS = 'contributions/index.html'
+# TAGS_URL           = 'tags'
+# TAGS_SAVE_AS       = 'tags/index.html'
 
 # Menu
-MENU_INTERNAL_PAGES = (
-    ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
-    ('Categories', CATEGORIES_URL, CATEGORIES_SAVE_AS),
-)
+MENU_INTERNAL_PAGES = ()
 
-# additional menu items
-MENUITEMS = ()
+DISPLAY_CATEGORIES_ON_MENU = False
+DISPLAY_PAGES_ON_MENU = False
+
+MENUITEMS = (
+    ('Contributions', CONTRIBUTIONS_URL),
+    ('Archives', ARCHIVES_URL),
+    ('Categories', CATEGORIES_URL),
+)
 
 # Plugins
 PLUGIN_PATHS = [
