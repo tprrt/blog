@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - riot-os</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/riot-os.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2021-02-03T11:37:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-oswith-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2021-02-03T11:37:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-oswith-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
+&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; application with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt;.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="summary"&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;p&gt;This article is a tip that explains how it is possible to build a &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt;
+application with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; and the official build container. And I would like to
+take this opportunity to introduce you to &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; and &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="podman"&gt;
+&lt;h2&gt;Podman&lt;/h2&gt;
+&lt;p&gt;Some Linux distribution, like &lt;a class="reference external" href="https://getfedora.org"&gt;Fedora&lt;/a&gt; chosen to officially only support
+&lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; for some available reason:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;It is daemonless container engine.&lt;/li&gt;
+&lt;li&gt;It is rootless.&lt;/li&gt;
+&lt;li&gt;It follows Open Container Initiative (&lt;a class="reference external" href="https://opencontainers.org"&gt;OCI&lt;/a&gt;) standards.&lt;/li&gt;
+&lt;li&gt;It is safer than the &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; engine.&lt;/li&gt;
+&lt;li&gt;It introduces the notion of &lt;a class="reference external" href="https://kubernetes.io/docs/concepts/workloads/pods"&gt;Pods&lt;/a&gt;: a group of container(s) that share storage
+or network resources.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Moreover, &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is able to use the images built by the &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; engine and
+has been stored in &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; registry.&lt;/p&gt;
+&lt;p&gt;However, most of the time the &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; commands are identical to that of
+&lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, the a simple alias is enough to be misleading:
+&lt;em&gt;alias docker=podman&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;But as &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is rootless and safer than &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, then sometimes it is
+necessary to specify additional security parameters.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="riot-os"&gt;
+&lt;h2&gt;RIOT-OS&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; is a memory-constrained &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Real-time_operating_system"&gt;RTOS&lt;/a&gt;, such as &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Contiki"&gt;Contiki&lt;/a&gt;, that provides
+real-time and multithreading abilities, and it runs on processors from 8bits to
+32bits.&lt;/p&gt;
+&lt;p&gt;It was designed for &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Internet_of_things"&gt;IoT&lt;/a&gt; devices then to be low power consumption and it
+provides three very complete network stacks including some protocols as:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/IPv6"&gt;IPv6&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/6LoWPAN"&gt;6LoWPAN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol"&gt;CoAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; project also provides some useful tools including a build
+container (&lt;a class="reference external" href="https://github.com/RIOT-OS/riotdocker"&gt;riotdocker&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;And the build environment of &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; offers a &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Makefile"&gt;Makefile&lt;/a&gt; to build an
+application with this container simply by setting the variable &lt;em&gt;BUILD_IN_DOCKER&lt;/em&gt;
+to  &lt;em&gt;1&lt;/em&gt;. Then the prebuilt image is downloaded and instantiated to execute the
+&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Make_(software)"&gt;make&lt;/a&gt; command.&lt;/p&gt;
+&lt;p&gt;By default, this feature is configured to be used with the &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; engine,
+but it is possible to override some variables from the build environment
+either to use a custom prebuilt image, either use another engine or to use
+custom engine parameters.&lt;/p&gt;
+&lt;p&gt;Then here, we will use these environments variable to instantiate a container
+with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; (instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;) and with the required parameters.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="tip-of-the-day"&gt;
+&lt;h2&gt;Tip of the day&lt;/h2&gt;
+&lt;p&gt;In the following example, we build the Helloworld application for a STM32
+Discovery board.
+To do that we specify the engine by setting the variable &lt;em&gt;DOCKER&lt;/em&gt; to the value
+&lt;em&gt;podman&lt;/em&gt;. The variable &lt;em&gt;DOCKER_USER&lt;/em&gt; is set empty because in the variable
+&lt;em&gt;DOCKER_RUN_FLAGS&lt;/em&gt; the parameter &lt;em&gt;--userns&lt;/em&gt; is set to &lt;em&gt;keep-id&lt;/em&gt; to map the
+uid:gid of the current rootless user (from host) with the values that will be
+used into the container.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;BUILD_IN_DOCKER&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DOCKER&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;podman&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DOCKER_USER&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DOCKER_RUN_FLAGS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;--rm -i -t --security-opt seccomp=unconfined --security-opt label=disable --userns=keep-id&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DOCKER_MAKE_ARGS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-j&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;nproc&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+make &lt;span class="nv"&gt;BOARD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;stm32l476g-disco
+Launching build container using image &lt;span class="s2"&gt;&amp;quot;riot/riotbuild:latest&amp;quot;&lt;/span&gt;.
+podman run --rm -i -t --security-opt &lt;span class="nv"&gt;seccomp&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;unconfined --security-opt &lt;span class="nv"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;disable --userns&lt;span class="o"&gt;=&lt;/span&gt;keep-id -v &lt;span class="s1"&gt;&amp;#39;/usr/share/zoneinfo/Europe/Paris:/etc/localtime:ro&amp;#39;&lt;/span&gt; -v &lt;span class="s1"&gt;&amp;#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/RIOT:/data/riotbuild/riotbase:delegated&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;RIOTBASE=/data/riotbuild/riotbase&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;CCACHE_BASEDIR=/data/riotbuild/riotbase&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;BUILD_DIR=/data/riotbuild/riotbase/build&amp;#39;&lt;/span&gt; -v &lt;span class="s1"&gt;&amp;#39;/home/tperrot/dev/tprrt/pwm-ramp-gen:/data/riotbuild/riotproject:delegated&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;RIOTPROJECT=/data/riotbuild/riotproject&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;RIOTCPU=/data/riotbuild/riotbase/cpu&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;RIOTBOARD=/data/riotbuild/riotbase/boards&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;RIOTMAKE=/data/riotbuild/riotbase/makefiles&amp;#39;&lt;/span&gt;     -v &lt;span class="s1"&gt;&amp;#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:delegated&amp;#39;&lt;/span&gt; -e &lt;span class="s1"&gt;&amp;#39;BOARD=stm32l476g-disco&amp;#39;&lt;/span&gt;  -w &lt;span class="s1"&gt;&amp;#39;/data/riotbuild/riotproject/&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;riot/riotbuild:latest&amp;#39;&lt;/span&gt; make &lt;span class="s1"&gt;&amp;#39;BOARD=stm32l476g-disco&amp;#39;&lt;/span&gt;   -j8
+Building application &lt;span class="s2"&gt;&amp;quot;hello-world&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;stm32l476g-disco&amp;quot;&lt;/span&gt; with MCU &lt;span class="s2"&gt;&amp;quot;stm32&amp;quot;&lt;/span&gt;.
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt; cloning stm32cmsis
+fatal: not a git repository: /data/riotbuild/riotbase/../.git/modules/RIOT
+Cloning into &lt;span class="s1"&gt;&amp;#39;/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4&amp;#39;&lt;/span&gt;...
+remote: Enumerating objects: &lt;span class="m"&gt;364&lt;/span&gt;, &lt;span class="k"&gt;done&lt;/span&gt;.
+remote: Counting objects: &lt;span class="m"&gt;100&lt;/span&gt;% &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;364&lt;/span&gt;/364&lt;span class="o"&gt;)&lt;/span&gt;, &lt;span class="k"&gt;done&lt;/span&gt;.
+remote: Compressing objects: &lt;span class="m"&gt;100&lt;/span&gt;% &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;71&lt;/span&gt;/71&lt;span class="o"&gt;)&lt;/span&gt;, &lt;span class="k"&gt;done&lt;/span&gt;.
+remote: Total &lt;span class="m"&gt;364&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;delta &lt;span class="m"&gt;309&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;, reused &lt;span class="m"&gt;344&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;delta &lt;span class="m"&gt;289&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;, pack-reused &lt;span class="m"&gt;0&lt;/span&gt;
+Receiving objects: &lt;span class="m"&gt;100&lt;/span&gt;% &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;364&lt;/span&gt;/364&lt;span class="o"&gt;)&lt;/span&gt;, &lt;span class="m"&gt;709&lt;/span&gt;.56 KiB &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="m"&gt;561&lt;/span&gt;.00 KiB/s, &lt;span class="k"&gt;done&lt;/span&gt;.
+Resolving deltas: &lt;span class="m"&gt;100&lt;/span&gt;% &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;309&lt;/span&gt;/309&lt;span class="o"&gt;)&lt;/span&gt;, &lt;span class="k"&gt;done&lt;/span&gt;.
+HEAD is now at e442c72 Release v1.6.1
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt; updating stm32cmsis /data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+&lt;span class="nb"&gt;echo&lt;/span&gt; e442c72651e8d4757f6562acc14da949644944ce   &amp;gt; /data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt; patch stm32cmsis
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/boards/stm32l476g-disco
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/core
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/stm32
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/drivers
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/cortexm_common
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/stm32/periph
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/drivers/periph_common
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/stm32/stmclk
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys/auto_init
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/cortexm_common/periph
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/cpu/stm32/vectors
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys/malloc_thread_safe
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys/newlib_syscalls_default
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys/pm_layered
+&lt;span class="s2"&gt;&amp;quot;make&amp;quot;&lt;/span&gt; -C /data/riotbuild/riotbase/sys/stdio_uart
+   text    data     bss     dec     hex filename
+   &lt;span class="m"&gt;8900&lt;/span&gt;     &lt;span class="m"&gt;112&lt;/span&gt;    &lt;span class="m"&gt;2300&lt;/span&gt;   &lt;span class="m"&gt;11312&lt;/span&gt;    2c30 /data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+</content><category term="riot-os"></category><category term="container"></category><category term="podman"></category><category term="riot-os"></category></entry></feed>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - any</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/any.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-05-28T16:50:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>My blog opening</title><link href="https://tprrt.tupi.fr/my-blog-opening.html" rel="alternate"></link><published>2020-05-28T16:50:00+02:00</published><updated>2020-05-28T16:50:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-05-28:/my-blog-opening.html</id><summary type="html">&lt;p class="first last"&gt;Why do I choose to open a new blog and a quick description about the subject that will be treated.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Welcome,&lt;/p&gt;
+&lt;p&gt;After closing my last blog since seventeen years, in order to share my knowledges and my little experiments about
+embedded open source. You would have understood it, this blog will mainly speak about embedded Linux operating system,
+but also about open firmware and rtos, as well as related topics like virtualization, security, etc.&lt;/p&gt;
+&lt;p&gt;I hope you will like the articles of this blog, enjoy the reading.&lt;/p&gt;
+</content><category term="any"></category><category term="blog"></category></entry></feed>
