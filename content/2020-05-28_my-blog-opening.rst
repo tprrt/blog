@@ -5,7 +5,7 @@ My blog opening
 :date: 2020-05-28 16:50
 :modified: 2020-05-28 16:50
 :tags: blog
-:category: any
+:category: misc
 :slug: my-blog-opening
 :authors: tperrot
 :summary: Why do I choose to open a new blog and a quick description about the subject that will be treated.

@@ -5,7 +5,7 @@ Contributions
 :date: 2020-12-31 11:25
 :modified: 2021-01-07 23:49
 :tags: blog
-:category: any
+:category: misc
 :slug: contributions
 :authors: tperrot
 :summary: A non-exhaustive list of my last contributions to opensource projects.
