@@ -54,6 +54,8 @@ ARCHIVES_SAVE_AS   = 'archives/index.html'
 # AUTHORS_SAVE_AS    = 'authors/index.html'
 CATEGORIES_URL     = 'categories'
 CATEGORIES_SAVE_AS = 'categories/index.html'
+CONTACT_URL     = 'contact'
+CONTACT_SAVE_AS = 'contact/index.html'
 CONTRIBUTIONS_URL     = 'contributions'
 CONTRIBUTIONS_SAVE_AS = 'contributions/index.html'
 # TAGS_URL           = 'tags'
@@ -69,6 +71,7 @@ MENUITEMS = (
     ('Contributions', CONTRIBUTIONS_URL),
     ('Archives', ARCHIVES_URL),
     ('Categories', CATEGORIES_URL),
+    ('Contact', CONTACT_URL),
 )
 
 # Plugins
