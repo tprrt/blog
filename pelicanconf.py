@@ -16,6 +16,7 @@ DEFAULT_DATE = 'fs'
 DEFAULT_DATE_FORMAT = '%d %b %Y'
 
 GOOGLE_ANALYTICS = ""
+GOOGLE_ADSENSE = ""
 
 GITHUB_URL = "https://github.com/tprrt"
 
@@ -86,3 +87,14 @@ DEFAULT_METADATA = {
 THEME = "pelican-themes/blue-penguin"
 
 THEME_TEMPLATES_OVERRIDES = ["templates"]
+
+TWITTER_USERNAME = '@tprrt31'
+
+SOCIAL = (
+    ('email', 'mailto:thomas.perrot@tupi.fr'),
+    ('github', 'https://github.com/tprrt'),
+    ('gitlab', 'https://gitlab.com/tprrt'),
+    ('gnupg', 'https://keys.openpgp.org/vks/v1/by-fingerprint/088FDE87B7F1F018B520666B53A3D309F9177FB2'),
+    ('linkedin', 'https://www.linkedin.com/in/tprrt'),
+    ('twitter', 'https://twitter.com/tprrt31'),
+)

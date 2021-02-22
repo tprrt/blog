@@ -21,4 +21,6 @@ DELETE_OUTPUT_DIRECTORY = True
 # Following items are often useful when publishing
 
 # DISQUS_SITENAME = "tprrt-tupi-fr"
+
 GOOGLE_ANALYTICS = "UA-169118252-1"
+GOOGLE_ADSENSE = "ca-pub-8632147971669760"

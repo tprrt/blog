@@ -2,5 +2,12 @@
 
 {% block head %}
 {{ super() }}
-      <script data-ad-client="ca-pub-8632147971669760" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+{% if GOOGLE_ADSENSE %}
+    <script data-ad-client="{{GOOGLE_ADSENSE}}"
+            async="async"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
+            crossorigin="anonymous">
+    </script>
+{% endif %}
 {% endblock %}
