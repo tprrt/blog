@@ -35,10 +35,14 @@ AUTHOR_FEED_ATOM = 'feeds/{slug}.atom.xml'
 
 STATIC_PATHS = ['static']
 
+# Copying HTML files to output without processing them
+READERS = {'html': None}
+
 EXTRA_PATH_METADATA = {
-    'static/robots.txt': {'path': 'robots.txt'},
+    'static/CNAME': {'path': 'CNAME'},
+    'static/google388b7531c8b11164.html': {'path': 'google388b7531c8b11164.html'},
     'static/header_cover.png': {'path': 'static/header_cover.png'},
-    'static/CNAME': {'path': 'CNAME'}
+    'static/robots.txt': {'path': 'robots.txt'}
 }
 
 # all defaults to True.
