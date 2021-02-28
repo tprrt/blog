@@ -5,35 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://tprrt.tupi.fr/</loc>
-<lastmod>2021-02-28T17:17:41-00:00</lastmod>
+<lastmod>2021-02-28T17:35:20-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/tags.html</loc>
-<lastmod>2021-02-28T17:17:41-00:00</lastmod>
+<loc>https://tprrt.tupi.fr/tags</loc>
+<lastmod>2021-02-28T17:35:20-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/categories</loc>
-<lastmod>2021-02-28T17:17:41-00:00</lastmod>
+<lastmod>2021-02-28T17:35:20-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/authors.html</loc>
-<lastmod>2021-02-28T17:17:41-00:00</lastmod>
+<loc>https://tprrt.tupi.fr/authors</loc>
+<lastmod>2021-02-28T17:35:20-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/archives</loc>
-<lastmod>2021-02-28T17:17:41-00:00</lastmod>
+<lastmod>2021-02-28T17:35:20-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
