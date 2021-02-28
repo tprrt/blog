@@ -3,30 +3,43 @@ Contact
 =======
 
 :date: 2021-02-21 17:27
-:modified: 2021-02-26 07:16
+:modified: 2021-02-28 17:50
 :tags: blog
 :category: misc
 :slug: contact
 :authors: tperrot
-:summary: To join me
+:summary: To join me or get more information about me.
 :lang: en
 :status: published
 :save_as: contact.html
 
-* `Curriculum vitae`_
+You can join me by `Email`_ as well as my `GnuPG`_ public key.
+
+Social
+======
+
+You can also interect with me on the following social networks:
+
 * `Dockerhub`_
-* `Email`_
 * `Github`_
 * `Gitlab`_
-* `GnuPG`_
 * `Hackster`_
 * `Instagram`_
 * `Instructables`_
-* `Linkedin`_
-* `PayPal`_
 * `Spotify`_
 * `Thingiverse`_
 * `Twitter`_
+
+About
+=====
+
+You want more information about me, I invite you to consult my
+`Curriculum vitae`_ or my profile `Linkedin`_.
+
+Donate
+======
+
+I accept charitable donations via `PayPal`_.
 
 .. _Curriculum vitae: https://github.com/tprrt/curriculum/raw/gh-pages/resume.pdf
 .. _Dockerhub: https://hub.docker.com/u/tprrt
