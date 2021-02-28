@@ -67,17 +67,17 @@ TAGS_URL           = 'tags'
 TAGS_SAVE_AS       = 'tags/index.html'
 
 # Menu
-MENU_INTERNAL_PAGES = ()
+MENU_INTERNAL_PAGES = (
+    ('Contributions', CONTRIBUTIONS_URL, CONTRIBUTIONS_SAVE_AS),
+    ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
+    ('Categories', CATEGORIES_URL, CATEGORIES_SAVE_AS),
+    ('Contact', CONTACT_URL, CONTACT_SAVE_AS),
+)
 
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 
-MENUITEMS = (
-    ('Contributions', CONTRIBUTIONS_URL),
-    ('Archives', ARCHIVES_URL),
-    ('Categories', CATEGORIES_URL),
-    ('Contact', CONTACT_URL),
-)
+MENUITEMS = ()
 
 # Plugins
 PLUGIN_PATHS = [
