@@ -13,7 +13,7 @@ My static blog
 My embedded Linux developer's blog built with Pelican, an static site generator
 written in Python. The content of this blog is written in reStructuredText.
 
----
+----
 
 Use commands below to install required Python modules to build static pages and to push them on github:
 
@@ -49,8 +49,10 @@ Use commands below to install required Python modules to build static pages and 
     deactivate
 
 
-Use the following command to validate the circle-ci pipeline:
+Use the following command to validate the `circleci`_ pipeline:
 
 ::
 
     podman run --rm --security-opt seccomp=unconfined --security-opt label=disable -v $(pwd):/data circleci/circleci-cli:alpine config validate /data/.circleci/config.yml --token $TOKEN
+
+.. _circleci: https://circleci.com
