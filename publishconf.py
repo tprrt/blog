@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
-
 # This file is only used if you use `make publish` or
 # explicitly specify it as your config file.
 
@@ -13,14 +10,9 @@ from pelicanconf import *
 SITEURL = 'https://tprrt.tupi.fr'
 RELATIVE_URLS = False
 
-FEED_ALL_ATOM = 'feeds/all.atom.xml'
-#CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
-
 DELETE_OUTPUT_DIRECTORY = True
 
 # Following items are often useful when publishing
-
-# DISQUS_SITENAME = "tprrt-tupi-fr"
 
 GOOGLE_ANALYTICS = "UA-169118252-1"
 GOOGLE_ADSENSE = "ca-pub-8632147971669760"

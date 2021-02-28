@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
-
 AUTHOR = 'Thomas Perrot'
 SITENAME = "Tprrt's Blog"
 SITESUBTITLE = "Yet another blog about embedded Linux, the open source and hardware"
@@ -98,3 +95,17 @@ DEFAULT_METADATA = {
 THEME = "pelican-themes/blue-penguin"
 
 THEME_TEMPLATES_OVERRIDES = ["templates"]
+
+SITEMAP = {
+    'format': 'xml',
+    'priorities': {
+        'articles': 0.5,
+        'indexes': 0.5,
+        'pages': 0.5
+    },
+    'changefreqs': {
+        'articles': 'monthly',
+        'indexes': 'daily',
+        'pages': 'monthly'
+    }
+}
