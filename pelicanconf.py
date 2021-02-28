@@ -39,6 +39,7 @@ STATIC_PATHS = ['static']
 READERS = {'html': None}
 
 EXTRA_PATH_METADATA = {
+    'static/404.html': {'path': '404.html'},
     'static/CNAME': {'path': 'CNAME'},
     'static/google388b7531c8b11164.html': {'path': 'google388b7531c8b11164.html'},
     'static/header_cover.png': {'path': 'static/header_cover.png'},
@@ -97,14 +98,3 @@ DEFAULT_METADATA = {
 THEME = "pelican-themes/blue-penguin"
 
 THEME_TEMPLATES_OVERRIDES = ["templates"]
-
-TWITTER_USERNAME = '@tprrt31'
-
-SOCIAL = (
-    ('email', 'mailto:thomas.perrot@tupi.fr'),
-    ('github', 'https://github.com/tprrt'),
-    ('gitlab', 'https://gitlab.com/tprrt'),
-    ('gnupg', 'https://keys.openpgp.org/vks/v1/by-fingerprint/088FDE87B7F1F018B520666B53A3D309F9177FB2'),
-    ('linkedin', 'https://www.linkedin.com/in/tprrt'),
-    ('twitter', 'https://twitter.com/tprrt31'),
-)
