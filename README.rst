@@ -17,7 +17,7 @@ written in Python. The content of this blog is written in reStructuredText.
 
 Use commands below to install required Python modules to build static pages and to push them on github:
 
-::
+.. code-block:: bash
 
     # To pull submodules' sources
     git submodule sync
@@ -51,7 +51,7 @@ Use commands below to install required Python modules to build static pages and 
 
 Use the following command to validate the `circleci`_ pipeline:
 
-::
+.. code-block:: bash
 
     podman run --rm --security-opt seccomp=unconfined --security-opt label=disable -v $(pwd):/data circleci/circleci-cli:alpine config validate /data/.circleci/config.yml --token $TOKEN
 
