@@ -213,71 +213,71 @@ called in the main function of this applet.</p>
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set</p>
 <p>At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:</p>
-<div class="highlight"><pre><span></span><span class="n">opt</span> <span class="o">=</span> <span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span> <span class="s">&quot;^&quot;</span>
-                <span class="s">&quot;+&quot;</span> <span class="s">&quot;mprfobi&quot;</span>
-                <span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span>
-                <span class="cm">/* only one policy accepted: */</span>
-                <span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span>
-<span class="p">);</span>
+<div class="highlight"><pre><span></span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;^&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="s">&quot;+&quot;</span><span class="w"> </span><span class="s">&quot;mprfobi&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="cm">/* only one policy accepted: */</span><span class="w"></span>
+<span class="w">                </span><span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
 </pre></div>
 <p>If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:</p>
-<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_m</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* print min/max and exit */</span>
-        <span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span>
-        <span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span>
-        <span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_RR</span><span class="p">);</span>
-        <span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_BATCH</span><span class="p">);</span>
-        <span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_IDLE</span><span class="p">);</span>
-        <span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print min/max and exit */</span><span class="w"></span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_RR</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_BATCH</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_IDLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>The function <em>show_min_max</em> sends use the Posix functions <em>sched_get_priority_max</em> and <em>sched_get_priority_min</em> from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:</p>
-<div class="highlight"><pre><span></span><span class="n">max</span> <span class="o">=</span> <span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
-<span class="n">min</span> <span class="o">=</span> <span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">((</span><span class="n">max</span><span class="o">|</span><span class="n">min</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">fmt</span> <span class="o">=</span> <span class="s">&quot;SCHED_%s not supported</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span><span class="w"></span>
+<span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">max</span><span class="o">|</span><span class="n">min</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SCHED_%s not supported</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p>Otherwise the required options and arguments to show or to apply real-time attributes of a process:</p>
 <div class="highlight"><pre><span></span><span class="c1">//if (opt &amp; OPT_r)</span>
 <span class="c1">//  policy = SCHED_RR; - default, already set</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_f</span><span class="p">)</span>
-    <span class="n">policy</span> <span class="o">=</span> <span class="n">SCHED_FIFO</span><span class="p">;</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_o</span><span class="p">)</span>
-    <span class="n">policy</span> <span class="o">=</span> <span class="n">SCHED_OTHER</span><span class="p">;</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_b</span><span class="p">)</span>
-    <span class="n">policy</span> <span class="o">=</span> <span class="n">SCHED_BATCH</span><span class="p">;</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_i</span><span class="p">)</span>
-    <span class="n">policy</span> <span class="o">=</span> <span class="n">SCHED_IDLE</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_f</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_FIFO</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_o</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_OTHER</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_b</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_BATCH</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_i</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_IDLE</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">argv</span> <span class="o">+=</span> <span class="n">optind</span><span class="p">;</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">bb_show_usage</span><span class="p">();</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">&amp;</span> <span class="n">OPT_p</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">pid_str</span> <span class="o">=</span> <span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
-            <span class="n">priority</span> <span class="o">=</span> <span class="n">pid_str</span><span class="p">;</span>
-            <span class="n">pid_str</span> <span class="o">=</span> <span class="o">*</span><span class="n">argv</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="cm">/* else &quot;-p PID&quot;, and *argv == NULL */</span>
-    <span class="n">pid</span> <span class="o">=</span> <span class="n">xatoul_range</span><span class="p">(</span><span class="n">pid_str</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">((</span><span class="kt">unsigned</span><span class="p">)(</span><span class="kt">pid_t</span><span class="p">)</span><span class="n">ULONG_MAX</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">priority</span> <span class="o">=</span> <span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!*</span><span class="n">argv</span><span class="p">)</span>
-            <span class="n">bb_show_usage</span><span class="p">();</span>
-<span class="p">}</span>
+<span class="n">argv</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">optind</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"></span>
+<span class="w">    </span><span class="n">bb_show_usage</span><span class="p">();</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span><span class="w"></span>
+<span class="w">            </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pid_str</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cm">/* else &quot;-p PID&quot;, and *argv == NULL */</span><span class="w"></span>
+<span class="w">    </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xatoul_range</span><span class="p">(</span><span class="n">pid_str</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)(</span><span class="kt">pid_t</span><span class="p">)</span><span class="n">ULONG_MAX</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!*</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">bb_show_usage</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>Then the applet uses the Posix function <em>sched_getscheduler</em> provides by the standard C library to obtain the scheduling attributes of the process specified by the pid.</p>
-<div class="highlight"><pre><span></span><span class="nl">print_rt_info</span><span class="p">:</span>
-    <span class="n">pol</span> <span class="o">=</span> <span class="n">sched_getscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">pol</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span> <span class="sc">&#39;g&#39;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><span class="nl">print_rt_info</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">pol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_getscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;g&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 <p>Finally, when the <em>chrt</em> applet is used to modify scheduling attributes then the Posix function <em>sched_getscheduler</em> is used and the new scheduling attributes are showed:</p>
-<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">policy</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span> <span class="sc">&#39;s&#39;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;s&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
 
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
-    <span class="k">goto</span> <span class="n">print_rt_info</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span><span class="w"></span>
+<span class="w">    </span><span class="k">goto</span><span class="w"> </span><span class="n">print_rt_info</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p>The function <em>sched_getscheduler</em> and <em>sched_getscheduler</em> will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from <em>/proc</em>:</p>
