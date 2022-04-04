@@ -5,11 +5,11 @@ executors:
   docker-python3:
     docker:
       - image: cimg/python:3.9.6
-    resource_class: small
+    resource_class: large
   docker-sonarcloud:
     docker:
-      - image: circleci/node:buster
-    resource_class: small
+      - image: cimg/node:17.0.1
+    resource_class: large
 jobs:
   static-analysis:
     executor: docker-sonarcloud
