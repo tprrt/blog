@@ -28,6 +28,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `meta-iot-cloud patches <https://github.com/intel-iot-devkit/meta-iot-cloud/commits/master?author=tprrt>`_
     * `meta-openembedded patches <https://git.openembedded.org/meta-openembedded/log/?qt=author&q=thomas.perrot>`_
     * `meta-raspberrypi patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/log/?qt=author&q=thomas.perrot>`_
+    * `meta-riscv patches <https://github.com/riscv/meta-riscv/commits/master?author=tprrt>`_
     * `meta-security patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-security/log/?qt=author&q=thomas.perrot>`_
     * `meta-st-stm32mp patches <https://github.com/STMicroelectronics/meta-st-stm32mp/commits/master?author=tprrt>`_
     * `meta-ti patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&q=thomas.perrot>`_
