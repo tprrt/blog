@@ -22,6 +22,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `elinux changes <https://elinux.org/Special:Contributions/Tperrot>`_
     * `wiki Yocto Project <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
 * Patches
+    * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
     * `meta-erlang patches <https://github.com/meta-erlang/meta-erlang/commits/master?author=tprrt>`_
     * `meta-freescale patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-freescale/log/?qt=author&q=thomas.perrot>`_
