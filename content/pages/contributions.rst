@@ -37,6 +37,8 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits/master?author=tprrt>`_
     * `U-boot patches <https://lore.kernel.org/u-boot/?qt=author&q=thomas.perrot>`_
 * Presentation
+    * Mai 2022
+        * `LEE`: `PKCS#11 with OP-TEE <https://github.com/tprrt/slides/blob/master/20220518/perrot-optee-pkcs11.pdf>`_
     * Jun 2021
         * `LEE`: `Secure boot in embedded Linux systems <https://github.com/tprrt/slides/blob/master/20210603/perrot-secure-boot.pdf>`_
     * Nov 2019
