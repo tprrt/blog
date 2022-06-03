@@ -26,6 +26,7 @@ You can also interect with me on the following social networks:
 * `Dockerhub`_
 * `Github`_
 * `Gitlab`_
+* `Hackaday`_
 * `Hackster`_
 * `Instagram`_
 * `Instructables`_
@@ -50,6 +51,7 @@ I accept charitable donations via `PayPal`_.
 .. _Github: https://github.com/tprrt
 .. _Gitlab: https://gitlab.com/tprrt
 .. _GnuPG: https://keys.openpgp.org/vks/v1/by-fingerprint/088FDE87B7F1F018B520666B53A3D309F9177FB2
+.. _Hackaday: https://hackaday.io/pages/412114
 .. _Hackster: https://www.hackster.io/tprrt
 .. _Instagram: https://www.instagram.com/thomas.prrt
 .. _Instructables: https://www.instructables.com/member/tprrt
