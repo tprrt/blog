@@ -15,8 +15,8 @@ Contact
 
 You can join me by `Email`_ as well as my `GnuPG`_ public key.
 
-I can also be reached on `IRC`_ on the `Libera`_ under the nickname *tprrt* or
-*tperrot*.
+I can also be reached on `Matrix`_ under the nickname *@tperrot:matrix.org*.
+Otherwise, on `IRC`_ on the `Libera`_ under the nickname *tprrt* or *tperrot*.
 
 Social
 ======
@@ -58,6 +58,7 @@ I accept charitable donations via `PayPal`_.
 .. _IRC: https://fr.wikipedia.org/wiki/Internet_Relay_Chat
 .. _Libera: https://libera.chat
 .. _Linkedin: https://www.linkedin.com/in/tprrt
+.. _Matrix: https://matrix.org
 .. _PayPal: https://paypal.me/tprrt
 .. _Spotify: https://open.spotify.com/user/214b7jk6zrtpen27r7qomqydy
 .. _Thingiverse: https://www.thingiverse.com/tprrt
