@@ -19,6 +19,7 @@ Summary
 Below, a non-exhaustive list of my last contributions to opensource projects.
 
 * Blog post
+    * `Updated Yocto support for SiFive RISC-V platforms <https://bootlin.com/blog/updated-yocto-support-for-sifive-risc-v-platforms/>`_
     * `Using Flutter on NVidia Jetson to build graphical applications <https://bootlin.com/blog/flutter-nvidia-jetson-openembedded-yocto/>`_
 * Documentation
     * `elinux changes <https://elinux.org/Special:Contributions/Tperrot>`_
