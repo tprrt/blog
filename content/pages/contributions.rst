@@ -41,6 +41,8 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits/master?author=tprrt>`_
     * `U-boot patches <https://lore.kernel.org/u-boot/?qt=author&q=thomas.perrot>`_
 * Presentation
+    * Nov 2022
+        * `Capitole du libre`: `Embedded Linux and Yocto introduction <https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf>`_
     * Mai 2022
         * `LEE`: `PKCS#11 with OP-TEE <https://github.com/tprrt/slides/blob/master/20220518/perrot-optee-pkcs11.pdf>`_
     * Jun 2021
