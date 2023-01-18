@@ -37,6 +37,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `meta-security patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-security/log/?qt=author&q=thomas.perrot>`_
     * `meta-sifive patches <https://github.com/sifive/meta-sifive/commits/master?author=tprrt>`_
     * `meta-st-stm32mp patches <https://github.com/STMicroelectronics/meta-st-stm32mp/commits/master?author=tprrt>`_
+    * `meta-tensorflow-lite patches <https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits/master?author=tprrt>`_
     * `meta-ti patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&q=thomas.perrot>`_
     * `openembedded-core patches <https://git.openembedded.org/openembedded-core/log/?qt=author&q=thomas.perrot>`_
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits/master?author=tprrt>`_
