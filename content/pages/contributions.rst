@@ -26,21 +26,21 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `wiki Yocto Project <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
 * Patches
     * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
-    * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits/master?author=tprrt>`_
+    * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits?author=tprrt>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
-    * `meta-erlang patches <https://github.com/meta-erlang/meta-erlang/commits/master?author=tprrt>`_
+    * `meta-erlang patches <https://github.com/meta-erlang/meta-erlang/commits?author=tprrt>`_
     * `meta-freescale patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-freescale/log/?qt=author&q=thomas.perrot>`_
-    * `meta-iot-cloud patches <https://github.com/intel-iot-devkit/meta-iot-cloud/commits/master?author=tprrt>`_
+    * `meta-iot-cloud patches <https://github.com/intel-iot-devkit/meta-iot-cloud/commits?author=tprrt>`_
     * `meta-openembedded patches <https://git.openembedded.org/meta-openembedded/log/?qt=author&q=thomas.perrot>`_
     * `meta-raspberrypi patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/log/?qt=author&q=thomas.perrot>`_
-    * `meta-riscv patches <https://github.com/riscv/meta-riscv/commits/master?author=tprrt>`_
+    * `meta-riscv patches <https://github.com/riscv/meta-riscv/commits?author=tprrt>`_
     * `meta-security patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-security/log/?qt=author&q=thomas.perrot>`_
-    * `meta-sifive patches <https://github.com/sifive/meta-sifive/commits/master?author=tprrt>`_
-    * `meta-st-stm32mp patches <https://github.com/STMicroelectronics/meta-st-stm32mp/commits/master?author=tprrt>`_
-    * `meta-tensorflow-lite patches <https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits/master?author=tprrt>`_
+    * `meta-sifive patches <https://github.com/sifive/meta-sifive/commits?author=tprrt>`_
+    * `meta-st-stm32mp patches <https://github.com/STMicroelectronics/meta-st-stm32mp/commits?author=tprrt>`_
+    * `meta-tensorflow-lite patches <https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits?author=tprrt>`_
     * `meta-ti patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&q=thomas.perrot>`_
     * `openembedded-core patches <https://git.openembedded.org/openembedded-core/log/?qt=author&q=thomas.perrot>`_
-    * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits/master?author=tprrt>`_
+    * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits?author=tprrt>`_
     * `U-boot patches <https://lore.kernel.org/u-boot/?qt=author&q=thomas.perrot>`_
 * Presentation
     * Nov 2022
