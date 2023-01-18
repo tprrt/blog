@@ -114,48 +114,48 @@ To do that we specify the engine by setting the variable <em>DOCKER</em> to the 
 <em>DOCKER_RUN_FLAGS</em> the parameter <em>--userns</em> is set to <em>keep-id</em> to map the
 uid:gid of the current rootless user (from host) with the values that will be
 used into the container.</p>
-<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">BUILD_IN_DOCKER</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span> <span class="nv">DOCKER</span><span class="o">=</span><span class="s2">&quot;podman&quot;</span>
-<span class="nb">export</span> <span class="nv">DOCKER_USER</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-<span class="nb">export</span> <span class="nv">DOCKER_RUN_FLAGS</span><span class="o">=</span><span class="s2">&quot;--rm -i -t --security-opt seccomp=unconfined --security-opt label=disable --userns=keep-id&quot;</span>
-<span class="nb">export</span> <span class="nv">DOCKER_MAKE_ARGS</span><span class="o">=</span><span class="s2">&quot;-j</span><span class="k">$(</span>nproc<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">BUILD_IN_DOCKER</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER</span><span class="o">=</span><span class="s2">&quot;podman&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_USER</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_RUN_FLAGS</span><span class="o">=</span><span class="s2">&quot;--rm -i -t --security-opt seccomp=unconfined --security-opt label=disable --userns=keep-id&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_MAKE_ARGS</span><span class="o">=</span><span class="s2">&quot;-j</span><span class="k">$(</span>nproc<span class="k">)</span><span class="s2">&quot;</span>
 
-make <span class="nv">BOARD</span><span class="o">=</span>stm32l476g-disco
-Launching build container using image <span class="s2">&quot;riot/riotbuild:latest&quot;</span>.
-podman run --rm -i -t --security-opt <span class="nv">seccomp</span><span class="o">=</span>unconfined --security-opt <span class="nv">label</span><span class="o">=</span>disable --userns<span class="o">=</span>keep-id -v <span class="s1">&#39;/usr/share/zoneinfo/Europe/Paris:/etc/localtime:ro&#39;</span> -v <span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/RIOT:/data/riotbuild/riotbase:delegated&#39;</span> -e <span class="s1">&#39;RIOTBASE=/data/riotbuild/riotbase&#39;</span> -e <span class="s1">&#39;CCACHE_BASEDIR=/data/riotbuild/riotbase&#39;</span> -e <span class="s1">&#39;BUILD_DIR=/data/riotbuild/riotbase/build&#39;</span> -v <span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen:/data/riotbuild/riotproject:delegated&#39;</span> -e <span class="s1">&#39;RIOTPROJECT=/data/riotbuild/riotproject&#39;</span> -e <span class="s1">&#39;RIOTCPU=/data/riotbuild/riotbase/cpu&#39;</span> -e <span class="s1">&#39;RIOTBOARD=/data/riotbuild/riotbase/boards&#39;</span> -e <span class="s1">&#39;RIOTMAKE=/data/riotbuild/riotbase/makefiles&#39;</span>     -v <span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:delegated&#39;</span> -e <span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span>  -w <span class="s1">&#39;/data/riotbuild/riotproject/&#39;</span> <span class="s1">&#39;riot/riotbuild:latest&#39;</span> make <span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span>   -j8
-Building application <span class="s2">&quot;hello-world&quot;</span> <span class="k">for</span> <span class="s2">&quot;stm32l476g-disco&quot;</span> with MCU <span class="s2">&quot;stm32&quot;</span>.
+make<span class="w"> </span><span class="nv">BOARD</span><span class="o">=</span>stm32l476g-disco
+Launching<span class="w"> </span>build<span class="w"> </span>container<span class="w"> </span>using<span class="w"> </span>image<span class="w"> </span><span class="s2">&quot;riot/riotbuild:latest&quot;</span>.
+podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-i<span class="w"> </span>-t<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">seccomp</span><span class="o">=</span>unconfined<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span>--userns<span class="o">=</span>keep-id<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/usr/share/zoneinfo/Europe/Paris:/etc/localtime:ro&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/RIOT:/data/riotbuild/riotbase:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTBASE=/data/riotbuild/riotbase&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;CCACHE_BASEDIR=/data/riotbuild/riotbase&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;BUILD_DIR=/data/riotbuild/riotbase/build&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen:/data/riotbuild/riotproject:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTPROJECT=/data/riotbuild/riotproject&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTCPU=/data/riotbuild/riotbase/cpu&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTBOARD=/data/riotbuild/riotbase/boards&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTMAKE=/data/riotbuild/riotbase/makefiles&#39;</span><span class="w">     </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span><span class="w">  </span>-w<span class="w"> </span><span class="s1">&#39;/data/riotbuild/riotproject/&#39;</span><span class="w"> </span><span class="s1">&#39;riot/riotbuild:latest&#39;</span><span class="w"> </span>make<span class="w"> </span><span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span><span class="w">   </span>-j8
+Building<span class="w"> </span>application<span class="w"> </span><span class="s2">&quot;hello-world&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s2">&quot;stm32l476g-disco&quot;</span><span class="w"> </span>with<span class="w"> </span>MCU<span class="w"> </span><span class="s2">&quot;stm32&quot;</span>.
 
-<span class="o">[</span>INFO<span class="o">]</span> cloning stm32cmsis
-fatal: not a git repository: /data/riotbuild/riotbase/../.git/modules/RIOT
-Cloning into <span class="s1">&#39;/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4&#39;</span>...
-remote: Enumerating objects: <span class="m">364</span>, <span class="k">done</span>.
-remote: Counting objects: <span class="m">100</span>% <span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>, <span class="k">done</span>.
-remote: Compressing objects: <span class="m">100</span>% <span class="o">(</span><span class="m">71</span>/71<span class="o">)</span>, <span class="k">done</span>.
-remote: Total <span class="m">364</span> <span class="o">(</span>delta <span class="m">309</span><span class="o">)</span>, reused <span class="m">344</span> <span class="o">(</span>delta <span class="m">289</span><span class="o">)</span>, pack-reused <span class="m">0</span>
-Receiving objects: <span class="m">100</span>% <span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>, <span class="m">709</span>.56 KiB <span class="p">|</span> <span class="m">561</span>.00 KiB/s, <span class="k">done</span>.
-Resolving deltas: <span class="m">100</span>% <span class="o">(</span><span class="m">309</span>/309<span class="o">)</span>, <span class="k">done</span>.
-HEAD is now at e442c72 Release v1.6.1
-<span class="o">[</span>INFO<span class="o">]</span> updating stm32cmsis /data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
-<span class="nb">echo</span> e442c72651e8d4757f6562acc14da949644944ce   &gt; /data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
-<span class="o">[</span>INFO<span class="o">]</span> patch stm32cmsis
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/boards/stm32l476g-disco
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/core
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/stm32
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/drivers
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/cortexm_common
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/stm32/periph
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/drivers/periph_common
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/stm32/stmclk
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys/auto_init
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/cortexm_common/periph
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/cpu/stm32/vectors
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys/malloc_thread_safe
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys/newlib_syscalls_default
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys/pm_layered
-<span class="s2">&quot;make&quot;</span> -C /data/riotbuild/riotbase/sys/stdio_uart
-   text    data     bss     dec     hex filename
-   <span class="m">8900</span>     <span class="m">112</span>    <span class="m">2300</span>   <span class="m">11312</span>    2c30 /data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>cloning<span class="w"> </span>stm32cmsis
+fatal:<span class="w"> </span>not<span class="w"> </span>a<span class="w"> </span>git<span class="w"> </span>repository:<span class="w"> </span>/data/riotbuild/riotbase/../.git/modules/RIOT
+Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4&#39;</span>...
+remote:<span class="w"> </span>Enumerating<span class="w"> </span>objects:<span class="w"> </span><span class="m">364</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Counting<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Compressing<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">71</span>/71<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Total<span class="w"> </span><span class="m">364</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">309</span><span class="o">)</span>,<span class="w"> </span>reused<span class="w"> </span><span class="m">344</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">289</span><span class="o">)</span>,<span class="w"> </span>pack-reused<span class="w"> </span><span class="m">0</span>
+Receiving<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>,<span class="w"> </span><span class="m">709</span>.56<span class="w"> </span>KiB<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">561</span>.00<span class="w"> </span>KiB/s,<span class="w"> </span><span class="k">done</span>.
+Resolving<span class="w"> </span>deltas:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">309</span>/309<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+HEAD<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span>at<span class="w"> </span>e442c72<span class="w"> </span>Release<span class="w"> </span>v1.6.1
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>updating<span class="w"> </span>stm32cmsis<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+<span class="nb">echo</span><span class="w"> </span>e442c72651e8d4757f6562acc14da949644944ce<span class="w">   </span>&gt;<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>patch<span class="w"> </span>stm32cmsis
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/boards/stm32l476g-disco
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/core
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/drivers
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/cortexm_common
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/periph
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/drivers/periph_common
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/stmclk
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/auto_init
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/cortexm_common/periph
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/vectors
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/malloc_thread_safe
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/newlib_syscalls_default
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/pm_layered
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/stdio_uart
+<span class="w">   </span>text<span class="w">    </span>data<span class="w">     </span>bss<span class="w">     </span>dec<span class="w">     </span>hex<span class="w"> </span>filename
+<span class="w">   </span><span class="m">8900</span><span class="w">     </span><span class="m">112</span><span class="w">    </span><span class="m">2300</span><span class="w">   </span><span class="m">11312</span><span class="w">    </span>2c30<span class="w"> </span>/data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
 </pre></div>
 </div>
 

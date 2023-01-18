@@ -54,25 +54,25 @@
 <h2>Introduction</h2>
 <p>In this article, I will dissect how the <em>chrt</em> applet from the release 1.32.0 of <a class="reference external" href="https://www.busybox.net">Busybox</a> works, what it does, etc.</p>
 <p>This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.</p>
-<div class="highlight"><pre><span></span>chrt -m
-SCHED_OTHER min/max priority    : <span class="m">0</span>/0
-SCHED_FIFO min/max priority     : <span class="m">1</span>/99
-SCHED_RR min/max priority       : <span class="m">1</span>/99
-SCHED_BATCH min/max priority    : <span class="m">0</span>/0
-SCHED_IDLE min/max priority     : <span class="m">0</span>/0
-SCHED_DEADLINE min/max priority : <span class="m">0</span>/0
+<div class="highlight"><pre><span></span>chrt<span class="w"> </span>-m
+SCHED_OTHER<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">    </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_FIFO<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">     </span>:<span class="w"> </span><span class="m">1</span>/99
+SCHED_RR<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">       </span>:<span class="w"> </span><span class="m">1</span>/99
+SCHED_BATCH<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">    </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_IDLE<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">     </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_DEADLINE<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w"> </span>:<span class="w"> </span><span class="m">0</span>/0
 
-pidof firefox
-<span class="m">6987</span> <span class="m">6851</span> <span class="m">6825</span> <span class="m">6816</span> <span class="m">6800</span> <span class="m">6771</span> <span class="m">6767</span> <span class="m">6761</span> <span class="m">6720</span> <span class="m">6611</span>
+pidof<span class="w"> </span>firefox
+<span class="m">6987</span><span class="w"> </span><span class="m">6851</span><span class="w"> </span><span class="m">6825</span><span class="w"> </span><span class="m">6816</span><span class="w"> </span><span class="m">6800</span><span class="w"> </span><span class="m">6771</span><span class="w"> </span><span class="m">6767</span><span class="w"> </span><span class="m">6761</span><span class="w"> </span><span class="m">6720</span><span class="w"> </span><span class="m">6611</span>
 
-chrt -p <span class="m">6987</span>
-pid <span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_OTHER</span>
-<span class="s1">pid 6987&#39;</span>s current scheduling priority: <span class="m">0</span>
+chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span>
+pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_OTHER</span>
+<span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">0</span>
 
-sudo chrt -f -p <span class="m">1</span> <span class="m">6987</span>
-chrt -p <span class="m">6987</span>
-pid <span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_FIFO</span>
-<span class="s1">pid 6987&#39;</span>s current scheduling priority: <span class="m">1</span>
+sudo<span class="w"> </span>chrt<span class="w"> </span>-f<span class="w"> </span>-p<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">6987</span>
+chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span>
+pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_FIFO</span>
+<span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">1</span>
 </pre></div>
 <p><a class="reference external" href="https://www.busybox.net">Busybox</a> provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
 and with some limitations.</p>
@@ -86,104 +86,104 @@ called in the main function of this applet.</p>
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set</p>
 <p>At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:</p>
-<div class="highlight"><pre><span></span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;^&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;+&quot;</span><span class="w"> </span><span class="s">&quot;mprfobi&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="cm">/* only one policy accepted: */</span><span class="w"></span>
-<span class="w">                </span><span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span><span class="w"></span>
-<span class="p">);</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;^&quot;</span>
+<span class="w">                </span><span class="s">&quot;+&quot;</span><span class="w"> </span><span class="s">&quot;mprfobi&quot;</span>
+<span class="w">                </span><span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span>
+<span class="w">                </span><span class="cm">/* only one policy accepted: */</span>
+<span class="w">                </span><span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span>
+<span class="p">);</span>
 </pre></div>
 <p>If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:</p>
-<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print min/max and exit */</span><span class="w"></span>
-<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_RR</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_BATCH</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_IDLE</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print min/max and exit */</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_RR</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_BATCH</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_IDLE</span><span class="p">);</span>
+<span class="w">        </span><span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 <p>The function <em>show_min_max</em> sends use the Posix functions <em>sched_get_priority_max</em> and <em>sched_get_priority_min</em> from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:</p>
-<div class="highlight"><pre><span></span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span><span class="w"></span>
-<span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">max</span><span class="o">|</span><span class="n">min</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SCHED_%s not supported</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
+<span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">max</span><span class="o">|</span><span class="n">min</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SCHED_%s not supported</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </pre></div>
 <p>Otherwise the required options and arguments to show or to apply real-time attributes of a process:</p>
 <div class="highlight"><pre><span></span><span class="c1">//if (opt &amp; OPT_r)</span>
 <span class="c1">//  policy = SCHED_RR; - default, already set</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_f</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_FIFO</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_o</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_OTHER</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_b</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_BATCH</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_i</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_IDLE</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_f</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_FIFO</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_o</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_OTHER</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_b</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_BATCH</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_i</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_IDLE</span><span class="p">;</span>
 
-<span class="n">argv</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">optind</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"></span>
-<span class="w">    </span><span class="n">bb_show_usage</span><span class="p">();</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span><span class="w"></span>
-<span class="w">            </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pid_str</span><span class="p">;</span><span class="w"></span>
-<span class="w">            </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="cm">/* else &quot;-p PID&quot;, and *argv == NULL */</span><span class="w"></span>
-<span class="w">    </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xatoul_range</span><span class="p">(</span><span class="n">pid_str</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)(</span><span class="kt">pid_t</span><span class="p">)</span><span class="n">ULONG_MAX</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!*</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">bb_show_usage</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="n">argv</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">optind</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="w">    </span><span class="n">bb_show_usage</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
+<span class="w">            </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pid_str</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="cm">/* else &quot;-p PID&quot;, and *argv == NULL */</span>
+<span class="w">    </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xatoul_range</span><span class="p">(</span><span class="n">pid_str</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)(</span><span class="kt">pid_t</span><span class="p">)</span><span class="n">ULONG_MAX</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!*</span><span class="n">argv</span><span class="p">)</span>
+<span class="w">            </span><span class="n">bb_show_usage</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 <p>Then the applet uses the Posix function <em>sched_getscheduler</em> provides by the standard C library to obtain the scheduling attributes of the process specified by the pid.</p>
-<div class="highlight"><pre><span></span><span class="nl">print_rt_info</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="n">pol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_getscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;g&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="nl">print_rt_info</span><span class="p">:</span>
+<span class="w">    </span><span class="n">pol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_getscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;g&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
 </pre></div>
 <p>Finally, when the <em>chrt</em> applet is used to modify scheduling attributes then the Posix function <em>sched_getscheduler</em> is used and the new scheduling attributes are showed:</p>
-<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;s&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;s&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
 
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span><span class="w"></span>
-<span class="w">    </span><span class="k">goto</span><span class="w"> </span><span class="n">print_rt_info</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
+<span class="w">    </span><span class="k">goto</span><span class="w"> </span><span class="n">print_rt_info</span><span class="p">;</span>
 </pre></div>
 <p>The function <em>sched_getscheduler</em> and <em>sched_getscheduler</em> will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from <em>/proc</em>:</p>
-<div class="highlight"><pre><span></span>cat /proc/6987/sched
-WebExtensions <span class="o">(</span><span class="m">6987</span>, <span class="c1">#threads: 23)</span>
+<div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/6987/sched
+WebExtensions<span class="w"> </span><span class="o">(</span><span class="m">6987</span>,<span class="w"> </span><span class="c1">#threads: 23)</span>
 -------------------------------------------------------------------
-se.exec_start                                :       <span class="m">4421312</span>.640001
-se.vruntime                                  :        <span class="m">344438</span>.942254
-se.sum_exec_runtime                          :         <span class="m">38238</span>.466094
-se.nr_migrations                             :                 <span class="m">6811</span>
-nr_switches                                  :                <span class="m">49452</span>
-nr_voluntary_switches                        :                <span class="m">21749</span>
-nr_involuntary_switches                      :                <span class="m">27703</span>
-se.load.weight                               :              <span class="m">1048576</span>
-se.runnable_weight                           :              <span class="m">1048576</span>
-se.avg.load_sum                              :                 <span class="m">3415</span>
-se.avg.runnable_load_sum                     :                 <span class="m">3415</span>
-se.avg.util_sum                              :              <span class="m">3497621</span>
-se.avg.load_avg                              :                   <span class="m">74</span>
-se.avg.runnable_load_avg                     :                   <span class="m">74</span>
-se.avg.util_avg                              :                   <span class="m">74</span>
-se.avg.last_update_time                      :        <span class="m">4421312640000</span>
-se.avg.util_est.ewma                         :                   <span class="m">75</span>
-se.avg.util_est.enqueued                     :                   <span class="m">75</span>
-policy                                       :                    <span class="m">0</span>
-prio                                         :                  <span class="m">120</span>
-clock-delta                                  :                   <span class="m">89</span>
-mm-&gt;numa_scan_seq                            :                    <span class="m">0</span>
-numa_pages_migrated                          :                    <span class="m">0</span>
-numa_preferred_nid                           :                   -1
-total_numa_faults                            :                    <span class="m">0</span>
-<span class="nv">current_node</span><span class="o">=</span><span class="m">0</span>, <span class="nv">numa_group_id</span><span class="o">=</span><span class="m">0</span>
-numa_faults <span class="nv">node</span><span class="o">=</span><span class="m">0</span> <span class="nv">task_private</span><span class="o">=</span><span class="m">0</span> <span class="nv">task_shared</span><span class="o">=</span><span class="m">0</span> <span class="nv">group_private</span><span class="o">=</span><span class="m">0</span> <span class="nv">group_shared</span><span class="o">=</span><span class="m">0</span>
+se.exec_start<span class="w">                                </span>:<span class="w">       </span><span class="m">4421312</span>.640001
+se.vruntime<span class="w">                                  </span>:<span class="w">        </span><span class="m">344438</span>.942254
+se.sum_exec_runtime<span class="w">                          </span>:<span class="w">         </span><span class="m">38238</span>.466094
+se.nr_migrations<span class="w">                             </span>:<span class="w">                 </span><span class="m">6811</span>
+nr_switches<span class="w">                                  </span>:<span class="w">                </span><span class="m">49452</span>
+nr_voluntary_switches<span class="w">                        </span>:<span class="w">                </span><span class="m">21749</span>
+nr_involuntary_switches<span class="w">                      </span>:<span class="w">                </span><span class="m">27703</span>
+se.load.weight<span class="w">                               </span>:<span class="w">              </span><span class="m">1048576</span>
+se.runnable_weight<span class="w">                           </span>:<span class="w">              </span><span class="m">1048576</span>
+se.avg.load_sum<span class="w">                              </span>:<span class="w">                 </span><span class="m">3415</span>
+se.avg.runnable_load_sum<span class="w">                     </span>:<span class="w">                 </span><span class="m">3415</span>
+se.avg.util_sum<span class="w">                              </span>:<span class="w">              </span><span class="m">3497621</span>
+se.avg.load_avg<span class="w">                              </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.runnable_load_avg<span class="w">                     </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.util_avg<span class="w">                              </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.last_update_time<span class="w">                      </span>:<span class="w">        </span><span class="m">4421312640000</span>
+se.avg.util_est.ewma<span class="w">                         </span>:<span class="w">                   </span><span class="m">75</span>
+se.avg.util_est.enqueued<span class="w">                     </span>:<span class="w">                   </span><span class="m">75</span>
+policy<span class="w">                                       </span>:<span class="w">                    </span><span class="m">0</span>
+prio<span class="w">                                         </span>:<span class="w">                  </span><span class="m">120</span>
+clock-delta<span class="w">                                  </span>:<span class="w">                   </span><span class="m">89</span>
+mm-&gt;numa_scan_seq<span class="w">                            </span>:<span class="w">                    </span><span class="m">0</span>
+numa_pages_migrated<span class="w">                          </span>:<span class="w">                    </span><span class="m">0</span>
+numa_preferred_nid<span class="w">                           </span>:<span class="w">                   </span>-1
+total_numa_faults<span class="w">                            </span>:<span class="w">                    </span><span class="m">0</span>
+<span class="nv">current_node</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">numa_group_id</span><span class="o">=</span><span class="m">0</span>
+numa_faults<span class="w"> </span><span class="nv">node</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">task_private</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">task_shared</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">group_private</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">group_shared</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
 <div class="section" id="limitations">
@@ -241,29 +241,29 @@ by <a class="reference external" href="https://toolchains.bootlin.com">Bootlin</
 <li>In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.</li>
 <li>The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</li>
 </ul>
-<div class="highlight"><pre><span></span>apt update
-apt install -y --no-install-recommends <span class="se">\</span>
-    bc <span class="se">\</span>
-    build-essential <span class="se">\</span>
-    ca-certificates <span class="se">\</span>
-    cpio <span class="se">\</span>
-    file <span class="se">\</span>
-    flex <span class="se">\</span>
-    git <span class="se">\</span>
-    ipxe-qemu <span class="se">\</span>
-    libncurses5-dev <span class="se">\</span>
-    libncursesw5-dev <span class="se">\</span>
-    libssl-dev <span class="se">\</span>
-    qemu <span class="se">\</span>
-    qemu-system-aarch64 <span class="se">\</span>
-    qemu-user-static <span class="se">\</span>
-    wget
+<div class="highlight"><pre><span></span>apt<span class="w"> </span>update
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ca-certificates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>cpio<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>file<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>flex<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ipxe-qemu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libncurses5-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libncursesw5-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libssl-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu-system-aarch64<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu-user-static<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>wget
 </pre></div>
 <p>Now, it is time to download and install the prebuild toolchain:</p>
-<div class="highlight"><pre><span></span>mkdir ~/src
-<span class="nb">cd</span> ~/src
-wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
-tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/src
+<span class="nb">cd</span><span class="w"> </span>~/src
+wget<span class="w"> </span>https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
+tar<span class="w"> </span>xvjf<span class="w"> </span>aarch64--glibc--stable-2020.08-1.tar.bz2
 </pre></div>
 <p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:</p>
 <ul class="simple">
@@ -271,74 +271,74 @@ tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
 <li><tt class="docutils literal">CROSS_COMPILE</tt>: In order to clarify the prefix used by the cross-tools</li>
 <li><tt class="docutils literal">ARCH</tt>: The architecture of the target platform</li>
 </ul>
-<div class="highlight"><pre><span></span>ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
+<div class="highlight"><pre><span></span>ls<span class="w"> </span>~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
 ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
-<span class="nb">export</span> <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
-<span class="nb">export</span> <span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-
+<span class="nb">export</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-
 </pre></div>
 <p>Now, it is possible to call the cross-tools from the shell:</p>
-<div class="highlight"><pre><span></span>aarch64-linux-gcc -v
-Using built-in specs.
+<div class="highlight"><pre><span></span>aarch64-linux-gcc<span class="w"> </span>-v
+Using<span class="w"> </span>built-in<span class="w"> </span>specs.
 <span class="nv">COLLECT_GCC</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc.br_real
 <span class="nv">COLLECT_LTO_WRAPPER</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/9.3.0/lto-wrapper
-Target: aarch64-buildroot-linux-gnu
+Target:<span class="w"> </span>aarch64-buildroot-linux-gnu
 &lt;...&gt;
-Thread model: posix
-gcc version <span class="m">9</span>.3.0 <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
+Thread<span class="w"> </span>model:<span class="w"> </span>posix
+gcc<span class="w"> </span>version<span class="w"> </span><span class="m">9</span>.3.0<span class="w"> </span><span class="o">(</span>Buildroot<span class="w"> </span><span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
 </pre></div>
 <p>Concerning the variable <tt class="docutils literal">PATH</tt> this one will be set afterwards because its value depends of the binary that will be built.</p>
 </div>
 <div class="section" id="build-the-linux-kernel">
 <h2>Build the Linux kernel</h2>
 <p>So, the environment is ready to pull the sources of the latest stable branch of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a> and to build them:</p>
-<div class="highlight"><pre><span></span>git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-<span class="nb">cd</span> linux
-git checkout -b local/linux-5.4.y origin/linux-5.4.y
+<div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+<span class="nb">cd</span><span class="w"> </span>linux
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>local/linux-5.4.y<span class="w"> </span>origin/linux-5.4.y
 <span class="c1"># git show HEAD</span>
 
-<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>arm64
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>arm64
 
-make defconfig
-  HOSTCC  scripts/basic/fixdep
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/confdata.o
-  HOSTCC  scripts/kconfig/expr.o
-  LEX     scripts/kconfig/lexer.lex.c
-  YACC    scripts/kconfig/parser.tab.<span class="o">[</span>ch<span class="o">]</span>
-  HOSTCC  scripts/kconfig/lexer.lex.o
-  HOSTCC  scripts/kconfig/parser.tab.o
-  HOSTCC  scripts/kconfig/preprocess.o
-  HOSTCC  scripts/kconfig/symbol.o
-  HOSTLD  scripts/kconfig/conf
-*** Default configuration is based on <span class="s1">&#39;defconfig&#39;</span>
+make<span class="w"> </span>defconfig
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/basic/fixdep
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/conf.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/confdata.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/expr.o
+<span class="w">  </span>LEX<span class="w">     </span>scripts/kconfig/lexer.lex.c
+<span class="w">  </span>YACC<span class="w">    </span>scripts/kconfig/parser.tab.<span class="o">[</span>ch<span class="o">]</span>
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/lexer.lex.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/parser.tab.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/preprocess.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/symbol.o
+<span class="w">  </span>HOSTLD<span class="w">  </span>scripts/kconfig/conf
+***<span class="w"> </span>Default<span class="w"> </span>configuration<span class="w"> </span>is<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span><span class="s1">&#39;defconfig&#39;</span>
 <span class="c1">#</span>
 <span class="c1"># configuration written to .config</span>
 <span class="c1">#</span>
 
 <span class="c1"># make menuconfig</span>
 
-make -j<span class="k">$(</span>nproc<span class="k">)</span>
-  &lt;...&gt;
-  AR      drivers/net/ethernet/built-in.a
-  AR      drivers/net/built-in.a
-  AR      drivers/built-in.a
-  GEN     .version
-  CHK     include/generated/compile.h
-  LD      vmlinux.o
-  MODPOST vmlinux.o
-  MODINFO modules.builtin.modinfo
-  LD      .tmp_vmlinux.kallsyms1
-  KSYM    .tmp_vmlinux.kallsyms1.o
-  LD      .tmp_vmlinux.kallsyms2
-  KSYM    .tmp_vmlinux.kallsyms2.o
-  LD      vmlinux
-  SORTEX  vmlinux
-  SYSMAP  System.map
-  Building modules, stage <span class="m">2</span>.
-  MODPOST <span class="m">531</span> modules
-  OBJCOPY arch/arm64/boot/Image
-  GZIP    arch/arm64/boot/Image.gz
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+<span class="w">  </span>&lt;...&gt;
+<span class="w">  </span>AR<span class="w">      </span>drivers/net/ethernet/built-in.a
+<span class="w">  </span>AR<span class="w">      </span>drivers/net/built-in.a
+<span class="w">  </span>AR<span class="w">      </span>drivers/built-in.a
+<span class="w">  </span>GEN<span class="w">     </span>.version
+<span class="w">  </span>CHK<span class="w">     </span>include/generated/compile.h
+<span class="w">  </span>LD<span class="w">      </span>vmlinux.o
+<span class="w">  </span>MODPOST<span class="w"> </span>vmlinux.o
+<span class="w">  </span>MODINFO<span class="w"> </span>modules.builtin.modinfo
+<span class="w">  </span>LD<span class="w">      </span>.tmp_vmlinux.kallsyms1
+<span class="w">  </span>KSYM<span class="w">    </span>.tmp_vmlinux.kallsyms1.o
+<span class="w">  </span>LD<span class="w">      </span>.tmp_vmlinux.kallsyms2
+<span class="w">  </span>KSYM<span class="w">    </span>.tmp_vmlinux.kallsyms2.o
+<span class="w">  </span>LD<span class="w">      </span>vmlinux
+<span class="w">  </span>SORTEX<span class="w">  </span>vmlinux
+<span class="w">  </span>SYSMAP<span class="w">  </span>System.map
+<span class="w">  </span>Building<span class="w"> </span>modules,<span class="w"> </span>stage<span class="w"> </span><span class="m">2</span>.
+<span class="w">  </span>MODPOST<span class="w"> </span><span class="m">531</span><span class="w"> </span>modules
+<span class="w">  </span>OBJCOPY<span class="w"> </span>arch/arm64/boot/Image
+<span class="w">  </span>GZIP<span class="w">    </span>arch/arm64/boot/Image.gz
 </pre></div>
 <p>The command <tt class="docutils literal">make defconfig</tt> will apply the default configuration for the target platform (cf. <tt class="docutils literal">ARCH=arm64</tt>), and the
 compilation will be performed by <tt class="docutils literal">make <span class="pre">-j$(nproc)</span></tt>.</p>
@@ -352,49 +352,49 @@ compilation will be performed by <tt class="docutils literal">make <span class="
 <p>The easy way to bootstrap a sysroot is to use <a class="reference external" href="https://busybox.net">Busybox</a> that has been created to offer common UNIX tools into a single
 executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.</p>
 <p>The steps to pull and build <a class="reference external" href="https://busybox.net">Busybox</a> are similar to those of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a>.</p>
-<div class="highlight"><pre><span></span>git clone git://git.busybox.net/busybox
-<span class="nb">cd</span> busybox
-git checkout -b local/1_32_stable origin/1_32_stable
+<div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git://git.busybox.net/busybox
+<span class="nb">cd</span><span class="w"> </span>busybox
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>local/1_32_stable<span class="w"> </span>origin/1_32_stable
 <span class="c1"># git show HEAD</span>
 
-<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>aarch64
-<span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;--static&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>aarch64
+<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;--static&quot;</span>
 
-make defconfig
+make<span class="w"> </span>defconfig
 <span class="c1"># make menuconfig</span>
-make -j<span class="k">$(</span>nproc<span class="k">)</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
 
-make install
+make<span class="w"> </span>install
 </pre></div>
 <p>Here, the <em>LDFLAGS</em> is set to force the static link of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
 <em>make menuconfig</em> to set <em>CONFIG_STATIC=y</em>. The advantage of the static executable is that it can be tested with Qemu:</p>
-<div class="highlight"><pre><span></span>qemu-aarch64-static busybox <span class="nb">echo</span> <span class="s2">&quot;Hello!&quot;</span>
+<div class="highlight"><pre><span></span>qemu-aarch64-static<span class="w"> </span>busybox<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Hello!&quot;</span>
 Hello!
-qemu-aarch64-static busybox date
-Sat Jun <span class="m">27</span> <span class="m">15</span>:06:41 UTC <span class="m">2020</span>
+qemu-aarch64-static<span class="w"> </span>busybox<span class="w"> </span>date
+Sat<span class="w"> </span>Jun<span class="w"> </span><span class="m">27</span><span class="w"> </span><span class="m">15</span>:06:41<span class="w"> </span>UTC<span class="w"> </span><span class="m">2020</span>
 </pre></div>
 <p>The binary <em>qemu-aarch64-static</em> allows to execute a binary built for another architecture on the host computer, for
 example here it allows to execute the <a class="reference external" href="https://busybox.net">Busybox</a> binary compiled for an aarch64 target on a x86-64 host.</p>
 <p>The last command <em>make install</em> created a tree into the <em>_install</em> directory that can be used to populate the sysroot:</p>
-<div class="highlight"><pre><span></span>ls -l _install
-total <span class="m">4</span>
-drwxr-xr-x. <span class="m">1</span> tperrot tperrot <span class="m">974</span> Nov <span class="m">30</span> <span class="m">15</span>:22 bin
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot  <span class="m">11</span> Nov <span class="m">30</span> <span class="m">15</span>:22 linuxrc -&gt; bin/busybox
-drwxr-xr-x. <span class="m">1</span> tperrot tperrot <span class="m">986</span> Nov <span class="m">30</span> <span class="m">15</span>:22 sbin
-drwxr-xr-x. <span class="m">1</span> tperrot tperrot  <span class="m">14</span> Nov <span class="m">30</span> <span class="m">15</span>:22 usr
+<div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>_install
+total<span class="w"> </span><span class="m">4</span>
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w"> </span><span class="m">974</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>bin
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">  </span><span class="m">11</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>linuxrc<span class="w"> </span>-&gt;<span class="w"> </span>bin/busybox
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w"> </span><span class="m">986</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>sbin
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">  </span><span class="m">14</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>usr
 
-ls -l _install/bin
+ls<span class="w"> </span>-l<span class="w"> </span>_install/bin
 &lt;...&gt;
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 umount -&gt; busybox
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 uname -&gt; busybox
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 usleep -&gt; busybox
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 vi -&gt; busybox
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 watch -&gt; busybox
-lrwxrwxrwx. <span class="m">1</span> tperrot tperrot       <span class="m">7</span> Nov <span class="m">30</span> <span class="m">15</span>:22 zcat -&gt; busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>umount<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>uname<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>usleep<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>vi<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>watch<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>zcat<span class="w"> </span>-&gt;<span class="w"> </span>busybox
 </pre></div>
 <p>In order, to finalize this minimal sysroot, it is required to create a rcS init script:</p>
-<div class="highlight"><pre><span></span>mkdir _install/proc _install/sys _install/dev _install/etc _install/etc/init.d
-cat &gt; _install/etc/init.d/rcS <span class="s">&lt;&lt; EOF</span>
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>_install/proc<span class="w"> </span>_install/sys<span class="w"> </span>_install/dev<span class="w"> </span>_install/etc<span class="w"> </span>_install/etc/init.d
+cat<span class="w"> </span>&gt;<span class="w"> </span>_install/etc/init.d/rcS<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
 <span class="s">#!/bin/sh</span>
 <span class="s">mount -t proc none /proc</span>
 <span class="s">mount -t sysfs none /sys</span>
@@ -402,7 +402,7 @@ cat &gt; _install/etc/init.d/rcS <span class="s">&lt;&lt; EOF</span>
 <span class="s">[ ! -h /etc/mtab ]  &amp;&amp; ln -s /proc/mounts /etc/mtab</span>
 <span class="s">[ ! -f /etc/resolv.conf ] &amp;&amp; cat /proc/net/pnp &gt; /etc/resolv.conf</span>
 <span class="s">EOF</span>
-chmod +x _install/etc/init.d/rcS
+chmod<span class="w"> </span>+x<span class="w"> </span>_install/etc/init.d/rcS
 </pre></div>
 </div>
 <div class="section" id="build-the-filesystem">
@@ -418,27 +418,27 @@ There is two available possibilities, either build a <em>ramfs</em> or a <em>roo
 <div class="section" id="build-a-ramfs">
 <h3>Build a ramfs</h3>
 <p>To build the ramfs we will use <em>cpio</em> and <em>gzip</em> to construct the compressed archive after modifying the rights:</p>
-<div class="highlight"><pre><span></span>mkdir _rootfs
-rsync -a _install/ _rootfs
-chown -R root:root _rootfs
-<span class="nb">cd</span> _rootfs
-find . <span class="p">|</span> cpio -o --format<span class="o">=</span>newc &gt; ../rootfs.cpio
-<span class="nb">cd</span> ..
-gzip -c rootfs.cpio &gt; rootfs.cpio.gz
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>_rootfs
+rsync<span class="w"> </span>-a<span class="w"> </span>_install/<span class="w"> </span>_rootfs
+chown<span class="w"> </span>-R<span class="w"> </span>root:root<span class="w"> </span>_rootfs
+<span class="nb">cd</span><span class="w"> </span>_rootfs
+find<span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>cpio<span class="w"> </span>-o<span class="w"> </span>--format<span class="o">=</span>newc<span class="w"> </span>&gt;<span class="w"> </span>../rootfs.cpio
+<span class="nb">cd</span><span class="w"> </span>..
+gzip<span class="w"> </span>-c<span class="w"> </span>rootfs.cpio<span class="w"> </span>&gt;<span class="w"> </span>rootfs.cpio.gz
 </pre></div>
 </div>
 <div class="section" id="build-a-rootfs">
 <h3>Build a rootfs</h3>
 <p>To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
 formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.</p>
-<div class="highlight"><pre><span></span>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>rootfs.img <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">10</span>
-mke2fs -j rootfs.img
-mkdir _rootfs
-mount -o loop rootfs.img _rootfs
-rsync -a _install/ _rootfs
-chown -R root:root _rootfs
+<div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>rootfs.img<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">10</span>
+mke2fs<span class="w"> </span>-j<span class="w"> </span>rootfs.img
+mkdir<span class="w"> </span>_rootfs
+mount<span class="w"> </span>-o<span class="w"> </span>loop<span class="w"> </span>rootfs.img<span class="w"> </span>_rootfs
+rsync<span class="w"> </span>-a<span class="w"> </span>_install/<span class="w"> </span>_rootfs
+chown<span class="w"> </span>-R<span class="w"> </span>root:root<span class="w"> </span>_rootfs
 sync
-umount _rootfs
+umount<span class="w"> </span>_rootfs
 </pre></div>
 </div>
 </div>
@@ -446,37 +446,37 @@ umount _rootfs
 <h2>Boot the target</h2>
 <p>Following, the qemu commands to boot the minimal embedded Linux system that has been built.</p>
 <div class="highlight"><pre><span></span><span class="c1"># With the ramfs</span>
-qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp <span class="m">2</span> -m <span class="m">256</span> <span class="se">\</span>
-    -kernel ~/src/linux/arch/arm64/boot/Image <span class="se">\</span>
-    -initrd ~/src/busybox/rootfs.cpio.gz <span class="se">\</span>
-    -append <span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/ram rdinit=/sbin/init&quot;</span>
+qemu-system-aarch64<span class="w"> </span>-nographic<span class="w"> </span>-no-reboot<span class="w"> </span>-machine<span class="w"> </span>virt<span class="w"> </span>-cpu<span class="w"> </span>cortex-a57<span class="w"> </span>-smp<span class="w"> </span><span class="m">2</span><span class="w"> </span>-m<span class="w"> </span><span class="m">256</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-kernel<span class="w"> </span>~/src/linux/arch/arm64/boot/Image<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-initrd<span class="w"> </span>~/src/busybox/rootfs.cpio.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-append<span class="w"> </span><span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/ram rdinit=/sbin/init&quot;</span>
 
 <span class="c1"># With the rootfs</span>
-qemu-system-aarch64 -nographic -no-reboot -machine virt -cpu cortex-a57 -smp <span class="m">2</span> -m <span class="m">256</span> <span class="se">\</span>
-    -kernel ~/src/linux/arch/arm64/boot/Image <span class="se">\</span>
-    -append <span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/vda&quot;</span> <span class="se">\</span>
-    -drive <span class="nv">file</span><span class="o">=</span>~/src/busybox/rootfs.img,format<span class="o">=</span>raw,if<span class="o">=</span>none,id<span class="o">=</span>hd0 -device virtio-blk-device,drive<span class="o">=</span>hd0
+qemu-system-aarch64<span class="w"> </span>-nographic<span class="w"> </span>-no-reboot<span class="w"> </span>-machine<span class="w"> </span>virt<span class="w"> </span>-cpu<span class="w"> </span>cortex-a57<span class="w"> </span>-smp<span class="w"> </span><span class="m">2</span><span class="w"> </span>-m<span class="w"> </span><span class="m">256</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-kernel<span class="w"> </span>~/src/linux/arch/arm64/boot/Image<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-append<span class="w"> </span><span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/vda&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-drive<span class="w"> </span><span class="nv">file</span><span class="o">=</span>~/src/busybox/rootfs.img,format<span class="o">=</span>raw,if<span class="o">=</span>none,id<span class="o">=</span>hd0<span class="w"> </span>-device<span class="w"> </span>virtio-blk-device,drive<span class="o">=</span>hd0
 </pre></div>
 <p>Then the target will be boot to shell, <em>&quot;It's alive!&quot;</em>:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Booting Linux on physical CPU 0x0000000000 <span class="o">[</span>0x411fd070<span class="o">]</span>
-<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Linux version <span class="m">5</span>.10.0-rc5 <span class="o">(</span>tperrot@27ea4a863f61<span class="o">)</span> <span class="o">(</span>aarch64-linux-gcc.br_real <span class="o">(</span>Buildroot <span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span> <span class="m">9</span>.3.0, GNU ld <span class="o">(</span>GNU Binutils<span class="o">)</span> <span class="m">2</span>.33.1<span class="o">)</span> <span class="c1">#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020</span>
-<span class="o">[</span>    <span class="m">0</span>.000000<span class="o">]</span> Machine model: linux,dummy-virt
+<div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Booting<span class="w"> </span>Linux<span class="w"> </span>on<span class="w"> </span>physical<span class="w"> </span>CPU<span class="w"> </span>0x0000000000<span class="w"> </span><span class="o">[</span>0x411fd070<span class="o">]</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Linux<span class="w"> </span>version<span class="w"> </span><span class="m">5</span>.10.0-rc5<span class="w"> </span><span class="o">(</span>tperrot@27ea4a863f61<span class="o">)</span><span class="w"> </span><span class="o">(</span>aarch64-linux-gcc.br_real<span class="w"> </span><span class="o">(</span>Buildroot<span class="w"> </span><span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span><span class="w"> </span><span class="m">9</span>.3.0,<span class="w"> </span>GNU<span class="w"> </span>ld<span class="w"> </span><span class="o">(</span>GNU<span class="w"> </span>Binutils<span class="o">)</span><span class="w"> </span><span class="m">2</span>.33.1<span class="o">)</span><span class="w"> </span><span class="c1">#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Machine<span class="w"> </span>model:<span class="w"> </span>linux,dummy-virt
 &lt;...&gt;
-<span class="o">[</span>    <span class="m">0</span>.858346<span class="o">]</span> Sending DHCP requests ., OK
-<span class="o">[</span>    <span class="m">0</span>.870558<span class="o">]</span> IP-Config: Got DHCP answer from <span class="m">10</span>.0.2.2, my address is <span class="m">10</span>.0.2.15
-<span class="o">[</span>    <span class="m">0</span>.870909<span class="o">]</span> IP-Config: Complete:
-<span class="o">[</span>    <span class="m">0</span>.871199<span class="o">]</span>      <span class="nv">device</span><span class="o">=</span>eth0, <span class="nv">hwaddr</span><span class="o">=</span><span class="m">52</span>:54:00:12:34:56, <span class="nv">ipaddr</span><span class="o">=</span><span class="m">10</span>.0.2.15, <span class="nv">mask</span><span class="o">=</span><span class="m">255</span>.255.255.0, <span class="nv">gw</span><span class="o">=</span><span class="m">10</span>.0.2.2
-<span class="o">[</span>    <span class="m">0</span>.871566<span class="o">]</span>      <span class="nv">host</span><span class="o">=</span><span class="m">10</span>.0.2.15, <span class="nv">domain</span><span class="o">=</span>, nis-domain<span class="o">=(</span>none<span class="o">)</span>
-<span class="o">[</span>    <span class="m">0</span>.871825<span class="o">]</span>      <span class="nv">bootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2, <span class="nv">rootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2, <span class="nv">rootpath</span><span class="o">=</span>
-<span class="o">[</span>    <span class="m">0</span>.871866<span class="o">]</span>      <span class="nv">nameserver0</span><span class="o">=</span><span class="m">10</span>.0.2.3
-<span class="o">[</span>    <span class="m">0</span>.872389<span class="o">]</span>
-<span class="o">[</span>    <span class="m">0</span>.875863<span class="o">]</span> ALSA device list:
-<span class="o">[</span>    <span class="m">0</span>.876151<span class="o">]</span>   No soundcards found.
-<span class="o">[</span>    <span class="m">0</span>.879353<span class="o">]</span> uart-pl011 <span class="m">9000000</span>.pl011: no DMA platform data
-<span class="o">[</span>    <span class="m">0</span>.920237<span class="o">]</span> Freeing unused kernel memory: 5952K
-<span class="o">[</span>    <span class="m">0</span>.921223<span class="o">]</span> Run /sbin/init as init process
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.858346<span class="o">]</span><span class="w"> </span>Sending<span class="w"> </span>DHCP<span class="w"> </span>requests<span class="w"> </span>.,<span class="w"> </span>OK
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.870558<span class="o">]</span><span class="w"> </span>IP-Config:<span class="w"> </span>Got<span class="w"> </span>DHCP<span class="w"> </span>answer<span class="w"> </span>from<span class="w"> </span><span class="m">10</span>.0.2.2,<span class="w"> </span>my<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">10</span>.0.2.15
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.870909<span class="o">]</span><span class="w"> </span>IP-Config:<span class="w"> </span>Complete:
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871199<span class="o">]</span><span class="w">      </span><span class="nv">device</span><span class="o">=</span>eth0,<span class="w"> </span><span class="nv">hwaddr</span><span class="o">=</span><span class="m">52</span>:54:00:12:34:56,<span class="w"> </span><span class="nv">ipaddr</span><span class="o">=</span><span class="m">10</span>.0.2.15,<span class="w"> </span><span class="nv">mask</span><span class="o">=</span><span class="m">255</span>.255.255.0,<span class="w"> </span><span class="nv">gw</span><span class="o">=</span><span class="m">10</span>.0.2.2
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871566<span class="o">]</span><span class="w">      </span><span class="nv">host</span><span class="o">=</span><span class="m">10</span>.0.2.15,<span class="w"> </span><span class="nv">domain</span><span class="o">=</span>,<span class="w"> </span>nis-domain<span class="o">=(</span>none<span class="o">)</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871825<span class="o">]</span><span class="w">      </span><span class="nv">bootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2,<span class="w"> </span><span class="nv">rootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2,<span class="w"> </span><span class="nv">rootpath</span><span class="o">=</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871866<span class="o">]</span><span class="w">      </span><span class="nv">nameserver0</span><span class="o">=</span><span class="m">10</span>.0.2.3
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.872389<span class="o">]</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.875863<span class="o">]</span><span class="w"> </span>ALSA<span class="w"> </span>device<span class="w"> </span>list:
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.876151<span class="o">]</span><span class="w">   </span>No<span class="w"> </span>soundcards<span class="w"> </span>found.
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.879353<span class="o">]</span><span class="w"> </span>uart-pl011<span class="w"> </span><span class="m">9000000</span>.pl011:<span class="w"> </span>no<span class="w"> </span>DMA<span class="w"> </span>platform<span class="w"> </span>data
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.920237<span class="o">]</span><span class="w"> </span>Freeing<span class="w"> </span>unused<span class="w"> </span>kernel<span class="w"> </span>memory:<span class="w"> </span>5952K
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.921223<span class="o">]</span><span class="w"> </span>Run<span class="w"> </span>/sbin/init<span class="w"> </span>as<span class="w"> </span>init<span class="w"> </span>process
 
-Please press Enter to activate this console.
+Please<span class="w"> </span>press<span class="w"> </span>Enter<span class="w"> </span>to<span class="w"> </span>activate<span class="w"> </span>this<span class="w"> </span>console.
 </pre></div>
 </div>
 
