@@ -28,6 +28,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
     * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits?author=tprrt>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
+    * `libevent patches <https://github.com/libevent/libevent/commits?author=tprrt>`_
     * `meta-erlang patches <https://github.com/meta-erlang/meta-erlang/commits?author=tprrt>`_
     * `meta-freescale patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-freescale/log/?qt=author&q=thomas.perrot>`_
     * `meta-iot-cloud patches <https://github.com/intel-iot-devkit/meta-iot-cloud/commits?author=tprrt>`_
