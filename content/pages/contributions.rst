@@ -29,6 +29,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits?author=tprrt>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
     * `libevent patches <https://github.com/libevent/libevent/commits?author=tprrt>`_
+    * `meta-atmel patches <https://github.com/linux4sam/meta-atmel/commits?author=tprrt>`_
     * `meta-erlang patches <https://github.com/meta-erlang/meta-erlang/commits?author=tprrt>`_
     * `meta-freescale patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-freescale/log/?qt=author&q=thomas.perrot>`_
     * `meta-iot-cloud patches <https://github.com/intel-iot-devkit/meta-iot-cloud/commits?author=tprrt>`_
@@ -41,6 +42,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `meta-tensorflow-lite patches <https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits?author=tprrt>`_
     * `meta-ti patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&q=thomas.perrot>`_
     * `openembedded-core patches <https://git.openembedded.org/openembedded-core/log/?qt=author&q=thomas.perrot>`_
+    * `OP-TEE patches <https://github.com/OP-TEE/optee_os/commits?author=tprrt>`_
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits?author=tprrt>`_
     * `U-boot patches <https://lore.kernel.org/u-boot/?qt=author&q=thomas.perrot>`_
 * Presentation
