@@ -19,6 +19,7 @@ Summary
 Below, a non-exhaustive list of my last contributions to opensource projects.
 
 * Blog post
+    * `Feedback from ELCE 2023: selection of talks #3 <https://bootlin.com/blog/feedback-from-elce-2023-selection-of-talks-3/>`_
     * `Updated Yocto support for SiFive RISC-V platforms <https://bootlin.com/blog/updated-yocto-support-for-sifive-risc-v-platforms/>`_
     * `Using Flutter on NVidia Jetson to build graphical applications <https://bootlin.com/blog/flutter-nvidia-jetson-openembedded-yocto/>`_
 * Documentation
