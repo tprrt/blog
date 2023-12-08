@@ -23,8 +23,9 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `Updated Yocto support for SiFive RISC-V platforms <https://bootlin.com/blog/updated-yocto-support-for-sifive-risc-v-platforms/>`_
     * `Using Flutter on NVidia Jetson to build graphical applications <https://bootlin.com/blog/flutter-nvidia-jetson-openembedded-yocto/>`_
 * Documentation
-    * `elinux changes <https://elinux.org/Special:Contributions/Tperrot>`_
-    * `wiki Yocto Project <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
+    * `Arcade Otaku Wiki <https://wiki.arcadeotaku.com/w/Special:Contributions/Pantoufle31>`_
+    * `Embedded Linux Wiki <https://elinux.org/Special:Contributions/Tperrot>`_
+    * `Yocto Project Wiki <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
 * Patches
     * `at91bootstrap patches <https://github.com/linux4sam/at91bootstrap/commits?author=tprrt>`_
     * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
