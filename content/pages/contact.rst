@@ -24,6 +24,7 @@ Social
 
 You can also interect with me on the following social networks:
 
+* `Discord`_
 * `Dockerhub`_
 * `Github`_
 * `Gitlab`_
@@ -34,6 +35,7 @@ You can also interect with me on the following social networks:
 * `Printables`_
 * `Spotify`_
 * `Thingiverse`_
+* `Threads`_
 * `Twitter`_
 
 About
@@ -48,6 +50,7 @@ Donate
 I accept charitable donations via `PayPal`_.
 
 .. _Curriculum vitae: https://github.com/tprrt/curriculum/raw/gh-pages/resume.pdf
+.. _Discord: https://discordapp.com/users/tprrt
 .. _Dockerhub: https://hub.docker.com/u/tprrt
 .. _Email: mailto:thomas.perrot@tupi.fr
 .. _Github: https://github.com/tprrt
@@ -64,5 +67,6 @@ I accept charitable donations via `PayPal`_.
 .. _PayPal: https://paypal.me/tprrt
 .. _Printables: https://www.printables.com/social/394648-tprrt/about
 .. _Spotify: https://open.spotify.com/user/214b7jk6zrtpen27r7qomqydy
+.. _Threads: https://www.threads.net/@thomas.prrt
 .. _Thingiverse: https://www.thingiverse.com/tprrt
 .. _Twitter: https://twitter.com/tprrt31
