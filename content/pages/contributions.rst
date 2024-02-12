@@ -25,9 +25,11 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
 * Documentation
     * `Arcade Otaku Wiki <https://wiki.arcadeotaku.com/w/Special:Contributions/Pantoufle31>`_
     * `Embedded Linux Wiki <https://elinux.org/Special:Contributions/Tperrot>`_
+    * `Wikipedia <https://en.wikipedia.org/wiki/Special:Contributions/Tperrot>`_
     * `Yocto Project Wiki <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
 * Patches
     * `at91bootstrap patches <https://github.com/linux4sam/at91bootstrap/commits?author=tprrt>`_
+    * `Bitbake patches <https://git.openembedded.org/bitbake/log/?qt=author&q=thomas.perrot>`_
     * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
     * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits?author=tprrt>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
