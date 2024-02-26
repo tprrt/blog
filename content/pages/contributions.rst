@@ -49,6 +49,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `openembedded-core patches <https://git.openembedded.org/openembedded-core/log/?qt=author&q=thomas.perrot>`_
     * `OP-TEE patches <https://github.com/OP-TEE/optee_os/commits?author=tprrt>`_
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits?author=tprrt>`_
+    * `Snagboot patches <https://github.com/bootlin/snagboot/commits?author=tprrt>`_
     * `U-boot patches <https://lore.kernel.org/u-boot/?qt=author&q=thomas.perrot>`_
 * Presentation
     * Nov 2022
