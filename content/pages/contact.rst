@@ -32,6 +32,7 @@ You can also interect with me on the following social networks:
 * `Hackster`_
 * `Instagram`_
 * `Instructables`_
+* `Linktree`_
 * `Printables`_
 * `Spotify`_
 * `Thingiverse`_
@@ -63,6 +64,7 @@ I accept charitable donations via `PayPal`_.
 .. _IRC: https://fr.wikipedia.org/wiki/Internet_Relay_Chat
 .. _Libera: https://libera.chat
 .. _Linkedin: https://www.linkedin.com/in/tprrt
+.. _Linktree: https://linktr.ee/tprrt
 .. _Matrix: https://matrix.org
 .. _PayPal: https://paypal.me/tprrt
 .. _Printables: https://www.printables.com/social/394648-tprrt/about
