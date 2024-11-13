@@ -24,6 +24,7 @@ Social
 
 You can also interect with me on the following social networks:
 
+* `Bluesky`_
 * `Discord`_
 * `Dockerhub`_
 * `Github`_
@@ -51,6 +52,7 @@ Donate
 I accept charitable donations via `PayPal`_.
 
 .. _Curriculum vitae: https://github.com/tprrt/curriculum/raw/gh-pages/resume.pdf
+.. _Bluesky: https://bsky.app/profile/tprrt.bsky.social
 .. _Discord: https://discordapp.com/users/tprrt
 .. _Dockerhub: https://hub.docker.com/u/tprrt
 .. _Email: mailto:thomas.perrot@tupi.fr
