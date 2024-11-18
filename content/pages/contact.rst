@@ -34,6 +34,7 @@ You can also interect with me on the following social networks:
 * `Instagram`_
 * `Instructables`_
 * `Linktree`_
+* `Mastodon`_
 * `Printables`_
 * `Spotify`_
 * `Thingiverse`_
@@ -68,6 +69,7 @@ I accept charitable donations via `PayPal`_.
 .. _Linkedin: https://www.linkedin.com/in/tprrt
 .. _Linktree: https://linktr.ee/tprrt
 .. _Matrix: https://matrix.org
+.. _Mastodon: https://mastodon.social/@tprrt
 .. _PayPal: https://paypal.me/tprrt
 .. _Printables: https://www.printables.com/social/394648-tprrt/about
 .. _Spotify: https://open.spotify.com/user/214b7jk6zrtpen27r7qomqydy
