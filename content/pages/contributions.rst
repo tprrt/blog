@@ -25,6 +25,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
 * Documentation
     * `Arcade Otaku Wiki <https://wiki.arcadeotaku.com/w/Special:Contributions/Pantoufle31>`_
     * `Embedded Linux Wiki <https://elinux.org/Special:Contributions/Tperrot>`_
+    * `Shmups Wiki <https://shmups.wiki/library/Special:Contributions/Pantoufle31>`_
     * `Wikipedia <https://en.wikipedia.org/wiki/Special:Contributions/Tperrot>`_
     * `Yocto Project Wiki <https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot>`_
 * Patches
