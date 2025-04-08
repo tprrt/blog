@@ -39,7 +39,6 @@ EXTRA_PATH_METADATA = {
     'static/CNAME': {'path': 'CNAME'},
     'static/favicon.ico': {'path': 'favicon.ico'},
     'static/google388b7531c8b11164.html': {'path': 'google388b7531c8b11164.html'},
-    'static/header_cover.png': {'path': 'static/header_cover.png'},
     'static/robots.txt': {'path': 'robots.txt'}
 }
 
