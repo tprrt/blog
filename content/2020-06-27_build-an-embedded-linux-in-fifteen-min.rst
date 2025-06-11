@@ -3,7 +3,7 @@ Build an embedded Linux in less than 15 minutes
 ===============================================
 
 :date: 2020-06-27 13:01
-:modified: 2020-11-30 16:11
+:modified: 2025-06-11 14:53
 :tags: busybox, embedded, intermediate, linux, qemu
 :category: linux
 :slug: build-an-embedded-linux-in-fifteen-min
@@ -15,23 +15,23 @@ Build an embedded Linux in less than 15 minutes
 Introduction
 ============
 
-Since some years, I no longer built a embedded Linux without using a framework, like `Open Embedded`_ from the `Yocto`_
+Since some years, I haven't built an embedded Linux without using a framework, like `Open Embedded`_ from the `Yocto`_
 project.
 Then here, I wanted to make a guide to help you to build quickly, from "scratch" a very minimal embedded Linux to boot a
 target.
-The following examples have been writen to boot a virtual Qemu target but, they can be adapted to boot a real target.
-Moreover, the build environment will be boot strapped with a prebuilt cross-toolchain, I have chosen to use one provided
+The following examples have been written to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be bootstrapped with a prebuilt cross-toolchain, I have chosen to use one provided
 by `Bootlin`_ and using glibc.
 
 Setup the environment
 =====================
 
-First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
+First, it is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
 
 - The Ncurses libraries are only required to execute the command `make menuconfig`.
 - The certificates and wget will be used to download the prebuilt toolchain.
 - In the same way, git will be used to checkout the source of `Busybox`_ and `Linux`_.
-- The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.
+- The Qemu packages will be used to emulate system platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.
 
 .. code-block:: bash
 
@@ -53,7 +53,7 @@ First, It is required to install the packages that are needed to install and use
        qemu-user-static \
        wget
 
-Now, it is time to download and install the prebuild toolchain:
+Now, it is time to download and install the prebuilt toolchain:
 
 .. code-block:: bash
 
@@ -64,7 +64,7 @@ Now, it is time to download and install the prebuild toolchain:
 
 Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
 
-- ``PATH``: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment
+- ``PATH``: It shall be extended so that the cross-tools from the cross-toolchain will be available from the environment
 - ``CROSS_COMPILE``: In order to clarify the prefix used by the cross-tools
 - ``ARCH``: The architecture of the target platform
   
@@ -73,7 +73,7 @@ Once the toolchain has been extracted you have to set the required environment v
     ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
     ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
-    export export PATH=~/src/aarch64--glibc--stable-2020.08-1/bin:$PATH
+    export PATH=~/src/aarch64--glibc--stable-2020.08-1/bin:$PATH
     export CROSS_COMPILE=aarch64-linux-
 
 Now, it is possible to call the cross-tools from the shell:
@@ -89,7 +89,7 @@ Now, it is possible to call the cross-tools from the shell:
     Thread model: posix
     gcc version 9.3.0 (Buildroot 2020.08-14-ge5a2a90)
 
-Concerning the variable ``PATH`` this one will be set afterwards because its value depends of the binary that will be built.
+Concerning the variable ``PATH`` this one will be set afterwards because its value depends on the binary that will be built.
 
 Build the Linux kernel
 ======================
@@ -150,7 +150,7 @@ The command ``make defconfig`` will apply the default configuration for the targ
 compilation will be performed by ``make -j$(nproc)``.
 
 The commands ``git show HEAD`` and ``make defconfig`` are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch ``linux-5.4.y``.
+- the first is useful to verify that the latest commit corresponding to the latest tag of the branch ``linux-5.4.y``.
 - the second can be used if you want to customize the kernel configuration.
 
 *NB*. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options
@@ -159,7 +159,7 @@ Populate the sysroot
 ====================
 
 The easy way to bootstrap a sysroot is to use `Busybox`_ that has been created to offer common UNIX tools into a single
-executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.
+executable and it is size-optimized. To create a sysroot, it is only required to add a few configuration files.
 
 The steps to pull and build `Busybox`_ are similar to those of the kernel `Linux`_.
 
@@ -179,7 +179,7 @@ The steps to pull and build `Busybox`_ are similar to those of the kernel `Linux
 
    make install
 
-Here, the *LDFLAGS* is set to force the static link of `Busybox`_ quickly, but it is also possible to use
+Here, the *LDFLAGS* is set to force static linking of `Busybox`_ quickly, but it is also possible to use
 *make menuconfig* to set *CONFIG_STATIC=y*. The advantage of the static executable is that it can be tested with Qemu:
 
 .. code-block:: bash
@@ -260,7 +260,7 @@ Build a rootfs
 --------------
 
 To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
-formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.
+formatted to create a ext3 filesystem. Then the tree can be copied and the rights updated.
 
 .. code-block:: bash
 

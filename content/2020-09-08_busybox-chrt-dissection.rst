@@ -3,7 +3,7 @@ How the Busybox's chrt applet works
 ===================================
 
 :date: 2020-09-08 19:20
-:modified: 2020-09-09 07:05
+:modified: 2025-06-11 14:53
 :tags: busybox, chrt, dissection, beginner
 :category: busybox
 :slug: busybox-chrt-dissection
@@ -41,7 +41,7 @@ This command is a Linux utils allowing to consult or to modify the scheduling at
    pid 6987's current scheduling policy: SCHED_FIFO
    pid 6987's current scheduling priority: 1
 
-`Busybox`_ provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
+`Busybox`_ provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
 and with some limitations.
 
 
@@ -51,7 +51,7 @@ The dissection
 The implementation of the *chrt* applet is in the file `util-linux/chrt.c`_ that containing several functions which are
 called in the main function of this applet.
 
-The main function of this applet is divised in three main parts:
+The main function of this applet is divided into three main parts:
 - the first parses the command options
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set
@@ -67,7 +67,7 @@ At start of main, the character string containing the options are parsed to obta
                         "r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob"
         );
 
-If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:
+If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command exits:
 
 .. code-block:: c
 
@@ -80,7 +80,7 @@ If the (-m) is set then the min and max valid priorities for each scheduling pol
                 fflush_stdout_and_exit(EXIT_SUCCESS);
         }
 
-The function *show_min_max* sends use the Posix functions *sched_get_priority_max* and *sched_get_priority_min* from the
+The function *show_min_max* uses the Posix functions *sched_get_priority_max* and *sched_get_priority_min* from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:
 
 .. code-block:: c
@@ -141,7 +141,7 @@ Finally, when the *chrt* applet is used to modify scheduling attributes then the
     if (!argv[0]) /* "-p PRIO PID [...]" */
         goto print_rt_info;
 
-The function *sched_getscheduler* and *sched_getscheduler* will send a syscall to the scheduler subsystem of the kernel Linux.
+The function *sched_setscheduler* and *sched_getscheduler* will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from */proc*:
 
 .. code-block:: bash
@@ -186,8 +186,8 @@ Below a short list of limitations that I observed during my analysis of this app
 Resetting scheduling policy
 ---------------------------
 
-The *chrt* applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reseted when a
-process is fork to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
+The *chrt* applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a
+process forks to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
 build of busybox and it is applied on all scheduling attributes modifications done with this applet.
 
 Deadline support

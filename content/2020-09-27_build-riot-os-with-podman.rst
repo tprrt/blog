@@ -3,10 +3,10 @@ Build RIOT-OS with Podman
 =========================
 
 :date: 2020-09-27 13:01
-:modified: 2021-02-03 11:37
+:modified: 2025-06-11 14:53
 :tags: container, podman, riot-os
 :category: riot-os
-:slug: build-riot-oswith-podman
+:slug: build-riot-os-with-podman
 :authors: tperrot
 :summary: This article is a tip that explains how it is possible to build a
 	  `RIOT-OS`_ application with `Podman`_.
@@ -23,8 +23,8 @@ take this opportunity to introduce you to `Podman`_ and `RIOT-OS`_.
 Podman
 ======
 
-Some Linux distribution, like `Fedora`_ chosen to officially only support
-`Podman`_ instead of `Docker`_ for some available reason:
+Some Linux distribution, like `Fedora`_ chosen to officially support only
+`Podman`_ instead of `Docker`_ for several reasons:
 
 - It is daemonless container engine.
 - It is rootless.
@@ -37,7 +37,7 @@ Moreover, `Podman`_ is able to use the images built by the `Docker`_ engine and
 has been stored in `Docker`_ registry.
 
 However, most of the time the `Podman`_ commands are identical to that of
-`Docker`_, the a simple alias is enough to be misleading:
+`Docker`_, then a simple alias is enough to be misleading:
 *alias docker=podman*.
 
 But as `Podman`_ is rootless and safer than `Docker`_, then sometimes it is

@@ -3,7 +3,7 @@ Contact
 =======
 
 :date: 2021-02-21 17:27
-:modified: 2021-02-28 17:50
+:modified: 2025-06-11 14:53
 :tags: blog
 :category: misc
 :slug: contact
@@ -22,7 +22,7 @@ Otherwise, on the `Libera`_ network of `IRC`_ under the nickname *tperrot* or
 Social
 ======
 
-You can also interect with me on the following social networks:
+You can also interact with me on the following social networks:
 
 * `Bluesky`_
 * `Discord`_

@@ -3,7 +3,7 @@ Secure Boot with AHAB on i.MX93: A Complete Guide
 =================================================
 
 :date: 2024-08-06 19:21
-:modified: 2024-08-06 19:21
+:modified: 2025-06-11 14:53
 :tags: security, embedded, imx93, secure-boot, ahab, nxp
 :category: Security
 :slug: secure-boot-with-ahab-on-imx93
@@ -389,7 +389,7 @@ Once the device is closed, the *ahab_status* command will show *OEM closed*:
    Lifecycle: 0x00000020, OEM closed
    No Events Found!
 
-Until *OEM Open* appears in the status, the device is not secured and can still
+As long as *OEM Open* appears in the status, the device is not secured and can still
 execute unsigned bootloaders or those signed with invalid keys.
 
 Conclusion
