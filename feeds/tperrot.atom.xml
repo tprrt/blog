@@ -1,5 +1,320 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - tperrot</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/tperrot.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2021-02-03T11:37:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-oswith-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2021-02-03T11:37:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-oswith-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - tperrot</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/tperrot.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2024-08-06T19:21:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Secure Boot with AHAB on i.MX93: A Complete Guide</title><link href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="alternate"></link><published>2024-08-06T19:21:00+02:00</published><updated>2024-08-06T19:21:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2024-08-06:/secure-boot-with-ahab-on-imx93.html</id><summary type="html">&lt;p class="first last"&gt;Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
+to protect your embedded devices from unauthorized code execution.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;&lt;strong&gt;The security of embedded devices has never been more critical.&lt;/strong&gt; In a world
+where attacks targeting IoT systems are becoming increasingly sophisticated,
+ensuring the integrity of the boot process is a must. This is where &lt;strong&gt;Secure
+Boot&lt;/strong&gt; comes in—an essential technology that guarantees only authorized code can
+execute on a device from the moment it starts. In this article, we will explore
+the implementation of Secure Boot using AHAB, the solution provided by NXP to
+secure the i.MX93 from its initial boot stages.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why is Secure Boot crucial for your device?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A secure boot ensures that no malicious code interferes with the critical boot
+process, protecting your device from attacks targeting the bootloader and early
+boot stages. Furthermore, AHAB, integrated into i.MX93 processors, enables
+advanced authentication right from the initial boot stages, ensuring that only
+validated components can be loaded, thereby strengthening security from the
+get-go.&lt;/p&gt;
+&lt;p&gt;Secure boot is a critical security feature that ensures only authenticated and
+authorized code can run on a device. It operates through a chain of trust, where
+each component verifies the integrity of the next element in the chain.&lt;/p&gt;
+&lt;p&gt;Several mechanisms must be used to authenticate each element of this chain, but
+the mechanism for authenticating the first boot stages depends on the target SoC.
+The i.MX93 series uses NXP's Advanced High Assurance Boot (AHAB) to secure the
+first boot stages.&lt;/p&gt;
+&lt;p&gt;For subsequent stages, you can implement mechanisms such as:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Using U-Boot's &amp;quot;verified boot&amp;quot; feature to sign the kernel,&lt;/li&gt;
+&lt;li&gt;Using the default environment (cf. USE_DEFAULT_ENV_FILE), and restricting
+write access to only a few environment variables (cf. ENV_WRITEABLE_LIST),
+which are necessary for writable access, such as for OTA updates,&lt;/li&gt;
+&lt;li&gt;Using DM-verity to authenticate the root filesystem,&lt;/li&gt;
+&lt;li&gt;And finally, using OverlayFS combined with DM-crypt to mount encrypted,
+writable subfolders.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here, we'll focus on the first part of the secure boot process, using NXP's AHAB
+to authenticate the bootloader on the NXP i.MX93 in single-boot mode. We will
+also briefly discuss how to generate the keys to sign the bootloader and provide
+an introduction to AHAB.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: AHAB also provides a complementary encryption feature designed to protect
+the confidentiality and integrity of data, whereas secure boot focuses on
+verifying the integrity and authenticity of the boot process. This post will not
+cover encryption in detail.&lt;/em&gt;&lt;/p&gt;
+&lt;div class="section" id="ahab-architecture"&gt;
+&lt;h2&gt;AHAB Architecture&lt;/h2&gt;
+&lt;p&gt;The AHAB authentication mechanism is based on public key cryptography using
+asymmetric keys.&lt;/p&gt;
+&lt;p&gt;On the i.MX93, AHAB support is provided by a security co-processor, the EdgeLock
+enclave (ELE), which handles the authentication of binaries signed with one or
+more private keys. This co-processor contains fuses that must be burned with the
+hash of the public keys.&lt;/p&gt;
+&lt;div class="section" id="ahab-containers"&gt;
+&lt;h3&gt;AHAB Containers&lt;/h3&gt;
+&lt;p&gt;Since multiple boot stages (e.g., TF-A, OP-TEE, U-Boot, etc.) and firmwares are
+required to boot i.MX93 platforms, these binaries are packed into containers
+using the &lt;a class="reference external" href="https://github.com/nxp-imx/imx-mkimage"&gt;imx-mkimage&lt;/a&gt; tool:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;bl31.bin
+lpddr4_dmem_1d_v202201.bin
+lpddr4_dmem_2d_v202201.bin
+lpddr4_imem_1d_v202201.bin
+lpddr4_imem_2d_v202201.bin
+mx93a1-ahab-container.img
+tee.bin
+u-boot.bin
+u-boot-spl.bin
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In i.MX93 single-boot mode, the bootloader image contains at least three
+containers:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;mx93a1-ahab-container.img&lt;/strong&gt;: Contains the ELE Firmware.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;u-boot-atf-container.img&lt;/strong&gt;: Contains at least the SPL.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;flash.bin&lt;/strong&gt;: Contains TF-A, OP-TEE, and U-Boot.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        *start ----&amp;gt; +---------------------------+ ---------
+                     |   1st Container header    |   ^
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     | Padding for 1kB alignment |   |
+*start + 0x400 ----&amp;gt; +---------------------------+   |
+                     |   2nd Container header    |   |
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     |          Padding          |   |  Authenticated at
+                     +---------------------------+   |  ELE ROM/FW Level
+                     |           ELE FW          |   |
+                     +---------------------------+   |
+                     |          Padding          |   |
+                     +---------------------------+   |
+                     |       Cortex-M Image      |   |
+                     +---------------------------+   |
+                     |         SPL Image         |   v
+                     +---------------------------+ ---------
+                     |   3rd Container header    |   ^
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     |          Padding          |   | Authenticated
+                     +---------------------------+   | at SPL Level
+                     |            TF-A           |   |
+                     +---------------------------+   |
+                     |           OP-TEE          |   |
+                     +---------------------------+   |
+                     |           U-Boot          |   v
+                     +---------------------------+ ---------
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These containers are signed offline using &lt;a class="reference external" href="https://www.nxp.com/webapp/sps/download/license.jsp?colCode=IMX_CST_TOOL_NEW"&gt;NXP Code-Signing Tools (CST)&lt;/a&gt;, which
+also allow the creation of an OEM private key infrastructure (PKI) and the
+generation of the associated public keys (SRK) table, which is burned into the
+fuses. The CST can also be used with the PKCS#11 standard to access
+cryptographic services from tokens or devices such as HSM, TPM, and smart cards.&lt;/p&gt;
+&lt;p&gt;The first container is signed with NXP keys and is authenticated by the ELE ROM,
+while the other containers are signed with OEM keys.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="ahab-boot-flow"&gt;
+&lt;h3&gt;AHAB Boot Flow&lt;/h3&gt;
+&lt;p&gt;In single boot mode, the Cortex-A55 ROM reads data from the selected boot
+device, loading all containers in the chosen boot image set one by one. All
+images within each container (e.g., EdgeLock secure enclave firmware, Cortex-M33
+firmware, A55 firmware, OP-TEE, and U-Boot) are loaded, and the EdgeLock secure
+enclave (ELE) is tasked with authenticating them. The ELE firmware is
+authenticated by the ELE ROM, and images in the second container are verified by
+the ELE firmware.&lt;/p&gt;
+&lt;p&gt;If the bootloader image contains more than two containers, the third and
+subsequent containers are authenticated by the SPL instead of the ELE.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="pki-generation"&gt;
+&lt;h2&gt;PKI Generation&lt;/h2&gt;
+&lt;p&gt;To authenticate the bootloader, we need to generate keys. These keys can be
+created with the &lt;a class="reference external" href="https://www.nxp.com/webapp/sps/download/license.jsp?colCode=IMX_CST_TOOL_NEW"&gt;CST&lt;/a&gt;. The private key will be used to sign the bootloader, and
+the public key will be burned into the i.MX93 fuses to authenticate the
+bootloader during boot.&lt;/p&gt;
+&lt;p&gt;Follow these steps to generate the keys:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cst-3.4.1/keys
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;00000001&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;serial
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Write the passphrase for the certificate (replace &amp;quot;fooahabcert&amp;quot; with your
+choice) in two lines, separated by &lt;tt class="docutils literal"&gt;\n&lt;/tt&gt;. It is important to store this
+passphrase securely with backups:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;fooahabcert\nfooahabcert&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;key_pass.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Generate a P384 ECC PKI tree with a subordinate SGK key on CST:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./ahab_pki_tree.sh
+&lt;span class="o"&gt;[&lt;/span&gt;...&lt;span class="o"&gt;]&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;use&lt;span class="w"&gt; &lt;/span&gt;an&lt;span class="w"&gt; &lt;/span&gt;existing&lt;span class="w"&gt; &lt;/span&gt;CA&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/n&lt;span class="o"&gt;)&lt;/span&gt;?:&lt;span class="w"&gt; &lt;/span&gt;n
+
+Key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;options&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;confirm&lt;span class="w"&gt; &lt;/span&gt;targeted&lt;span class="w"&gt; &lt;/span&gt;device&lt;span class="w"&gt; &lt;/span&gt;supports&lt;span class="w"&gt; &lt;/span&gt;desired&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;:
+Select&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;key&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;possible&lt;span class="w"&gt; &lt;/span&gt;values:&lt;span class="w"&gt; &lt;/span&gt;rsa,&lt;span class="w"&gt; &lt;/span&gt;rsa-pss,&lt;span class="w"&gt; &lt;/span&gt;ecc&lt;span class="o"&gt;)&lt;/span&gt;?:&lt;span class="w"&gt; &lt;/span&gt;ecc
+Enter&lt;span class="w"&gt; &lt;/span&gt;length&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;elliptic&lt;span class="w"&gt; &lt;/span&gt;curve&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;be&lt;span class="w"&gt; &lt;/span&gt;used&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;PKI&lt;span class="w"&gt; &lt;/span&gt;tree:
+Possible&lt;span class="w"&gt; &lt;/span&gt;values&lt;span class="w"&gt; &lt;/span&gt;p256,&lt;span class="w"&gt; &lt;/span&gt;p384,&lt;span class="w"&gt; &lt;/span&gt;p521:&lt;span class="w"&gt;  &lt;/span&gt;p384
+Enter&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;digest&lt;span class="w"&gt; &lt;/span&gt;algorithm&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;use:&lt;span class="w"&gt; &lt;/span&gt;sha384
+Enter&lt;span class="w"&gt; &lt;/span&gt;PKI&lt;span class="w"&gt; &lt;/span&gt;tree&lt;span class="w"&gt; &lt;/span&gt;duration&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;years&lt;span class="o"&gt;)&lt;/span&gt;:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;
+Do&lt;span class="w"&gt; &lt;/span&gt;you&lt;span class="w"&gt; &lt;/span&gt;want&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;SRK&lt;span class="w"&gt; &lt;/span&gt;certificates&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;have&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;CA&lt;span class="w"&gt; &lt;/span&gt;flag&lt;span class="w"&gt; &lt;/span&gt;set?&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;y/n&lt;span class="o"&gt;)&lt;/span&gt;?:&lt;span class="w"&gt; &lt;/span&gt;n
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Generate the Signing Root Keys (SRK) Table and SRK Hash for 64-bit Linux machines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;../crts/
+../linux64/bin/srktool&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;sha256&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;sha384&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;SRK_1_2_3_4_table.bin&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;SRK_1_2_3_4_fuse.bin&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;SRK1_sha384_secp384r1_v3_usr_crt.pem,&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;SRK2_sha384_secp384r1_v3_usr_crt.pem,&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;SRK3_sha384_secp384r1_v3_usr_crt.pem,&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;SRK4_sha384_secp384r1_v3_usr_crt.pem
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Do not enter spaces between the commas when specifying the SRKs in the &amp;quot;-c&amp;quot; or
+&amp;quot;--certs&amp;quot; option. Otherwise, the certificates specified after the first space
+will be excluded from the table.&lt;/p&gt;
+&lt;p&gt;Regenerate the SRK HASH (SRK_1_2_3_4_fuse.bin) using SHA256 with the
+SRK_1_2_3_4_table.bin:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openssl&lt;span class="w"&gt; &lt;/span&gt;dgst&lt;span class="w"&gt; &lt;/span&gt;-binary&lt;span class="w"&gt; &lt;/span&gt;-sha256&lt;span class="w"&gt; &lt;/span&gt;SRK_1_2_3_4_table.bin
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Optionally, verify that the sha256sum of SRK_1_2_3_4_table matches the SRK_1_2_3_4_fuse.bin:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;od&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;x4&lt;span class="w"&gt; &lt;/span&gt;SRK_1_2_3_4_fuse.bin
+&lt;span class="m"&gt;0000000&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;29eec727&lt;span class="w"&gt; &lt;/span&gt;eaed9aa7&lt;span class="w"&gt; &lt;/span&gt;c7e53bc0&lt;span class="w"&gt; &lt;/span&gt;36835f78
+&lt;span class="m"&gt;0000020&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;6901bc47&lt;span class="w"&gt; &lt;/span&gt;b244753c&lt;span class="w"&gt; &lt;/span&gt;f78d3162&lt;span class="w"&gt; &lt;/span&gt;27ae36b9
+&lt;span class="m"&gt;0000040&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bootloader-signature"&gt;
+&lt;h2&gt;Bootloader Signature&lt;/h2&gt;
+&lt;p&gt;The CST uses CSF description files to sign (and encrypt) containers generated by
+imx-mkimage with OEM keys. When imx-mkimage generates containers, it also
+specifies the block offsets to be used in the CSF description files. For
+example, imx-mkimage returns the following values for your bootloader:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;CST: CONTAINER 0 offset: 0x0
+CST: CONTAINER 0: Signature Block: offset is at 0x190
+CST: CONTAINER 0 offset: 0x400
+CST: CONTAINER 0: Signature Block: offset is at 0x490
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Where &lt;em&gt;0x190&lt;/em&gt; is the block offset for the second container header and &lt;em&gt;0x490&lt;/em&gt; is
+the block offset for the third container header.&lt;/p&gt;
+&lt;p&gt;The CSF description file used to sign a container contains three sections:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;em&gt;[Header]&lt;/em&gt;: Information about the HAB version to use for signing.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;[Authenticate Data]&lt;/em&gt;: Information about the key used to sign.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;[Install SRK]&lt;/em&gt;: Information about the container being signed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The following CSF description files were used to sign the
+&lt;em&gt;u-boot-atf-container.img&lt;/em&gt; in our example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[Header]&lt;/span&gt;
+&lt;span class="na"&gt;Target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;AHAB&lt;/span&gt;
+&lt;span class="na"&gt;Version&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;1.0&lt;/span&gt;
+
+&lt;span class="k"&gt;[Install SRK]&lt;/span&gt;
+&lt;span class="c1"&gt;# SRK table generated by srktool&lt;/span&gt;
+&lt;span class="na"&gt;File&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SRK_1_2_3_4_table.bin&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Public key certificate in PEM format&lt;/span&gt;
+&lt;span class="na"&gt;Source&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SRK1_sha384_secp384r1_v3_usr_crt.pem&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Index of the public key certificate within the SRK table (0 .. 3)&lt;/span&gt;
+&lt;span class="na"&gt;Source index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0&lt;/span&gt;
+&lt;span class="c1"&gt;# Type of SRK set (NXP or OEM)&lt;/span&gt;
+&lt;span class="na"&gt;Source set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;OEM&lt;/span&gt;
+&lt;span class="c1"&gt;# bitmask of the revoked SRKs&lt;/span&gt;
+&lt;span class="na"&gt;Revocations&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0x0&lt;/span&gt;
+
+&lt;span class="k"&gt;[Authenticate Data]&lt;/span&gt;
+&lt;span class="c1"&gt;# Binary to be signed generated by mkimage&lt;/span&gt;
+&lt;span class="na"&gt;File&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;u-boot-atf-container.img&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Offsets = Container header  Signature block (printed out by mkimage)&lt;/span&gt;
+&lt;span class="na"&gt;Offsets&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0x0 0x190&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The following CSF description files were used to sign &lt;em&gt;flash.bin&lt;/em&gt; in our
+example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[Header]&lt;/span&gt;
+&lt;span class="na"&gt;Target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;AHAB&lt;/span&gt;
+&lt;span class="na"&gt;Version&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;1.0&lt;/span&gt;
+
+&lt;span class="k"&gt;[Install SRK]&lt;/span&gt;
+&lt;span class="c1"&gt;# SRK table generated by srktool&lt;/span&gt;
+&lt;span class="na"&gt;File&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SRK_1_2_3_4_table.bin&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Public key certificate in PEM format&lt;/span&gt;
+&lt;span class="na"&gt;Source&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SRK1_sha384_secp384r1_v3_usr_crt.pem&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Index of the public key certificate within the SRK table (0 .. 3)&lt;/span&gt;
+&lt;span class="na"&gt;Source index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0&lt;/span&gt;
+&lt;span class="c1"&gt;# Type of SRK set (NXP or OEM)&lt;/span&gt;
+&lt;span class="na"&gt;Source set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;OEM&lt;/span&gt;
+&lt;span class="c1"&gt;# bitmask of the revoked SRKs&lt;/span&gt;
+&lt;span class="na"&gt;Revocations&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0x0&lt;/span&gt;
+
+&lt;span class="k"&gt;[Authenticate Data]&lt;/span&gt;
+&lt;span class="c1"&gt;# Binary to be signed generated by mkimage&lt;/span&gt;
+&lt;span class="na"&gt;File&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;flash.bin&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# Offsets = Container header  Signature block (printed out by mkimage)&lt;/span&gt;
+&lt;span class="na"&gt;Offsets&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;0x400 0x490&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The first step is to generate a &lt;em&gt;u-boot-atf-container.img&lt;/em&gt;, then copy the block
+offsets into the CSF description file to sign it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;SOC&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;iMX9&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;REV&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;A1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;dtbs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;imx93-11x11-evk.dtb&lt;span class="w"&gt; &lt;/span&gt;u-boot-atf-container.img
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Next, sign it with the following command and replace the unsigned version:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cst&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;u-boot-atf-container.img.csf&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;u-boot-atf-container.img.signed
+mv&lt;span class="w"&gt; &lt;/span&gt;u-boot-atf-container.img.signed&lt;span class="w"&gt; &lt;/span&gt;u-boot-atf-container.img
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then generate a &lt;em&gt;flash.bin&lt;/em&gt; containing the signed &lt;em&gt;u-boot-atf-container.img&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;SOC&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;iMX9&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;REV&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;A1&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;V2X&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;NO&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;dtbs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;imx93-11x11-evk.dtb&lt;span class="w"&gt; &lt;/span&gt;flash_singleboot
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Finally, sign the resulting &lt;em&gt;flash.bin&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cst&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;flash.bin.csf&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;flash.bin.signed
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="burn-fuses"&gt;
+&lt;h2&gt;Burn Fuses&lt;/h2&gt;
+&lt;p&gt;Once the signed &lt;em&gt;flash.bin&lt;/em&gt; is flashed, you need to burn the public keys used to
+sign the bootloader into the i.MX93 fuses to finalize AHAB secure boot. This
+requires using a U-Boot that provides AHAB functionalities, such as checking ELE
+events during bootloader authentication and securing the device.&lt;/p&gt;
+&lt;div class="section" id="program-srk"&gt;
+&lt;h3&gt;Program SRK&lt;/h3&gt;
+&lt;p&gt;The following commands enable AHAB secure boot by programming the
+&lt;em&gt;SRK_HASH[255:0]&lt;/em&gt; fuses on i.MX93, ensuring that only bootloaders signed with
+keys matching the SRK hash programmed into the fuses will be accepted:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0x29eec727
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0xeaed9aa7
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0xc7e53bc0
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0x36835f78
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0x6901bc47
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0xb244753c
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0xf78d3162
+fuse&lt;span class="w"&gt; &lt;/span&gt;prog&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;0x27ae36b9
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="close-the-device"&gt;
+&lt;h3&gt;Close the Device&lt;/h3&gt;
+&lt;p&gt;Once the SRK fuses are programmed, you can &amp;quot;close&amp;quot; the device to allow only the
+bootloader signed with keys matching the SRK table to boot:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ahab_close
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Before closing the device, you can verify that the fuses have been written
+correctly by checking that no ELE events are raised:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ahab_status
+Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000008,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;Open
+
+No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
+&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;
+Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000008,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;Open
+
+No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once the device is closed, the &lt;em&gt;ahab_status&lt;/em&gt; command will show &lt;em&gt;OEM closed&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ahab_status
+Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000020,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;closed
+
+No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
+&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;
+Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000020,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;closed
+No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Until &lt;em&gt;OEM Open&lt;/em&gt; appears in the status, the device is not secured and can still
+execute unsigned bootloaders or those signed with invalid keys.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;By implementing AHAB on the i.MX93 platform, you can ensure that your boot
+process is protected from unauthorized code. The use of public key cryptography
+and secure containers adds an extra layer of security, making your device more
+resilient to attacks. This process is crucial for applications where integrity
+and authenticity from the very first boot stage are paramount.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Security"></category><category term="security"></category><category term="embedded"></category><category term="imx93"></category><category term="secure-boot"></category><category term="ahab"></category><category term="nxp"></category></entry><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-oswith-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2021-02-03T11:37:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-oswith-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
 &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; application with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="summary"&gt;
 &lt;h2&gt;Summary&lt;/h2&gt;
