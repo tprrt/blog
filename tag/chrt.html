@@ -74,14 +74,14 @@ chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span
 pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_FIFO</span>
 <span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">1</span>
 </pre></div>
-<p><a class="reference external" href="https://www.busybox.net">Busybox</a> provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
+<p><a class="reference external" href="https://www.busybox.net">Busybox</a> provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
 and with some limitations.</p>
 </div>
 <div class="section" id="the-dissection">
 <h2>The dissection</h2>
 <p>The implementation of the <em>chrt</em> applet is in the file <a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c">util-linux/chrt.c</a> that containing several functions which are
 called in the main function of this applet.</p>
-<p>The main function of this applet is divised in three main parts:
+<p>The main function of this applet is divided into three main parts:
 - the first parses the command options
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set</p>
@@ -93,7 +93,7 @@ called in the main function of this applet.</p>
 <span class="w">                </span><span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span>
 <span class="p">);</span>
 </pre></div>
-<p>If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:</p>
+<p>If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command exits:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print min/max and exit */</span>
 <span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span>
 <span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span>
@@ -103,7 +103,7 @@ called in the main function of this applet.</p>
 <span class="w">        </span><span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-<p>The function <em>show_min_max</em> sends use the Posix functions <em>sched_get_priority_max</em> and <em>sched_get_priority_min</em> from the
+<p>The function <em>show_min_max</em> uses the Posix functions <em>sched_get_priority_max</em> and <em>sched_get_priority_min</em> from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:</p>
 <div class="highlight"><pre><span></span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
 <span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
@@ -152,7 +152,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
 <span class="w">    </span><span class="k">goto</span><span class="w"> </span><span class="n">print_rt_info</span><span class="p">;</span>
 </pre></div>
-<p>The function <em>sched_getscheduler</em> and <em>sched_getscheduler</em> will send a syscall to the scheduler subsystem of the kernel Linux.
+<p>The function <em>sched_setscheduler</em> and <em>sched_getscheduler</em> will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from <em>/proc</em>:</p>
 <div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/6987/sched
 WebExtensions<span class="w"> </span><span class="o">(</span><span class="m">6987</span>,<span class="w"> </span><span class="c1">#threads: 23)</span>
@@ -191,8 +191,8 @@ numa_faults<span class="w"> </span><span class="nv">node</span><span class="o">=
 <p>Below a short list of limitations that I observed during my analysis of this applet.</p>
 <div class="section" id="resetting-scheduling-policy">
 <h3>Resetting scheduling policy</h3>
-<p>The <em>chrt</em> applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reseted when a
-process is fork to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
+<p>The <em>chrt</em> applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a
+process forks to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
 build of busybox and it is applied on all scheduling attributes modifications done with this applet.</p>
 </div>
 <div class="section" id="deadline-support">

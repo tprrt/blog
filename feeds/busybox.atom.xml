@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - busybox</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/busybox.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2020-09-09T07:05:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2020-09-09T07:05:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - busybox</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/busybox.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2025-06-11T14:53:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In this article, I will dissect how the &lt;em&gt;chrt&lt;/em&gt; applet from the release 1.32.0 of &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; works, what it does, etc.&lt;/p&gt;
@@ -24,14 +24,14 @@ chrt&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;&l
 pid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;6987&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;s current scheduling policy: SCHED_FIFO&lt;/span&gt;
 &lt;span class="s1"&gt;pid 6987&amp;#39;&lt;/span&gt;s&lt;span class="w"&gt; &lt;/span&gt;current&lt;span class="w"&gt; &lt;/span&gt;scheduling&lt;span class="w"&gt; &lt;/span&gt;priority:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
+&lt;p&gt;&lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
 and with some limitations.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="the-dissection"&gt;
 &lt;h2&gt;The dissection&lt;/h2&gt;
 &lt;p&gt;The implementation of the &lt;em&gt;chrt&lt;/em&gt; applet is in the file &lt;a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c"&gt;util-linux/chrt.c&lt;/a&gt; that containing several functions which are
 called in the main function of this applet.&lt;/p&gt;
-&lt;p&gt;The main function of this applet is divised in three main parts:
+&lt;p&gt;The main function of this applet is divided into three main parts:
 - the first parses the command options
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set&lt;/p&gt;
@@ -43,7 +43,7 @@ called in the main function of this applet.&lt;/p&gt;
 &lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&amp;quot;&lt;/span&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:&lt;/p&gt;
+&lt;p&gt;If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command exits:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;opt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OPT_m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* print min/max and exit */&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;show_min_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SCHED_OTHER&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;show_min_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SCHED_FIFO&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -53,7 +53,7 @@ called in the main function of this applet.&lt;/p&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;fflush_stdout_and_exit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EXIT_SUCCESS&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The function &lt;em&gt;show_min_max&lt;/em&gt; sends use the Posix functions &lt;em&gt;sched_get_priority_max&lt;/em&gt; and &lt;em&gt;sched_get_priority_min&lt;/em&gt; from the
+&lt;p&gt;The function &lt;em&gt;show_min_max&lt;/em&gt; uses the Posix functions &lt;em&gt;sched_get_priority_max&lt;/em&gt; and &lt;em&gt;sched_get_priority_min&lt;/em&gt; from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sched_get_priority_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pol&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sched_get_priority_min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pol&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -102,7 +102,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* &amp;quot;-p PRIO PID [...]&amp;quot; */&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;goto&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;print_rt_info&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The function &lt;em&gt;sched_getscheduler&lt;/em&gt; and &lt;em&gt;sched_getscheduler&lt;/em&gt; will send a syscall to the scheduler subsystem of the kernel Linux.
+&lt;p&gt;The function &lt;em&gt;sched_setscheduler&lt;/em&gt; and &lt;em&gt;sched_getscheduler&lt;/em&gt; will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from &lt;em&gt;/proc&lt;/em&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat&lt;span class="w"&gt; &lt;/span&gt;/proc/6987/sched
 WebExtensions&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6987&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;#threads: 23)&lt;/span&gt;
@@ -141,8 +141,8 @@ numa_faults&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;node&lt;/s
 &lt;p&gt;Below a short list of limitations that I observed during my analysis of this applet.&lt;/p&gt;
 &lt;div class="section" id="resetting-scheduling-policy"&gt;
 &lt;h3&gt;Resetting scheduling policy&lt;/h3&gt;
-&lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reseted when a
-process is fork to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
+&lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a
+process forks to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
 build of busybox and it is applied on all scheduling attributes modifications done with this applet.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="deadline-support"&gt;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2024-08-06T19:21:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Secure Boot with AHAB on i.MX93: A Complete Guide</title><link href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="alternate"></link><published>2024-08-06T19:21:00+02:00</published><updated>2024-08-06T19:21:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2024-08-06:/secure-boot-with-ahab-on-imx93.html</id><summary type="html">&lt;p class="first last"&gt;Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2025-06-11T14:53:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Secure Boot with AHAB on i.MX93: A Complete Guide</title><link href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="alternate"></link><published>2024-08-06T19:21:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2024-08-06:/secure-boot-with-ahab-on-imx93.html</id><summary type="html">&lt;p class="first last"&gt;Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
 to protect your embedded devices from unauthorized code execution.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;strong&gt;The security of embedded devices has never been more critical.&lt;/strong&gt; In a world
 where attacks targeting IoT systems are becoming increasingly sophisticated,
@@ -302,7 +302,7 @@ No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;
 Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000020,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;closed
 No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Until &lt;em&gt;OEM Open&lt;/em&gt; appears in the status, the device is not secured and can still
+&lt;p&gt;As long as &lt;em&gt;OEM Open&lt;/em&gt; appears in the status, the device is not secured and can still
 execute unsigned bootloaders or those signed with invalid keys.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -314,7 +314,125 @@ and secure containers adds an extra layer of security, making your device more
 resilient to attacks. This process is crucial for applications where integrity
 and authenticity from the very first boot stage are paramount.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Security"></category><category term="security"></category><category term="embedded"></category><category term="imx93"></category><category term="secure-boot"></category><category term="ahab"></category><category term="nxp"></category></entry><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-oswith-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2021-02-03T11:37:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-oswith-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
+</content><category term="Security"></category><category term="security"></category><category term="embedded"></category><category term="imx93"></category><category term="secure-boot"></category><category term="ahab"></category><category term="nxp"></category></entry><entry><title>Zephyr Device Tree Guide</title><link href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html" rel="alternate"></link><published>2022-07-29T20:32:00+02:00</published><updated>2022-07-29T20:32:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2022-07-29:/zephyr-device-tree-guide.html</id><summary type="html"></summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The goal of the &lt;a class="reference external" href="https://zephyrproject.org/"&gt;Zephyr project&lt;/a&gt;, hosted by the Linux foundation, since 2016, is to provide a safe and secured real time operating system (RTOS) for connected devices that are too small for Linux, or for core companion, through the Apache 2.0 open source license.&lt;/p&gt;
+&lt;p&gt;It is designed for resource-constrained devices such as microcontrollers and Internet of Things (IoT) devices, to be modular and scalable. This makes it ideal for a wide range of devices, from simple sensors to complex systems. The operating system is written in C and is fully compatible with the C11 and C++17 standards.&lt;/p&gt;
+&lt;p&gt;One of the key benefits of the Zephyr device model is its small footprint, it can be configured to run on devices with as little as 10 KB of memory.&lt;/p&gt;
+&lt;p&gt;It supports multiple 32 bits and 64 bits architectures: Cortex-A, Cortex-M, Cortex-R, RISC-V, x86-64, etc.
+But it also support several boards and extensions: Feather, nRF52840, ST Discovery, ST Nucleo, ESP-32, etc.
+It is able to manage several kinds of connectivity: Bluetooth, ethernet, wifi, LoRa.
+And it support some network protocols: IPv4, IPv6,UDP, TCP, CoAP, LWM2M, MQTT, DNS, etc.&lt;/p&gt;
+&lt;p&gt;As Linux, Zephyr use &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html"&gt;Kconfig&lt;/a&gt;, and its device model is mainly based on &lt;a class="reference external" href="https://www.devicetree.org/"&gt;device tree&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="device-tree"&gt;
+&lt;h2&gt;Device tree&lt;/h2&gt;
+&lt;p&gt;Device trees are tree data structures that describe the hardware components and their relationships in a system.
+They are stored in a text file, named device tree sources (*.dts), and they written by developers to describe hardware architectures of SoCs and boards.
+And they are used by the operating system to determine how to initialize and interact with the hardware.&lt;/p&gt;
+&lt;p&gt;Each node describe a device of the system, has its own properties that describe their characteristics, and they have only one parent (except for the root node).&lt;/p&gt;
+&lt;p&gt;Each device driver is associated with a specific device tree node, which represents a hardware component in the system. The device driver provides the necessary code and data to control the behavior of the hardware component.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nl"&gt;test_i2c_bme280&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bme280&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;compatible&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bosch,bme280&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;reg&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="mh"&gt;0x6&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In the Linux kernel, device tree sources are compiled to device tree binaries (dtb) that are parsed, at boot, by bootloader stages (U-Boot, TF-A...) and the kernel to allow support several hardware configuration with same binaries.&lt;/p&gt;
+&lt;p&gt;But in Zephyr, device tree sources are transformed to a &amp;quot;devicetree_generated.h&amp;quot; C header file at build, that contains macro definitions and data structures allowing device drivers to access information about the hardware components in the system, such as the memory mapping of a device, its pin assignments, and its IRQ numbers:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define DT_COMPAT_HAS_OKAY_bosch_bme280 1&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_N_INST_bosch_bme280_NUM_OKAY 1&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_FOREACH_OKAY_bosch_bme280(fn) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77)&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_FOREACH_OKAY_VARGS_bosch_bme280(fn, ...) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77, __VA_ARGS__)&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_FOREACH_OKAY_INST_bosch_bme280(fn) fn(0)&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_FOREACH_OKAY_INST_VARGS_bosch_bme280(fn, ...) fn(0, __VA_ARGS__)&lt;/span&gt;
+&lt;span class="cp"&gt;#define DT_COMPAT_bosch_bme280_BUS_i2c 1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Where:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;DT_COMPAT_HAS_OKAY_bosch_bme280&lt;/strong&gt;: indicates that there is at least one instance of BME280&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_N_INST_bosch_bme280_NUM_OKAY&lt;/strong&gt;: defines the number of BME280 instances that are marked okay&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_FOREACH_OKAY_bosch_bme280&lt;/strong&gt;: allows you to apply a function &lt;em&gt;fn&lt;/em&gt; to each instance of the BME280&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_FOREACH_OKAY_VARGS_bosch_bme280&lt;/strong&gt;: also allows you to apply a function &lt;em&gt;fn&lt;/em&gt; to each instance of the BME280, but with additional arguments&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_FOREACH_OKAY_INST_bosch_bme280&lt;/strong&gt;: allows you to apply a function &lt;em&gt;fn&lt;/em&gt; to each instance of the BME280, passing the instance number as an argument&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_FOREACH_OKAY_INST_VARGS_bosch_bme280&lt;/strong&gt;: is similar to the previous macro, but this one allows for additional arguments&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_COMPAT_bosch_bme280_BUS_i2c&lt;/strong&gt;: indicates that the BME280 device is connected to an I2C bus.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DT_N_S_soc_S_i2c_40005400_S_bme280_77&lt;/strong&gt;: refers to a specific node in the device tree, here it refers to the BME280 sensor connected to the I2C controller with the base address 0x40005400 within the SoC. The sensor's address on this I2C bus is 0x77.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In addition, device tree sources can be extended or overridden, for example to connect additional devices to a board, or to disable board devices which will not be used:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;aliases&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="n"&gt;bme280&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;bme280&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;spi1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;disabled&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;i2c1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;okay&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nl"&gt;bme280&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bme280&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;77&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="n"&gt;compatible&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bosch,bme280&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="n"&gt;reg&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="mh"&gt;0x77&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="binding"&gt;
+&lt;h2&gt;Binding&lt;/h2&gt;
+&lt;p&gt;Content of device tree sources is described in binding files, that are written in human readable and easy to parse YAML.
+Binding files can be also used to validate device tree sources by comparing the information in the YAML file with the information in the device tree sources.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;description&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;BME280 integrated environmental sensor&lt;/span&gt;
+
+&lt;span class="nt"&gt;compatible&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bosch,bme280&amp;quot;&lt;/span&gt;
+
+&lt;span class="nt"&gt;include&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p p-Indicator"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;sensor-device.yaml&lt;/span&gt;&lt;span class="p p-Indicator"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;i2c-device.yaml&lt;/span&gt;&lt;span class="p p-Indicator"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="device-driver"&gt;
+&lt;h2&gt;Device driver&lt;/h2&gt;
+&lt;p&gt;In Zephyr, a device driver can access the properties of an associated node in the device tree using the macro that are defined in C header files.
+For example, the following code can be used to initialize a BME280 sensor using properties defined in the device tree:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;device.h&amp;gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;drivers/i2c.h&amp;gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;devicetree.h&amp;gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;zephyr.h&amp;gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Define the node identifier for the BME280 sensor&lt;/span&gt;
+&lt;span class="cp"&gt;#define BME280_NODE DT_N_S_soc_S_i2c_40005400_S_bme280_77&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Function to initialize the BME280 sensor&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;bme280_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;device&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;// Check if the node is available&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;device_is_ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;printk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Device %s is not ready&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ENODEV&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;// Retrieve the I2C device associated with the BME280 node&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;device&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;i2c_dev&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;DEVICE_DT_GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DT_BUS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BME280_NODE&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;device_is_ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i2c_dev&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;printk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;I2C device not ready&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ENODEV&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;// Write some initialization code here, such as configuring registers&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;printk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;BME280 sensor initialized&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Initialize the BME280 sensor at boot time&lt;/span&gt;
+&lt;span class="n"&gt;SYS_INIT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bme280_init&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;APPLICATION&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;CONFIG_APPLICATION_INIT_PRIORITY&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Those who have already implemented BSP or driver on Linux shouldn't encounter too much difficulty, but on the other hand, the step is a little higher for people coming from the world of micro-controllers.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Embedded"></category><category term="zephyr"></category><category term="device-tree"></category><category term="rtos"></category><category term="embedded"></category></entry><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-os-with-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
 &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; application with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="summary"&gt;
 &lt;h2&gt;Summary&lt;/h2&gt;
@@ -324,8 +442,8 @@ take this opportunity to introduce you to &lt;a class="reference external" href=
 &lt;/div&gt;
 &lt;div class="section" id="podman"&gt;
 &lt;h2&gt;Podman&lt;/h2&gt;
-&lt;p&gt;Some Linux distribution, like &lt;a class="reference external" href="https://getfedora.org"&gt;Fedora&lt;/a&gt; chosen to officially only support
-&lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; for some available reason:&lt;/p&gt;
+&lt;p&gt;Some Linux distribution, like &lt;a class="reference external" href="https://getfedora.org"&gt;Fedora&lt;/a&gt; chosen to officially support only
+&lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; for several reasons:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;It is daemonless container engine.&lt;/li&gt;
 &lt;li&gt;It is rootless.&lt;/li&gt;
@@ -337,7 +455,7 @@ or network resources.&lt;/li&gt;
 &lt;p&gt;Moreover, &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is able to use the images built by the &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; engine and
 has been stored in &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; registry.&lt;/p&gt;
 &lt;p&gt;However, most of the time the &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; commands are identical to that of
-&lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, the a simple alias is enough to be misleading:
+&lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, then a simple alias is enough to be misleading:
 &lt;em&gt;alias docker=podman&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;But as &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is rootless and safer than &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, then sometimes it is
 necessary to specify additional security parameters.&lt;/p&gt;
@@ -421,7 +539,7 @@ HEAD&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;no
 &lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;8900&lt;/span&gt;&lt;span class="w"&gt;     &lt;/span&gt;&lt;span class="m"&gt;112&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;2300&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="m"&gt;11312&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;2c30&lt;span class="w"&gt; &lt;/span&gt;/data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-</content><category term="riot-os"></category><category term="container"></category><category term="podman"></category><category term="riot-os"></category></entry><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2020-09-09T07:05:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
+</content><category term="riot-os"></category><category term="container"></category><category term="podman"></category><category term="riot-os"></category></entry><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"></link><published>2020-09-08T19:20:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;In this article, I will dissect how the &lt;em&gt;chrt&lt;/em&gt; applet from the release 1.32.0 of &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; works, what it does, etc.&lt;/p&gt;
@@ -446,14 +564,14 @@ chrt&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;&l
 pid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;6987&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;s current scheduling policy: SCHED_FIFO&lt;/span&gt;
 &lt;span class="s1"&gt;pid 6987&amp;#39;&lt;/span&gt;s&lt;span class="w"&gt; &lt;/span&gt;current&lt;span class="w"&gt; &lt;/span&gt;scheduling&lt;span class="w"&gt; &lt;/span&gt;priority:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; provides an applet which size, once compiled, and ten times smaller than that of the binary implementation
+&lt;p&gt;&lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
 and with some limitations.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="the-dissection"&gt;
 &lt;h2&gt;The dissection&lt;/h2&gt;
 &lt;p&gt;The implementation of the &lt;em&gt;chrt&lt;/em&gt; applet is in the file &lt;a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c"&gt;util-linux/chrt.c&lt;/a&gt; that containing several functions which are
 called in the main function of this applet.&lt;/p&gt;
-&lt;p&gt;The main function of this applet is divised in three main parts:
+&lt;p&gt;The main function of this applet is divided into three main parts:
 - the first parses the command options
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set&lt;/p&gt;
@@ -465,7 +583,7 @@ called in the main function of this applet.&lt;/p&gt;
 &lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&amp;quot;&lt;/span&gt;
 &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command is existed:&lt;/p&gt;
+&lt;p&gt;If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command exits:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;opt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OPT_m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* print min/max and exit */&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;show_min_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SCHED_OTHER&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;show_min_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SCHED_FIFO&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -475,7 +593,7 @@ called in the main function of this applet.&lt;/p&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;fflush_stdout_and_exit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EXIT_SUCCESS&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The function &lt;em&gt;show_min_max&lt;/em&gt; sends use the Posix functions &lt;em&gt;sched_get_priority_max&lt;/em&gt; and &lt;em&gt;sched_get_priority_min&lt;/em&gt; from the
+&lt;p&gt;The function &lt;em&gt;show_min_max&lt;/em&gt; uses the Posix functions &lt;em&gt;sched_get_priority_max&lt;/em&gt; and &lt;em&gt;sched_get_priority_min&lt;/em&gt; from the
 standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sched_get_priority_max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pol&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sched_get_priority_min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pol&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -524,7 +642,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* &amp;quot;-p PRIO PID [...]&amp;quot; */&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;goto&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;print_rt_info&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The function &lt;em&gt;sched_getscheduler&lt;/em&gt; and &lt;em&gt;sched_getscheduler&lt;/em&gt; will send a syscall to the scheduler subsystem of the kernel Linux.
+&lt;p&gt;The function &lt;em&gt;sched_setscheduler&lt;/em&gt; and &lt;em&gt;sched_getscheduler&lt;/em&gt; will send a syscall to the scheduler subsystem of the kernel Linux.
 This subsystem also exposes this information from &lt;em&gt;/proc&lt;/em&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat&lt;span class="w"&gt; &lt;/span&gt;/proc/6987/sched
 WebExtensions&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;6987&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;#threads: 23)&lt;/span&gt;
@@ -563,8 +681,8 @@ numa_faults&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;node&lt;/s
 &lt;p&gt;Below a short list of limitations that I observed during my analysis of this applet.&lt;/p&gt;
 &lt;div class="section" id="resetting-scheduling-policy"&gt;
 &lt;h3&gt;Resetting scheduling policy&lt;/h3&gt;
-&lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reseted when a
-process is fork to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
+&lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a
+process forks to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
 build of busybox and it is applied on all scheduling attributes modifications done with this applet.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="deadline-support"&gt;
@@ -572,25 +690,25 @@ build of busybox and it is applied on all scheduling attributes modifications do
 &lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="busybox"></category><category term="busybox"></category><category term="chrt"></category><category term="dissection"></category><category term="beginner"></category></entry><entry><title>Build an embedded Linux in less than 15 minutes</title><link href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html" rel="alternate"></link><published>2020-06-27T13:01:00+02:00</published><updated>2020-11-30T16:11:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-06-27:/build-an-embedded-linux-in-fifteen-min.html</id><summary type="html">&lt;p class="first last"&gt;This article will explain how to build a minimal embedded Linux, in less than 15 minutes, and without a build framework.&lt;/p&gt;
+</content><category term="busybox"></category><category term="busybox"></category><category term="chrt"></category><category term="dissection"></category><category term="beginner"></category></entry><entry><title>Build an embedded Linux in less than 15 minutes</title><link href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html" rel="alternate"></link><published>2020-06-27T13:01:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-06-27:/build-an-embedded-linux-in-fifteen-min.html</id><summary type="html">&lt;p class="first last"&gt;This article will explain how to build a minimal embedded Linux, in less than 15 minutes, and without a build framework.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;Since some years, I no longer built a embedded Linux without using a framework, like &lt;a class="reference external" href="https://openembedded.org"&gt;Open Embedded&lt;/a&gt; from the &lt;a class="reference external" href="https://yoctoproject.org"&gt;Yocto&lt;/a&gt;
+&lt;p&gt;Since some years, I haven't built an embedded Linux without using a framework, like &lt;a class="reference external" href="https://openembedded.org"&gt;Open Embedded&lt;/a&gt; from the &lt;a class="reference external" href="https://yoctoproject.org"&gt;Yocto&lt;/a&gt;
 project.
 Then here, I wanted to make a guide to help you to build quickly, from &amp;quot;scratch&amp;quot; a very minimal embedded Linux to boot a
 target.
-The following examples have been writen to boot a virtual Qemu target but, they can be adapted to boot a real target.
-Moreover, the build environment will be boot strapped with a prebuilt cross-toolchain, I have chosen to use one provided
+The following examples have been written to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be bootstrapped with a prebuilt cross-toolchain, I have chosen to use one provided
 by &lt;a class="reference external" href="https://toolchains.bootlin.com"&gt;Bootlin&lt;/a&gt; and using glibc.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="setup-the-environment"&gt;
 &lt;h2&gt;Setup the environment&lt;/h2&gt;
-&lt;p&gt;First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:&lt;/p&gt;
+&lt;p&gt;First, it is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;The Ncurses libraries are only required to execute the command &lt;cite&gt;make menuconfig&lt;/cite&gt;.&lt;/li&gt;
 &lt;li&gt;The certificates and wget will be used to download the prebuilt toolchain.&lt;/li&gt;
 &lt;li&gt;In the same way, git will be used to checkout the source of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.&lt;/li&gt;
+&lt;li&gt;The Qemu packages will be used to emulate system platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt&lt;span class="w"&gt; &lt;/span&gt;update
 apt&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;--no-install-recommends&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
@@ -610,7 +728,7 @@ apt&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&g
 &lt;span class="w"&gt;    &lt;/span&gt;qemu-user-static&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;wget
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Now, it is time to download and install the prebuild toolchain:&lt;/p&gt;
+&lt;p&gt;Now, it is time to download and install the prebuilt toolchain:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;~/src
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;~/src
 wget&lt;span class="w"&gt; &lt;/span&gt;https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
@@ -618,14 +736,14 @@ tar&lt;span class="w"&gt; &lt;/span&gt;xvjf&lt;span class="w"&gt; &lt;/span&gt;a
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;&lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt;: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt;: It shall be extended so that the cross-tools from the cross-toolchain will be available from the environment&lt;/li&gt;
 &lt;li&gt;&lt;tt class="docutils literal"&gt;CROSS_COMPILE&lt;/tt&gt;: In order to clarify the prefix used by the cross-tools&lt;/li&gt;
 &lt;li&gt;&lt;tt class="docutils literal"&gt;ARCH&lt;/tt&gt;: The architecture of the target platform&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls&lt;span class="w"&gt; &lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
 ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
-&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;~/src/aarch64--glibc--stable-2020.08-1/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
 &lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;CROSS_COMPILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;aarch64-linux-
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, it is possible to call the cross-tools from the shell:&lt;/p&gt;
@@ -638,7 +756,7 @@ Target:&lt;span class="w"&gt; &lt;/span&gt;aarch64-buildroot-linux-gnu
 Thread&lt;span class="w"&gt; &lt;/span&gt;model:&lt;span class="w"&gt; &lt;/span&gt;posix
 gcc&lt;span class="w"&gt; &lt;/span&gt;version&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;9&lt;/span&gt;.3.0&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;Buildroot&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2020&lt;/span&gt;.08-14-ge5a2a90&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Concerning the variable &lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt; this one will be set afterwards because its value depends of the binary that will be built.&lt;/p&gt;
+&lt;p&gt;Concerning the variable &lt;tt class="docutils literal"&gt;PATH&lt;/tt&gt; this one will be set afterwards because its value depends on the binary that will be built.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="build-the-linux-kernel"&gt;
 &lt;h2&gt;Build the Linux kernel&lt;/h2&gt;
@@ -694,14 +812,14 @@ make&lt;span class="w"&gt; &lt;/span&gt;-j&lt;span class="k"&gt;$(&lt;/span&gt;n
 &lt;p&gt;The command &lt;tt class="docutils literal"&gt;make defconfig&lt;/tt&gt; will apply the default configuration for the target platform (cf. &lt;tt class="docutils literal"&gt;ARCH=arm64&lt;/tt&gt;), and the
 compilation will be performed by &lt;tt class="docutils literal"&gt;make &lt;span class="pre"&gt;-j$(nproc)&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
 &lt;p&gt;The commands &lt;tt class="docutils literal"&gt;git show HEAD&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;make defconfig&lt;/tt&gt; are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;linux-5.4.y&lt;/span&gt;&lt;/tt&gt;.
+- the first is useful to verify that the latest commit corresponding to the latest tag of the branch &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;linux-5.4.y&lt;/span&gt;&lt;/tt&gt;.
 - the second can be used if you want to customize the kernel configuration.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;NB&lt;/em&gt;. The kernel &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt; but also &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; and some projects use &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kbuild.html"&gt;Kbuild&lt;/a&gt; to manage the build options&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="populate-the-sysroot"&gt;
 &lt;h2&gt;Populate the sysroot&lt;/h2&gt;
 &lt;p&gt;The easy way to bootstrap a sysroot is to use &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; that has been created to offer common UNIX tools into a single
-executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.&lt;/p&gt;
+executable and it is size-optimized. To create a sysroot, it is only required to add a few configuration files.&lt;/p&gt;
 &lt;p&gt;The steps to pull and build &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; are similar to those of the kernel &lt;a class="reference external" href="https://www.kernel.org"&gt;Linux&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;clone&lt;span class="w"&gt; &lt;/span&gt;git://git.busybox.net/busybox
 &lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;busybox
@@ -717,7 +835,7 @@ make&lt;span class="w"&gt; &lt;/span&gt;-j&lt;span class="k"&gt;$(&lt;/span&gt;n
 
 make&lt;span class="w"&gt; &lt;/span&gt;install
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Here, the &lt;em&gt;LDFLAGS&lt;/em&gt; is set to force the static link of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; quickly, but it is also possible to use
+&lt;p&gt;Here, the &lt;em&gt;LDFLAGS&lt;/em&gt; is set to force static linking of &lt;a class="reference external" href="https://busybox.net"&gt;Busybox&lt;/a&gt; quickly, but it is also possible to use
 &lt;em&gt;make menuconfig&lt;/em&gt; to set &lt;em&gt;CONFIG_STATIC=y&lt;/em&gt;. The advantage of the static executable is that it can be tested with Qemu:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;qemu-aarch64-static&lt;span class="w"&gt; &lt;/span&gt;busybox&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello!&amp;quot;&lt;/span&gt;
 Hello!
@@ -781,7 +899,7 @@ gzip&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;ro
 &lt;div class="section" id="build-a-rootfs"&gt;
 &lt;h3&gt;Build a rootfs&lt;/h3&gt;
 &lt;p&gt;To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
-formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.&lt;/p&gt;
+formatted to create a ext3 filesystem. Then the tree can be copied and the rights updated.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dd&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/zero&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;rootfs.img&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1M&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;
 mke2fs&lt;span class="w"&gt; &lt;/span&gt;-j&lt;span class="w"&gt; &lt;/span&gt;rootfs.img
 mkdir&lt;span class="w"&gt; &lt;/span&gt;_rootfs
@@ -830,10 +948,10 @@ qemu-system-aarch64&lt;span class="w"&gt; &lt;/span&gt;-nographic&lt;span class=
 Please&lt;span class="w"&gt; &lt;/span&gt;press&lt;span class="w"&gt; &lt;/span&gt;Enter&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;activate&lt;span class="w"&gt; &lt;/span&gt;this&lt;span class="w"&gt; &lt;/span&gt;console.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-</content><category term="linux"></category><category term="busybox"></category><category term="embedded"></category><category term="intermediate"></category><category term="linux"></category><category term="qemu"></category></entry><entry><title>My blog opening</title><link href="https://tprrt.tupi.fr/my-blog-opening.html" rel="alternate"></link><published>2020-05-28T16:50:00+02:00</published><updated>2020-05-28T16:50:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-05-28:/my-blog-opening.html</id><summary type="html">&lt;p class="first last"&gt;Why do I choose to open a new blog and a quick description about the subject that will be treated.&lt;/p&gt;
+</content><category term="linux"></category><category term="busybox"></category><category term="embedded"></category><category term="intermediate"></category><category term="linux"></category><category term="qemu"></category></entry><entry><title>My blog opening</title><link href="https://tprrt.tupi.fr/my-blog-opening.html" rel="alternate"></link><published>2020-05-28T16:50:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-05-28:/my-blog-opening.html</id><summary type="html">&lt;p class="first last"&gt;Why I chose to open a new blog and a quick description of the subjects that will be covered.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;Welcome,&lt;/p&gt;
-&lt;p&gt;After closing my last blog since seventeen years, in order to share my knowledges and my little experiments about
-embedded open source. You would have understood it, this blog will mainly speak about embedded Linux operating system,
+&lt;p&gt;After closing my last blog seventeen years ago, in order to share my knowledge and my little experiments about
+embedded open source. As you might have guessed, this blog will mainly focus on embedded Linux operating systems,
 but also about open firmware and rtos, as well as related topics like virtualization, security, etc.&lt;/p&gt;
 &lt;p&gt;I hope you will like the articles of this blog, enjoy the reading.&lt;/p&gt;
 </content><category term="misc"></category><category term="blog"></category></entry></feed>

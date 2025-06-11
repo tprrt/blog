@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | articles tagged "zephyr"</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Thomas Perrot" />
+
+    <script data-ad-client="ca-pub-8632147971669760"
+            async="async"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
+            crossorigin="anonymous">
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/zephyr.html">zephyr</a></li>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/archives">Archives</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Yet another blog about embedded Linux, the open source and hardware</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Jul 29, 2022</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html" rel="bookmark" title="Permanent Link to &quot;Zephyr Device Tree Guide&quot;">Zephyr Device Tree Guide</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The goal of the <a class="reference external" href="https://zephyrproject.org/">Zephyr project</a>, hosted by the Linux foundation, since 2016, is to provide a safe and secured real time operating system (RTOS) for connected devices that are too small for Linux, or for core companion, through the Apache 2.0 open source license.</p>
+<p>It is designed for resource-constrained devices such as microcontrollers and Internet of Things (IoT) devices, to be modular and scalable. This makes it ideal for a wide range of devices, from simple sensors to complex systems. The operating system is written in C and is fully compatible with the C11 and C++17 standards.</p>
+<p>One of the key benefits of the Zephyr device model is its small footprint, it can be configured to run on devices with as little as 10 KB of memory.</p>
+<p>It supports multiple 32 bits and 64 bits architectures: Cortex-A, Cortex-M, Cortex-R, RISC-V, x86-64, etc.
+But it also support several boards and extensions: Feather, nRF52840, ST Discovery, ST Nucleo, ESP-32, etc.
+It is able to manage several kinds of connectivity: Bluetooth, ethernet, wifi, LoRa.
+And it support some network protocols: IPv4, IPv6,UDP, TCP, CoAP, LWM2M, MQTT, DNS, etc.</p>
+<p>As Linux, Zephyr use <a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html">Kconfig</a>, and its device model is mainly based on <a class="reference external" href="https://www.devicetree.org/">device tree</a>.</p>
+</div>
+<div class="section" id="device-tree">
+<h2>Device tree</h2>
+<p>Device trees are tree data structures that describe the hardware components and their relationships in a system.
+They are stored in a text file, named device tree sources (*.dts), and they written by developers to describe hardware architectures of SoCs and boards.
+And they are used by the operating system to determine how to initialize and interact with the hardware.</p>
+<p>Each node describe a device of the system, has its own properties that describe their characteristics, and they have only one parent (except for the root node).</p>
+<p>Each device driver is associated with a specific device tree node, which represents a hardware component in the system. The device driver provides the necessary code and data to control the behavior of the hardware component.</p>
+<div class="highlight"><pre><span></span><span class="nl">test_i2c_bme280</span><span class="p">:</span><span class="w"> </span><span class="n">bme280</span><span class="err">@</span><span class="mi">6</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x6</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<p>In the Linux kernel, device tree sources are compiled to device tree binaries (dtb) that are parsed, at boot, by bootloader stages (U-Boot, TF-A...) and the kernel to allow support several hardware configuration with same binaries.</p>
+<p>But in Zephyr, device tree sources are transformed to a &quot;devicetree_generated.h&quot; C header file at build, that contains macro definitions and data structures allowing device drivers to access information about the hardware components in the system, such as the memory mapping of a device, its pin assignments, and its IRQ numbers:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define DT_COMPAT_HAS_OKAY_bosch_bme280 1</span>
+<span class="cp">#define DT_N_INST_bosch_bme280_NUM_OKAY 1</span>
+<span class="cp">#define DT_FOREACH_OKAY_bosch_bme280(fn) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77)</span>
+<span class="cp">#define DT_FOREACH_OKAY_VARGS_bosch_bme280(fn, ...) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77, __VA_ARGS__)</span>
+<span class="cp">#define DT_FOREACH_OKAY_INST_bosch_bme280(fn) fn(0)</span>
+<span class="cp">#define DT_FOREACH_OKAY_INST_VARGS_bosch_bme280(fn, ...) fn(0, __VA_ARGS__)</span>
+<span class="cp">#define DT_COMPAT_bosch_bme280_BUS_i2c 1</span>
+</pre></div>
+<p>Where:</p>
+<ul class="simple">
+<li><strong>DT_COMPAT_HAS_OKAY_bosch_bme280</strong>: indicates that there is at least one instance of BME280</li>
+<li><strong>DT_N_INST_bosch_bme280_NUM_OKAY</strong>: defines the number of BME280 instances that are marked okay</li>
+<li><strong>DT_FOREACH_OKAY_bosch_bme280</strong>: allows you to apply a function <em>fn</em> to each instance of the BME280</li>
+<li><strong>DT_FOREACH_OKAY_VARGS_bosch_bme280</strong>: also allows you to apply a function <em>fn</em> to each instance of the BME280, but with additional arguments</li>
+<li><strong>DT_FOREACH_OKAY_INST_bosch_bme280</strong>: allows you to apply a function <em>fn</em> to each instance of the BME280, passing the instance number as an argument</li>
+<li><strong>DT_FOREACH_OKAY_INST_VARGS_bosch_bme280</strong>: is similar to the previous macro, but this one allows for additional arguments</li>
+<li><strong>DT_COMPAT_bosch_bme280_BUS_i2c</strong>: indicates that the BME280 device is connected to an I2C bus.</li>
+<li><strong>DT_N_S_soc_S_i2c_40005400_S_bme280_77</strong>: refers to a specific node in the device tree, here it refers to the BME280 sensor connected to the I2C controller with the base address 0x40005400 within the SoC. The sensor's address on this I2C bus is 0x77.</li>
+</ul>
+<p>In addition, device tree sources can be extended or overridden, for example to connect additional devices to a board, or to disable board devices which will not be used:</p>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">aliases</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">bme280</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="o">&amp;</span><span class="n">spi1</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;disabled&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="o">&amp;</span><span class="n">i2c1</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;okay&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="nl">bme280</span><span class="p">:</span><span class="w"> </span><span class="n">bme280</span><span class="err">@</span><span class="mi">77</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span><span class="p">;</span>
+<span class="w">                </span><span class="n">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x77</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="section" id="binding">
+<h2>Binding</h2>
+<p>Content of device tree sources is described in binding files, that are written in human readable and easy to parse YAML.
+Binding files can be also used to validate device tree sources by comparing the information in the YAML file with the information in the device tree sources.</p>
+<div class="highlight"><pre><span></span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BME280 integrated environmental sensor</span>
+
+<span class="nt">compatible</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span>
+
+<span class="nt">include</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">sensor-device.yaml</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">i2c-device.yaml</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<div class="section" id="device-driver">
+<h2>Device driver</h2>
+<p>In Zephyr, a device driver can access the properties of an associated node in the device tree using the macro that are defined in C header files.
+For example, the following code can be used to initialize a BME280 sensor using properties defined in the device tree:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;device.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;drivers/i2c.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;devicetree.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr.h&gt;</span>
+
+<span class="c1">// Define the node identifier for the BME280 sensor</span>
+<span class="cp">#define BME280_NODE DT_N_S_soc_S_i2c_40005400_S_bme280_77</span>
+
+<span class="c1">// Function to initialize the BME280 sensor</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">bme280_init</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Check if the node is available</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">device_is_ready</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;Device %s is not ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENODEV</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Retrieve the I2C device associated with the BME280 node</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">i2c_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_BUS</span><span class="p">(</span><span class="n">BME280_NODE</span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">device_is_ready</span><span class="p">(</span><span class="n">i2c_dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;I2C device not ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENODEV</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Write some initialization code here, such as configuring registers</span>
+
+<span class="w">    </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;BME280 sensor initialized</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Initialize the BME280 sensor at boot time</span>
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">bme280_init</span><span class="p">,</span><span class="w"> </span><span class="n">APPLICATION</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_APPLICATION_INIT_PRIORITY</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Those who have already implemented BSP or driver on Linux shouldn't encounter too much difficulty, but on the other hand, the step is a little higher for people coming from the world of micro-controllers.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html">posted at 20:32</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags selected">zephyr</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/device-tree.html" class="tags">device-tree</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-169118252-1");
+    pageTracker._trackPageview();
+    } catch(err) {}</script>
+</body>
+</html>

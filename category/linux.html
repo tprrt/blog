@@ -55,22 +55,22 @@
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>Since some years, I no longer built a embedded Linux without using a framework, like <a class="reference external" href="https://openembedded.org">Open Embedded</a> from the <a class="reference external" href="https://yoctoproject.org">Yocto</a>
+<p>Since some years, I haven't built an embedded Linux without using a framework, like <a class="reference external" href="https://openembedded.org">Open Embedded</a> from the <a class="reference external" href="https://yoctoproject.org">Yocto</a>
 project.
 Then here, I wanted to make a guide to help you to build quickly, from &quot;scratch&quot; a very minimal embedded Linux to boot a
 target.
-The following examples have been writen to boot a virtual Qemu target but, they can be adapted to boot a real target.
-Moreover, the build environment will be boot strapped with a prebuilt cross-toolchain, I have chosen to use one provided
+The following examples have been written to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be bootstrapped with a prebuilt cross-toolchain, I have chosen to use one provided
 by <a class="reference external" href="https://toolchains.bootlin.com">Bootlin</a> and using glibc.</p>
 </div>
 <div class="section" id="setup-the-environment">
 <h2>Setup the environment</h2>
-<p>First, It is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:</p>
+<p>First, it is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:</p>
 <ul class="simple">
 <li>The Ncurses libraries are only required to execute the command <cite>make menuconfig</cite>.</li>
 <li>The certificates and wget will be used to download the prebuilt toolchain.</li>
 <li>In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.</li>
-<li>The Qemu packages will be used to emulate systeme platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</li>
+<li>The Qemu packages will be used to emulate system platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</li>
 </ul>
 <div class="highlight"><pre><span></span>apt<span class="w"> </span>update
 apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
@@ -90,7 +90,7 @@ apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 <span class="w">    </span>qemu-user-static<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>wget
 </pre></div>
-<p>Now, it is time to download and install the prebuild toolchain:</p>
+<p>Now, it is time to download and install the prebuilt toolchain:</p>
 <div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/src
 <span class="nb">cd</span><span class="w"> </span>~/src
 wget<span class="w"> </span>https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
@@ -98,14 +98,14 @@ tar<span class="w"> </span>xvjf<span class="w"> </span>aarch64--glibc--stable-20
 </pre></div>
 <p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:</p>
 <ul class="simple">
-<li><tt class="docutils literal">PATH</tt>: It shall be extended then the cross-tools from the cross-toolchain will be available from the environment</li>
+<li><tt class="docutils literal">PATH</tt>: It shall be extended so that the cross-tools from the cross-toolchain will be available from the environment</li>
 <li><tt class="docutils literal">CROSS_COMPILE</tt>: In order to clarify the prefix used by the cross-tools</li>
 <li><tt class="docutils literal">ARCH</tt>: The architecture of the target platform</li>
 </ul>
 <div class="highlight"><pre><span></span>ls<span class="w"> </span>~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
 ~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
 
-<span class="nb">export</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-
 </pre></div>
 <p>Now, it is possible to call the cross-tools from the shell:</p>
@@ -118,7 +118,7 @@ Target:<span class="w"> </span>aarch64-buildroot-linux-gnu
 Thread<span class="w"> </span>model:<span class="w"> </span>posix
 gcc<span class="w"> </span>version<span class="w"> </span><span class="m">9</span>.3.0<span class="w"> </span><span class="o">(</span>Buildroot<span class="w"> </span><span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
 </pre></div>
-<p>Concerning the variable <tt class="docutils literal">PATH</tt> this one will be set afterwards because its value depends of the binary that will be built.</p>
+<p>Concerning the variable <tt class="docutils literal">PATH</tt> this one will be set afterwards because its value depends on the binary that will be built.</p>
 </div>
 <div class="section" id="build-the-linux-kernel">
 <h2>Build the Linux kernel</h2>
@@ -174,14 +174,14 @@ make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</s
 <p>The command <tt class="docutils literal">make defconfig</tt> will apply the default configuration for the target platform (cf. <tt class="docutils literal">ARCH=arm64</tt>), and the
 compilation will be performed by <tt class="docutils literal">make <span class="pre">-j$(nproc)</span></tt>.</p>
 <p>The commands <tt class="docutils literal">git show HEAD</tt> and <tt class="docutils literal">make defconfig</tt> are optional:
-- the first is usefull to verify that the latest commit corresponding to the latest tag of the branch <tt class="docutils literal"><span class="pre">linux-5.4.y</span></tt>.
+- the first is useful to verify that the latest commit corresponding to the latest tag of the branch <tt class="docutils literal"><span class="pre">linux-5.4.y</span></tt>.
 - the second can be used if you want to customize the kernel configuration.</p>
 <p><em>NB</em>. The kernel <a class="reference external" href="https://www.kernel.org">Linux</a> but also <a class="reference external" href="https://busybox.net">Busybox</a> and some projects use <a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kbuild.html">Kbuild</a> to manage the build options</p>
 </div>
 <div class="section" id="populate-the-sysroot">
 <h2>Populate the sysroot</h2>
 <p>The easy way to bootstrap a sysroot is to use <a class="reference external" href="https://busybox.net">Busybox</a> that has been created to offer common UNIX tools into a single
-executable and it has size-optimized. To create a sysroot, it is only required to add a few configuration files.</p>
+executable and it is size-optimized. To create a sysroot, it is only required to add a few configuration files.</p>
 <p>The steps to pull and build <a class="reference external" href="https://busybox.net">Busybox</a> are similar to those of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a>.</p>
 <div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git://git.busybox.net/busybox
 <span class="nb">cd</span><span class="w"> </span>busybox
@@ -197,7 +197,7 @@ make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</s
 
 make<span class="w"> </span>install
 </pre></div>
-<p>Here, the <em>LDFLAGS</em> is set to force the static link of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
+<p>Here, the <em>LDFLAGS</em> is set to force static linking of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
 <em>make menuconfig</em> to set <em>CONFIG_STATIC=y</em>. The advantage of the static executable is that it can be tested with Qemu:</p>
 <div class="highlight"><pre><span></span>qemu-aarch64-static<span class="w"> </span>busybox<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Hello!&quot;</span>
 Hello!
@@ -261,7 +261,7 @@ gzip<span class="w"> </span>-c<span class="w"> </span>rootfs.cpio<span class="w"
 <div class="section" id="build-a-rootfs">
 <h3>Build a rootfs</h3>
 <p>To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
-formated to create a ext3 filesytem. Then the tree can be copied and the rights updated.</p>
+formatted to create a ext3 filesystem. Then the tree can be copied and the rights updated.</p>
 <div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>rootfs.img<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">10</span>
 mke2fs<span class="w"> </span>-j<span class="w"> </span>rootfs.img
 mkdir<span class="w"> </span>_rootfs

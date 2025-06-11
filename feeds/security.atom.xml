@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Security</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/security.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2024-08-06T19:21:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Secure Boot with AHAB on i.MX93: A Complete Guide</title><link href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="alternate"></link><published>2024-08-06T19:21:00+02:00</published><updated>2024-08-06T19:21:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2024-08-06:/secure-boot-with-ahab-on-imx93.html</id><summary type="html">&lt;p class="first last"&gt;Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Security</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/security.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2025-06-11T14:53:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Secure Boot with AHAB on i.MX93: A Complete Guide</title><link href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="alternate"></link><published>2024-08-06T19:21:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2024-08-06:/secure-boot-with-ahab-on-imx93.html</id><summary type="html">&lt;p class="first last"&gt;Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
 to protect your embedded devices from unauthorized code execution.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;strong&gt;The security of embedded devices has never been more critical.&lt;/strong&gt; In a world
 where attacks targeting IoT systems are becoming increasingly sophisticated,
@@ -302,7 +302,7 @@ No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;
 Lifecycle:&lt;span class="w"&gt; &lt;/span&gt;0x00000020,&lt;span class="w"&gt; &lt;/span&gt;OEM&lt;span class="w"&gt; &lt;/span&gt;closed
 No&lt;span class="w"&gt; &lt;/span&gt;Events&lt;span class="w"&gt; &lt;/span&gt;Found!
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Until &lt;em&gt;OEM Open&lt;/em&gt; appears in the status, the device is not secured and can still
+&lt;p&gt;As long as &lt;em&gt;OEM Open&lt;/em&gt; appears in the status, the device is not secured and can still
 execute unsigned bootloaders or those signed with invalid keys.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;

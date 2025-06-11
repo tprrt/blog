@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - riot-os</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/riot-os.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2021-02-03T11:37:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-oswith-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2021-02-03T11:37:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-oswith-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - riot-os</title><link href="https://tprrt.tupi.fr/" rel="alternate"></link><link href="/feeds/riot-os.atom.xml" rel="self"></link><id>https://tprrt.tupi.fr/</id><updated>2025-06-11T14:53:00+02:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Build RIOT-OS with Podman</title><link href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" rel="alternate"></link><published>2020-09-27T13:01:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-27:/build-riot-os-with-podman.html</id><summary type="html">&lt;p class="first last"&gt;This article is a tip that explains how it is possible to build a
 &lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT"&gt;RIOT-OS&lt;/a&gt; application with &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="summary"&gt;
 &lt;h2&gt;Summary&lt;/h2&gt;
@@ -9,8 +9,8 @@ take this opportunity to introduce you to &lt;a class="reference external" href=
 &lt;/div&gt;
 &lt;div class="section" id="podman"&gt;
 &lt;h2&gt;Podman&lt;/h2&gt;
-&lt;p&gt;Some Linux distribution, like &lt;a class="reference external" href="https://getfedora.org"&gt;Fedora&lt;/a&gt; chosen to officially only support
-&lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; for some available reason:&lt;/p&gt;
+&lt;p&gt;Some Linux distribution, like &lt;a class="reference external" href="https://getfedora.org"&gt;Fedora&lt;/a&gt; chosen to officially support only
+&lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; instead of &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; for several reasons:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;It is daemonless container engine.&lt;/li&gt;
 &lt;li&gt;It is rootless.&lt;/li&gt;
@@ -22,7 +22,7 @@ or network resources.&lt;/li&gt;
 &lt;p&gt;Moreover, &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is able to use the images built by the &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; engine and
 has been stored in &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt; registry.&lt;/p&gt;
 &lt;p&gt;However, most of the time the &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; commands are identical to that of
-&lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, the a simple alias is enough to be misleading:
+&lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, then a simple alias is enough to be misleading:
 &lt;em&gt;alias docker=podman&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;But as &lt;a class="reference external" href="https://podman.io"&gt;Podman&lt;/a&gt; is rootless and safer than &lt;a class="reference external" href="https://www.docker.com"&gt;Docker&lt;/a&gt;, then sometimes it is
 necessary to specify additional security parameters.&lt;/p&gt;
