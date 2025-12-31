@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2025-12-31T10:00:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Open-Source Game Engines for Retro Consoles</title><link href="https://tprrt.tupi.fr/retro-console-game-engines.html" rel="alternate"/><published>2025-12-31T10:00:00+01:00</published><updated>2025-12-31T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-12-31:/retro-console-game-engines.html</id><summary type="html">&lt;p class="first last"&gt;A guide to modern open-source game engines and frameworks for
+developing games on classic 8-bit to 128-bit consoles, all compatible with
+Linux.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Retro console development has experienced a renaissance in recent years,
+thanks to passionate homebrew communities and modern open-source tooling.
+What was once the domain of professional game studios with expensive
+proprietary SDKs is now accessible to anyone with a Linux machine and a
+passion for classic gaming hardware.&lt;/p&gt;
+&lt;p&gt;This guide catalogs the best open-source game engines and frameworks
+available for developing games on classic consoles, from the 8-bit Game
+Boy Color to 128-bit systems like the PlayStation 2. All tools mentioned
+are compatible with Linux development environments, making them perfect
+for a fully free and open-source workflow.&lt;/p&gt;
+&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title"&gt;&lt;a class="reference internal" href="#top"&gt;Table of Contents&lt;/a&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#introduction" id="toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#bit-and-16-bit-consoles" id="toc-entry-2"&gt;8-bit and 16-bit Consoles&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#game-boy-color-gbc" id="toc-entry-3"&gt;Game Boy Color (GBC)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#game-boy-advance-gba" id="toc-entry-4"&gt;Game Boy Advance (GBA)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#nintendo-ds-nds" id="toc-entry-5"&gt;Nintendo DS (NDS)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#nintendo-3ds" id="toc-entry-6"&gt;Nintendo 3DS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#super-nintendo-snes" id="toc-entry-7"&gt;Super Nintendo (SNES)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sega-mega-drive-genesis" id="toc-entry-8"&gt;Sega Mega Drive / Genesis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#neo-geo" id="toc-entry-9"&gt;Neo Geo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#pc-engine-turbografx-16" id="toc-entry-10"&gt;PC Engine / TurboGrafx-16&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#bit-and-128-bit-consoles" id="toc-entry-11"&gt;32-bit and 128-bit Consoles&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sony-playstation-1-ps1" id="toc-entry-12"&gt;Sony PlayStation 1 (PS1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sega-saturn" id="toc-entry-13"&gt;Sega Saturn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#nintendo-64" id="toc-entry-14"&gt;Nintendo 64&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sega-dreamcast" id="toc-entry-15"&gt;Sega Dreamcast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sony-playstation-2-ps2" id="toc-entry-16"&gt;Sony PlayStation 2 (PS2)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#nintendo-gamecube-wii" id="toc-entry-17"&gt;Nintendo GameCube / Wii&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sony-playstation-portable-psp" id="toc-entry-18"&gt;Sony PlayStation Portable (PSP)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#playstation-vita" id="toc-entry-19"&gt;PlayStation Vita&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#xbox-original" id="toc-entry-20"&gt;Xbox (Original)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#development-tools-and-workflow" id="toc-entry-21"&gt;Development Tools and Workflow&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#devkitpro-toolchain" id="toc-entry-22"&gt;DevkitPro Toolchain&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#graphics-tools" id="toc-entry-23"&gt;Graphics Tools&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#music-and-sound-tools" id="toc-entry-24"&gt;Music and Sound Tools&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#emulators-for-testing" id="toc-entry-25"&gt;Emulators for Testing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#recommendations-by-experience-level" id="toc-entry-26"&gt;Recommendations by Experience Level&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#beginner-friendly" id="toc-entry-27"&gt;Beginner-Friendly&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#intermediate" id="toc-entry-28"&gt;Intermediate&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#advanced" id="toc-entry-29"&gt;Advanced&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#community-resources" id="toc-entry-30"&gt;Community Resources&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#conclusion" id="toc-entry-31"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bit-and-16-bit-consoles"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-2"&gt;8-bit and 16-bit Consoles&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="game-boy-color-gbc"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-3"&gt;Game Boy Color (GBC)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="gb-studio"&gt;
+&lt;h4&gt;GB Studio&lt;/h4&gt;
+&lt;p&gt;For those wanting to create Game Boy games without writing code,
+&lt;strong&gt;GB Studio&lt;/strong&gt; is the perfect starting point. This visual game editor
+features a drag-and-drop interface that lets you build complete RPGs,
+adventure games, platformers, and shooters without touching a single
+line of code.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Full visual scene editor with intuitive drag-and-drop&lt;/li&gt;
+&lt;li&gt;Built-in sprite and background editors&lt;/li&gt;
+&lt;li&gt;Integrated music tracker&lt;/li&gt;
+&lt;li&gt;Event system for complex game logic&lt;/li&gt;
+&lt;li&gt;Exports to actual GB/GBC ROMs that run on real hardware&lt;/li&gt;
+&lt;li&gt;Cross-platform support (Linux, Windows, macOS)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/chrismaltby/gb-studio"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://www.gbstudio.dev/"&gt;Website&lt;/a&gt; |
+&lt;a class="reference external" href="https://www.gbstudio.dev/docs/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="gbdk-2020"&gt;
+&lt;h4&gt;GBDK-2020&lt;/h4&gt;
+&lt;p&gt;For developers who prefer code, &lt;strong&gt;GBDK-2020&lt;/strong&gt; is a modern fork of the
+classic Game Boy Development Kit. It brings C99 support and modern
+toolchain features to Game Boy development.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern C99 compiler&lt;/li&gt;
+&lt;li&gt;ROM banking support for large games&lt;/li&gt;
+&lt;li&gt;Libraries for sprites, backgrounds, and sound&lt;/li&gt;
+&lt;li&gt;Compatible with both Game Boy and Game Boy Color&lt;/li&gt;
+&lt;li&gt;Strong toolchain integration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Various (mostly permissive)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/gbdk-2020/gbdk-2020"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://gbdk-2020.github.io/gbdk-2020/docs/api/"&gt;API Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="game-boy-advance-gba"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-4"&gt;Game Boy Advance (GBA)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="butano"&gt;
+&lt;h4&gt;Butano&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Butano&lt;/strong&gt; is a modern C++17 game engine built on devkitARM that makes
+GBA development feel contemporary. It abstracts the hardware complexity
+while still giving you full control over the system's capabilities.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern C++17 syntax and features&lt;/li&gt;
+&lt;li&gt;Sprite management with affine transformations&lt;/li&gt;
+&lt;li&gt;Regular and affine background layers&lt;/li&gt;
+&lt;li&gt;Audio support (DMG and DirectSound)&lt;/li&gt;
+&lt;li&gt;Scene management system&lt;/li&gt;
+&lt;li&gt;GBA-optimized math utilities&lt;/li&gt;
+&lt;li&gt;Documentation and examples&lt;/li&gt;
+&lt;li&gt;Active Discord community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; zlib License&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/GValiente/butano"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://gvaliente.github.io/butano/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="tonclib"&gt;
+&lt;h4&gt;Tonclib&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Tonclib&lt;/strong&gt; is the veteran of GBA development. While less actively
+developed, it remains stable and is accompanied by some of the best
+documentation in retro game development.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Hardware abstraction layer&lt;/li&gt;
+&lt;li&gt;Advanced sprite and background management&lt;/li&gt;
+&lt;li&gt;Mode 7 (affine) support for pseudo-3D effects&lt;/li&gt;
+&lt;li&gt;Built-in text rendering&lt;/li&gt;
+&lt;li&gt;Excellent tutorial and documentation (Tonc)&lt;/li&gt;
+&lt;li&gt;Used by many commercial-quality homebrews&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT-like (custom permissive)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/devkitPro/libtonc"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://www.coranac.com/tonc/text/"&gt;Tonc Tutorial&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nintendo-ds-nds"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-5"&gt;Nintendo DS (NDS)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="nightfox-s-lib"&gt;
+&lt;h4&gt;NightFox's Lib&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;NightFox's Lib&lt;/strong&gt; provides a high-level 2D game library built on top
+of libnds, making DS development more approachable.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Sprite engine with rotation and scaling&lt;/li&gt;
+&lt;li&gt;Tiled background support&lt;/li&gt;
+&lt;li&gt;Collision detection&lt;/li&gt;
+&lt;li&gt;2D and 3D text rendering&lt;/li&gt;
+&lt;li&gt;Sound and MOD music playback&lt;/li&gt;
+&lt;li&gt;File system access&lt;/li&gt;
+&lt;li&gt;Includes examples and templates&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/knightfox75/nds_nflib"&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="libnds-devkitarm"&gt;
+&lt;h4&gt;libnds + devkitARM&lt;/h4&gt;
+&lt;p&gt;For those wanting full control, &lt;strong&gt;libnds&lt;/strong&gt; is the official devkitPro
+library providing low-level access to all DS features.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete hardware access to both screens&lt;/li&gt;
+&lt;li&gt;2D and 3D graphics support&lt;/li&gt;
+&lt;li&gt;Touchscreen and button input&lt;/li&gt;
+&lt;li&gt;WiFi networking support&lt;/li&gt;
+&lt;li&gt;FAT file system access&lt;/li&gt;
+&lt;li&gt;Audio subsystem control&lt;/li&gt;
+&lt;li&gt;Most flexible but requires hardware knowledge&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; zlib License&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/devkitPro/libnds"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://libnds.devkitpro.org/"&gt;Documentation&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/devkitPro/nds-examples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nintendo-3ds"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-6"&gt;Nintendo 3DS&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="citro2d-citro3d"&gt;
+&lt;h4&gt;citro2d / citro3d&lt;/h4&gt;
+&lt;p&gt;The &lt;strong&gt;citro&lt;/strong&gt; libraries are the official devkitPro solution for 3DS
+development, providing hardware-accelerated 2D and 3D graphics.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Hardware-accelerated rendering via PICA200 GPU&lt;/li&gt;
+&lt;li&gt;2D sprite batching (citro2d)&lt;/li&gt;
+&lt;li&gt;Full 3D graphics pipeline (citro3d)&lt;/li&gt;
+&lt;li&gt;Shader support&lt;/li&gt;
+&lt;li&gt;Stereoscopic 3D rendering&lt;/li&gt;
+&lt;li&gt;Text rendering&lt;/li&gt;
+&lt;li&gt;Used by most modern 3DS homebrew&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; zlib License&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/devkitPro/citro3d"&gt;citro3d&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/devkitPro/citro2d"&gt;citro2d&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/devkitPro/citro3d/wiki"&gt;Documentation&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/devkitPro/3ds-examples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="super-nintendo-snes"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-7"&gt;Super Nintendo (SNES)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="pvsneslib"&gt;
+&lt;h4&gt;PVSnesLib&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;PVSnesLib&lt;/strong&gt; is a modern C library bringing contemporary development
+practices to the Super Nintendo.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern C API&lt;/li&gt;
+&lt;li&gt;Sprite management (OAM)&lt;/li&gt;
+&lt;li&gt;Background and tilemap support&lt;/li&gt;
+&lt;li&gt;Mode 7 support for rotation and scaling&lt;/li&gt;
+&lt;li&gt;Sound driver integration&lt;/li&gt;
+&lt;li&gt;Gamepad input handling&lt;/li&gt;
+&lt;li&gt;DMA and HDMA operations&lt;/li&gt;
+&lt;li&gt;Documentation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/alekmaul/pvsneslib"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/alekmaul/pvsneslib/wiki"&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="libsfx"&gt;
+&lt;h4&gt;libSFX&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;libSFX&lt;/strong&gt; is a powerful macro assembler framework for SNES
+development, optimized for performance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Assembly-first with C support&lt;/li&gt;
+&lt;li&gt;Highly optimized for speed&lt;/li&gt;
+&lt;li&gt;Full hardware access&lt;/li&gt;
+&lt;li&gt;Super FX (GSU) support&lt;/li&gt;
+&lt;li&gt;Music and sound effects&lt;/li&gt;
+&lt;li&gt;Can integrate with C code&lt;/li&gt;
+&lt;li&gt;Steeper learning curve but very capable&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/Optiroc/libSFX"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/Optiroc/libSFX/wiki"&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sega-mega-drive-genesis"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-8"&gt;Sega Mega Drive / Genesis&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="sgdk-sega-genesis-development-kit"&gt;
+&lt;h4&gt;SGDK (Sega Genesis Development Kit)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;SGDK&lt;/strong&gt; has become the industry standard for Mega Drive homebrew
+development, with an incredibly active community and extensive
+documentation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete development framework&lt;/li&gt;
+&lt;li&gt;Sprite engine with hardware scrolling&lt;/li&gt;
+&lt;li&gt;Multiple background plane support&lt;/li&gt;
+&lt;li&gt;VDP (video display processor) management&lt;/li&gt;
+&lt;li&gt;Z80 sound driver with XGM music format&lt;/li&gt;
+&lt;li&gt;DMA operations&lt;/li&gt;
+&lt;li&gt;Built-in collision detection&lt;/li&gt;
+&lt;li&gt;ResComp resource compiler for assets&lt;/li&gt;
+&lt;li&gt;Extensive tutorials and documentation&lt;/li&gt;
+&lt;li&gt;Large, active community&lt;/li&gt;
+&lt;li&gt;Excellent Linux support&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/Stephane-D/SGDK"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/Stephane-D/SGDK/wiki"&gt;Wiki&lt;/a&gt; |
+&lt;a class="reference external" href="https://segaxtreme.net/forums/sgdk.77/"&gt;Forums&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="neo-geo"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-9"&gt;Neo Geo&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="ngdk-neo-geo-development-kit"&gt;
+&lt;h4&gt;NGDK (Neo Geo Development Kit)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;NGDK&lt;/strong&gt; brings C development to the Neo Geo arcade platform and AES
+home console.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;C framework for Neo Geo development&lt;/li&gt;
+&lt;li&gt;Sprite system management&lt;/li&gt;
+&lt;li&gt;Background and fix layer handling&lt;/li&gt;
+&lt;li&gt;Input handling for arcade controls&lt;/li&gt;
+&lt;li&gt;Sound support (Z80 + YM2610)&lt;/li&gt;
+&lt;li&gt;Asset conversion tools&lt;/li&gt;
+&lt;li&gt;Example games included&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Custom permissive&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/dciabrin/ngdevkit"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/dciabrin/ngdevkit/wiki"&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="pc-engine-turbografx-16"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-10"&gt;PC Engine / TurboGrafx-16&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="huc-hudson-c-compiler"&gt;
+&lt;h4&gt;HuC (Hudson C Compiler)&lt;/h4&gt;
+&lt;p&gt;The classic &lt;strong&gt;HuC&lt;/strong&gt; compiler has been maintained by the community and
+remains a solid choice for PC Engine development.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;C compiler for PC Engine&lt;/li&gt;
+&lt;li&gt;Support for HuCard and CD-ROM²&lt;/li&gt;
+&lt;li&gt;PSG sound support&lt;/li&gt;
+&lt;li&gt;Sprite management&lt;/li&gt;
+&lt;li&gt;Background and tilemap support&lt;/li&gt;
+&lt;li&gt;ADPCM audio for CD games&lt;/li&gt;
+&lt;li&gt;Standard C library subset&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; BSD-like&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/uli/huc"&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="squirrel-hudk"&gt;
+&lt;h4&gt;Squirrel (HuDK)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Squirrel&lt;/strong&gt; (HuDK) is a more modern alternative to HuC with improved
+optimization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern PC Engine framework&lt;/li&gt;
+&lt;li&gt;Better optimization than classic HuC&lt;/li&gt;
+&lt;li&gt;CD-ROM support&lt;/li&gt;
+&lt;li&gt;Active development&lt;/li&gt;
+&lt;li&gt;Growing community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Open source&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/BlockoS/HuDK"&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bit-and-128-bit-consoles"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-11"&gt;32-bit and 128-bit Consoles&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="sony-playstation-1-ps1"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-12"&gt;Sony PlayStation 1 (PS1)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="psn00bsdk"&gt;
+&lt;h4&gt;PSn00bSDK&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;PSn00bSDK&lt;/strong&gt; is a modern, lightweight SDK that makes PS1 development
+accessible and enjoyable. It's cleaner and more approachable than the
+old Psy-Q SDK.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern, clean API design&lt;/li&gt;
+&lt;li&gt;Hardware 3D graphics (GTE) support&lt;/li&gt;
+&lt;li&gt;2D sprite and primitive rendering&lt;/li&gt;
+&lt;li&gt;CD-ROM file system access&lt;/li&gt;
+&lt;li&gt;SPU sound support with ADPCM and XA audio&lt;/li&gt;
+&lt;li&gt;Memory card management&lt;/li&gt;
+&lt;li&gt;Controller input (standard and analog)&lt;/li&gt;
+&lt;li&gt;Serial I/O support&lt;/li&gt;
+&lt;li&gt;Examples&lt;/li&gt;
+&lt;li&gt;Excellent Linux support&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MPL 2.0&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK/wiki"&gt;Wiki&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK/tree/master/examples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sega-saturn"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-13"&gt;Sega Saturn&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="jo-engine"&gt;
+&lt;h4&gt;Jo Engine&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Jo Engine&lt;/strong&gt; is a high-level 2D and 3D game engine that makes Saturn
+development approachable.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;High-level API for 2D and 3D&lt;/li&gt;
+&lt;li&gt;Sprite engine with scaling and rotation&lt;/li&gt;
+&lt;li&gt;3D model support with converter tools&lt;/li&gt;
+&lt;li&gt;Audio support (PCM, CD audio)&lt;/li&gt;
+&lt;li&gt;Save game management&lt;/li&gt;
+&lt;li&gt;Collision detection&lt;/li&gt;
+&lt;li&gt;Map and tilemap support&lt;/li&gt;
+&lt;li&gt;USB dev cart support for rapid testing&lt;/li&gt;
+&lt;li&gt;Video tutorials available&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; MIT&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/johannes-fetz/joengine"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://jo-engine.org/"&gt;Website&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/johannes-fetz/joengine/wiki"&gt;Wiki&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="yaul"&gt;
+&lt;h4&gt;Yaul&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Yaul&lt;/strong&gt; is a modern alternative to the old Sega Basic Library,
+offering a clean API for advanced Saturn developers.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern library design&lt;/li&gt;
+&lt;li&gt;Clean API&lt;/li&gt;
+&lt;li&gt;VDP1 and VDP2 support&lt;/li&gt;
+&lt;li&gt;SCU DMA operations&lt;/li&gt;
+&lt;li&gt;CD block support&lt;/li&gt;
+&lt;li&gt;SCSP (sound) support&lt;/li&gt;
+&lt;li&gt;USB dev cart support&lt;/li&gt;
+&lt;li&gt;Excellent documentation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; BSD&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/ijacquez/libyaul"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://ijacquez.github.io/libyaul/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nintendo-64"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-14"&gt;Nintendo 64&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="libdragon"&gt;
+&lt;h4&gt;libdragon&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;libdragon&lt;/strong&gt; has revolutionized N64 development by making it far more
+accessible than the old Nintendo SDK.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Modern N64 development library&lt;/li&gt;
+&lt;li&gt;3D graphics via RDP/RSP&lt;/li&gt;
+&lt;li&gt;Audio subsystem support&lt;/li&gt;
+&lt;li&gt;Controller input&lt;/li&gt;
+&lt;li&gt;ROM file system&lt;/li&gt;
+&lt;li&gt;Hardware sprites&lt;/li&gt;
+&lt;li&gt;Much easier than old SDKs&lt;/li&gt;
+&lt;li&gt;Very active community&lt;/li&gt;
+&lt;li&gt;Good documentation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Unlicense (public domain)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/DragonMinded/libdragon"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://dragonminded.github.io/libdragon/"&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sega-dreamcast"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-15"&gt;Sega Dreamcast&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="kallistios-kos"&gt;
+&lt;h4&gt;KallistiOS (KOS)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;KallistiOS&lt;/strong&gt; is the de facto standard for Dreamcast homebrew, with an
+incredibly mature ecosystem.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete OS-like framework&lt;/li&gt;
+&lt;li&gt;2D and 3D graphics (PowerVR)&lt;/li&gt;
+&lt;li&gt;Network support (modem, broadband adapter)&lt;/li&gt;
+&lt;li&gt;VMU (Visual Memory Unit) support&lt;/li&gt;
+&lt;li&gt;Input device support&lt;/li&gt;
+&lt;li&gt;CD-ROM file system (ISO9660)&lt;/li&gt;
+&lt;li&gt;AICA SPU audio support&lt;/li&gt;
+&lt;li&gt;Threading and multitasking&lt;/li&gt;
+&lt;li&gt;USB development support&lt;/li&gt;
+&lt;li&gt;Extensive library ecosystem&lt;/li&gt;
+&lt;li&gt;Very mature and well-documented&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; BSD-style&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/KallistiOS/KallistiOS"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://kos-docs.dreamcast.wiki/"&gt;Documentation&lt;/a&gt; |
+&lt;a class="reference external" href="https://dcemulation.org/phpBB/"&gt;Forums&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Additional KOS libraries include GLdc (OpenGL-like API) and SDL ports,
+making cross-platform development easier.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sony-playstation-2-ps2"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-16"&gt;Sony PlayStation 2 (PS2)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="ps2sdk"&gt;
+&lt;h4&gt;PS2SDK&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;PS2SDK&lt;/strong&gt; provides complete access to the powerful PlayStation 2
+hardware.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete PS2 development SDK&lt;/li&gt;
+&lt;li&gt;Graphics Synthesizer (GS) support for 2D/3D&lt;/li&gt;
+&lt;li&gt;Emotion Engine and I/O Processor access&lt;/li&gt;
+&lt;li&gt;Vector Unit (VU) programming&lt;/li&gt;
+&lt;li&gt;Sound library (audsrv)&lt;/li&gt;
+&lt;li&gt;USB and network support&lt;/li&gt;
+&lt;li&gt;Memory card management&lt;/li&gt;
+&lt;li&gt;DVD file system access&lt;/li&gt;
+&lt;li&gt;Excellent Linux compatibility&lt;/li&gt;
+&lt;li&gt;Large, active community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; BSD/Academic Free License&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/ps2dev/ps2sdk"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://ps2dev.github.io/"&gt;Website&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/ps2dev/ps2sdk/tree/master/samples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nintendo-gamecube-wii"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-17"&gt;Nintendo GameCube / Wii&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="devkitppc-libogc"&gt;
+&lt;h4&gt;devkitPPC + libogc&lt;/h4&gt;
+&lt;p&gt;The official &lt;strong&gt;devkitPro&lt;/strong&gt; toolchain for GameCube and Wii provides
+hardware access.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Official devkitPro toolchain&lt;/li&gt;
+&lt;li&gt;Full hardware access for both systems&lt;/li&gt;
+&lt;li&gt;GX 3D graphics library&lt;/li&gt;
+&lt;li&gt;ASND audio library&lt;/li&gt;
+&lt;li&gt;Controller support (PAD/WPAD)&lt;/li&gt;
+&lt;li&gt;Network library&lt;/li&gt;
+&lt;li&gt;USB and SD card storage&lt;/li&gt;
+&lt;li&gt;DVD reading&lt;/li&gt;
+&lt;li&gt;Homebrew Channel integration (Wii)&lt;/li&gt;
+&lt;li&gt;Large community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Various (permissive)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/devkitPro/libogc"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://libogc.devkitpro.org/"&gt;Documentation&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/devkitPro/gamecube-examples"&gt;Examples&lt;/a&gt; |
+&lt;a class="reference external" href="https://devkitpro.org/"&gt;devkitPro&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sony-playstation-portable-psp"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-18"&gt;Sony PlayStation Portable (PSP)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="pspsdk"&gt;
+&lt;h4&gt;PSPSDK&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;PSPSDK&lt;/strong&gt; is the complete homebrew SDK for PSP development.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete PSP SDK&lt;/li&gt;
+&lt;li&gt;3D graphics (GU library) with hardware acceleration&lt;/li&gt;
+&lt;li&gt;2D sprite rendering&lt;/li&gt;
+&lt;li&gt;Multi-format audio support&lt;/li&gt;
+&lt;li&gt;WiFi and networking&lt;/li&gt;
+&lt;li&gt;USB support&lt;/li&gt;
+&lt;li&gt;Memory Stick access&lt;/li&gt;
+&lt;li&gt;Save data management&lt;/li&gt;
+&lt;li&gt;MP3, AAC playback&lt;/li&gt;
+&lt;li&gt;Mature and stable&lt;/li&gt;
+&lt;li&gt;Great Linux support&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; BSD/GPL&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/pspdev/pspsdk"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://forums.ps2dev.org/"&gt;Forums&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/pspdev/psp-packages"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="playstation-vita"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-19"&gt;PlayStation Vita&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="vita-sdk"&gt;
+&lt;h4&gt;Vita SDK&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Vita SDK&lt;/strong&gt; provides a complete homebrew development solution for
+Sony's handheld.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Complete PS Vita SDK&lt;/li&gt;
+&lt;li&gt;OpenGL ES-like graphics&lt;/li&gt;
+&lt;li&gt;Touch screen support&lt;/li&gt;
+&lt;li&gt;Accelerometer and gyroscope&lt;/li&gt;
+&lt;li&gt;Camera support&lt;/li&gt;
+&lt;li&gt;Network and WiFi&lt;/li&gt;
+&lt;li&gt;Trophy system support&lt;/li&gt;
+&lt;li&gt;Save data management&lt;/li&gt;
+&lt;li&gt;Multi-format audio&lt;/li&gt;
+&lt;li&gt;Very active homebrew scene&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Various&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/vitasdk/vita-headers"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://vitasdk.org/"&gt;Website&lt;/a&gt; |
+&lt;a class="reference external" href="https://docs.vitasdk.org/"&gt;Documentation&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/vitasdk/samples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="xbox-original"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-20"&gt;Xbox (Original)&lt;/a&gt;&lt;/h3&gt;
+&lt;div class="section" id="nxdk"&gt;
+&lt;h4&gt;nxdk&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;nxdk&lt;/strong&gt; is a clean-room open-source Xbox SDK with no Microsoft code.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Features:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Open-source Xbox SDK&lt;/li&gt;
+&lt;li&gt;Direct3D 8-like graphics API&lt;/li&gt;
+&lt;li&gt;Audio support&lt;/li&gt;
+&lt;li&gt;Controller input&lt;/li&gt;
+&lt;li&gt;Network support&lt;/li&gt;
+&lt;li&gt;Hard drive access&lt;/li&gt;
+&lt;li&gt;SDL port available&lt;/li&gt;
+&lt;li&gt;Growing community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; Various (LGPL/MIT)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Links:&lt;/strong&gt; &lt;a class="reference external" href="https://github.com/XboxDev/nxdk"&gt;GitHub&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/XboxDev/nxdk/wiki"&gt;Wiki&lt;/a&gt; |
+&lt;a class="reference external" href="https://github.com/XboxDev/nxdk/tree/master/samples"&gt;Examples&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="development-tools-and-workflow"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-21"&gt;Development Tools and Workflow&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="devkitpro-toolchain"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-22"&gt;DevkitPro Toolchain&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Many frameworks (GBA, DS, 3DS, GameCube/Wii) require the &lt;strong&gt;devkitPro&lt;/strong&gt;
+toolchain, which works excellently on Linux:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://devkitpro.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://devkitpro.org/wiki/Getting_Started"&gt;Getting Started Guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Includes devkitARM, devkitPPC, and associated libraries&lt;/li&gt;
+&lt;li&gt;Available via pacman (devkitPro package manager) on Fedora&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="graphics-tools"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-23"&gt;Graphics Tools&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;For a fully open-source workflow, these tools are all free, open-source,
+and Linux-native:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Pixel Art Editors:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Pixelorama&lt;/strong&gt; (MIT): Modern pixel art editor with animation support,
+built with Godot. Excellent Aseprite alternative.
+&lt;a class="reference external" href="https://pixelorama.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LibreSprite&lt;/strong&gt; (GPL v2): Fork of old GPL Aseprite with familiar
+interface. &lt;a class="reference external" href="https://libresprite.github.io/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GrafX2&lt;/strong&gt; (GPL v2): Inspired by Deluxe Paint, excellent for retro
+graphics. &lt;a class="reference external" href="http://grafx2.chez.com/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Piskel&lt;/strong&gt; (Apache 2.0): Web-based and offline pixel art editor.
+&lt;a class="reference external" href="https://www.piskelapp.com/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Tilemap Editor:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Tiled&lt;/strong&gt; (GPL v2/BSD): Industry-standard tilemap editor.
+&lt;a class="reference external" href="https://www.mapeditor.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;General Graphics:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;GIMP&lt;/strong&gt; (GPL v3+): Full-featured image editor.
+&lt;a class="reference external" href="https://www.gimp.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="music-and-sound-tools"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-24"&gt;Music and Sound Tools&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;All tools below are free, open-source, and Linux-native:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Chiptune (Hardware Chip Emulation):&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Furnace&lt;/strong&gt; (GPL v2+): Multi-system chiptune tracker supporting 60+
+sound chips (NES, SNES, Genesis, Game Boy, etc.). Perfect for
+authentic retro console music. Available on Flathub.
+&lt;a class="reference external" href="https://github.com/tildearrow/furnace"&gt;GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Module Trackers (Sample-based):&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;MilkyTracker&lt;/strong&gt; (GPL v3): FastTracker II-inspired tracker for
+MOD/XM formats. &lt;a class="reference external" href="https://milkytracker.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Schism Tracker&lt;/strong&gt; (GPL v2): Impulse Tracker clone for S3M/IT
+formats. &lt;a class="reference external" href="http://schismtracker.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NES/Famicom Specific:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;FamiStudio&lt;/strong&gt; (MIT): DAW-style NES/Famicom music editor with
+expansion chip support. Available on Flathub.
+&lt;a class="reference external" href="https://famistudio.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Audio Editor:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Audacity&lt;/strong&gt; (GPL v2/v3): Multi-track audio editor and recorder.
+&lt;a class="reference external" href="https://www.audacityteam.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="emulators-for-testing"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-25"&gt;Emulators for Testing&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;All emulators below are open-source and Linux-compatible:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;mGBA&lt;/strong&gt;: Game Boy Advance - &lt;a class="reference external" href="https://mgba.io/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DeSmuME&lt;/strong&gt;: Nintendo DS - &lt;a class="reference external" href="https://desmume.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Citra&lt;/strong&gt;: Nintendo 3DS - &lt;a class="reference external" href="https://citra-emu.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;bsnes&lt;/strong&gt;: Super Nintendo -
+&lt;a class="reference external" href="https://github.com/bsnes-emu/bsnes"&gt;GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Genesis Plus GX&lt;/strong&gt;: Sega Mega Drive -
+&lt;a class="reference external" href="https://github.com/ekeeke/Genesis-Plus-GX"&gt;GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mednafen&lt;/strong&gt;: Multi-system (PC Engine, PS1, Saturn, etc.) -
+&lt;a class="reference external" href="https://mednafen.github.io/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DuckStation&lt;/strong&gt;: PlayStation 1 -
+&lt;a class="reference external" href="https://github.com/stenzek/duckstation"&gt;GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PCSX2&lt;/strong&gt;: PlayStation 2 - &lt;a class="reference external" href="https://pcsx2.net/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dolphin&lt;/strong&gt;: GameCube/Wii - &lt;a class="reference external" href="https://dolphin-emu.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PPSSPP&lt;/strong&gt;: PlayStation Portable - &lt;a class="reference external" href="https://www.ppsspp.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Vita3K&lt;/strong&gt;: PlayStation Vita - &lt;a class="reference external" href="https://vita3k.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Flycast&lt;/strong&gt;: Sega Dreamcast -
+&lt;a class="reference external" href="https://github.com/flyinghead/flycast"&gt;GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mupen64Plus&lt;/strong&gt;: Nintendo 64 -
+&lt;a class="reference external" href="https://www.mupen64plus.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xemu&lt;/strong&gt;: Original Xbox - &lt;a class="reference external" href="https://xemu.app/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="recommendations-by-experience-level"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-26"&gt;Recommendations by Experience Level&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="beginner-friendly"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-27"&gt;Beginner-Friendly&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;8-bit/16-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;GB Studio&lt;/strong&gt; (GBC): Visual editor, no coding required&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GBDK-2020&lt;/strong&gt; (GBC): Simple C development&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SGDK&lt;/strong&gt; (Mega Drive): Excellent documentation and community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;PSn00bSDK&lt;/strong&gt; (PS1): Clean, modern API&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Jo Engine&lt;/strong&gt; (Saturn): High-level engine with tutorials&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PSPSDK&lt;/strong&gt; (PSP): Well-documented and stable&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="intermediate"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-28"&gt;Intermediate&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;8-bit/16-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Butano&lt;/strong&gt; (GBA): Modern C++ with great docs&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PVSnesLib&lt;/strong&gt; (SNES): Comprehensive library&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NightFox's Lib&lt;/strong&gt; (DS): High-level 2D development&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;KallistiOS&lt;/strong&gt; (Dreamcast): Mature ecosystem&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;devkitPPC&lt;/strong&gt; (GC/Wii): Official toolchain&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Vita SDK&lt;/strong&gt; (Vita): Active community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="advanced"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-29"&gt;Advanced&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;8-bit/16-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;libSFX&lt;/strong&gt; (SNES): Assembly-first, highly optimized&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;citro3d&lt;/strong&gt; (3DS): Direct hardware access&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;libnds&lt;/strong&gt; (DS): Low-level control&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;PS2SDK&lt;/strong&gt; (PS2): Complex but powerful&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Yaul&lt;/strong&gt; (Saturn): Modern low-level library&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;libdragon&lt;/strong&gt; (N64): RDP/RSP programming&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;nxdk&lt;/strong&gt; (Xbox): Direct3D 8 development&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="community-resources"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-30"&gt;Community Resources&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;General Communities:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;NESDev Forums&lt;/strong&gt;: Multi-platform retro development -
+&lt;a class="reference external" href="https://forums.nesdev.org/"&gt;Forums&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GBAtemp&lt;/strong&gt;: DS/3DS homebrew - &lt;a class="reference external" href="https://gbatemp.net/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;devkitPro Discord&lt;/strong&gt;: Nintendo handheld development&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Platform-Specific:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;GBADev&lt;/strong&gt;: Game Boy Advance - &lt;a class="reference external" href="https://gbadev.net/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PSXDev&lt;/strong&gt;: PlayStation 1 - &lt;a class="reference external" href="https://www.psxdev.net/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PS2Dev Forums&lt;/strong&gt;: PS2, PSP - &lt;a class="reference external" href="https://forums.ps2dev.org/"&gt;Forums&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DCEmulation&lt;/strong&gt;: Dreamcast - &lt;a class="reference external" href="https://dcemulation.org/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SegaXtreme&lt;/strong&gt;: Saturn, Mega Drive -
+&lt;a class="reference external" href="https://segaxtreme.net/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;N64brew&lt;/strong&gt;: Nintendo 64 - &lt;a class="reference external" href="https://n64brew.dev/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GC-Forever&lt;/strong&gt;: GameCube/Wii - &lt;a class="reference external" href="https://www.gc-forever.com/"&gt;Website&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;r/vitahacks&lt;/strong&gt;: PS Vita homebrew&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-31"&gt;Conclusion&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The retro console homebrew scene has never been more vibrant or accessible.
+With modern open-source toolchains, documentation, and active communities,
+developing games for classic consoles is now within reach of any motivated
+developer with a Linux machine.&lt;/p&gt;
+&lt;p&gt;Whether you want to create a simple Game Boy puzzle game with GB Studio's
+visual editor, or push the limits of the PlayStation 2's Emotion Engine with
+assembly-optimized code, the tools are available and the communities are
+welcoming.&lt;/p&gt;
+&lt;p&gt;The best part? This entire workflow can be accomplished with 100% free and
+open-source software, from the development tools to the graphics editors to the
+music trackers. This guide should give you everything you need to start your
+retro game development journey.&lt;/p&gt;
+&lt;p&gt;Happy coding, and may your sprites never flicker!&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="gamedev"/><category term="gamedev"/><category term="retro"/><category term="homebrew"/><category term="console"/><category term="open-source"/></entry></feed>

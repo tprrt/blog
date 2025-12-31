@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2025-03-11T10:00:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Retro Console Hardware Comparison: A Technical Deep Dive</title><link href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="alternate"/><published>2025-03-11T10:00:00+01:00</published><updated>2025-03-11T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-03-11:/retro-console-hardware-comparison.html</id><summary type="html">&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
+specifications, graphics capabilities, audio systems, and special features
+across multiple generations of hardware.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Understanding the hardware capabilities of classic gaming consoles
+provides valuable insight for both homebrew developers and retro gaming
+enthusiasts. Each console generation brought significant improvements in
+processing power, graphics capabilities, and audio quality, while
+working within tight memory constraints and power budgets.&lt;/p&gt;
+&lt;p&gt;This guide provides detailed technical comparisons across multiple
+console generations, from the 8-bit Game Boy to modern hybrid systems
+like the Nintendo Switch. Whether you're developing homebrew games or
+simply curious about the technical evolution of gaming hardware, these
+tables offer a reference.&lt;/p&gt;
+&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title"&gt;&lt;a class="reference internal" href="#top"&gt;Table of Contents&lt;/a&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#introduction" id="toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#cpu-and-memory-architecture" id="toc-entry-2"&gt;CPU and Memory Architecture&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#processor-specifications" id="toc-entry-3"&gt;Processor Specifications&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#memory-configurations" id="toc-entry-4"&gt;Memory Configurations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#d-graphics-capabilities" id="toc-entry-5"&gt;2D Graphics Capabilities&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#color-depth-and-palette" id="toc-entry-6"&gt;Color Depth and Palette&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sprite-capabilities" id="toc-entry-7"&gt;Sprite Capabilities&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#video-output-specifications" id="toc-entry-8"&gt;Video Output Specifications&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#display-characteristics" id="toc-entry-9"&gt;Display Characteristics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#audio-capabilities" id="toc-entry-10"&gt;Audio Capabilities&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#sound-architecture" id="toc-entry-11"&gt;Sound Architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#audio-output" id="toc-entry-12"&gt;Audio Output&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#special-graphics-features" id="toc-entry-13"&gt;Special Graphics Features&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#hardware-effects-by-console" id="toc-entry-14"&gt;Hardware Effects by Console&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#conclusion" id="toc-entry-15"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cpu-and-memory-architecture"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-2"&gt;CPU and Memory Architecture&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The processors and memory configurations of gaming consoles reveal much
+about their capabilities and limitations. Early consoles operated with
+kilobytes of RAM, while modern systems have gigabytes at their disposal.&lt;/p&gt;
+&lt;div class="section" id="processor-specifications"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-3"&gt;Processor Specifications&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="28%" /&gt;
+&lt;col width="52%" /&gt;
+&lt;col width="20%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;CPU&lt;/th&gt;
+&lt;th class="head"&gt;Clock
+Speed&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;Custom Sharp LR35902&lt;/td&gt;
+&lt;td&gt;4.19 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;Custom Sharp Z80&lt;/td&gt;
+&lt;td&gt;8 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;Ricoh 2A03 (MOS 6502)&lt;/td&gt;
+&lt;td&gt;1.79 MHz
+(NTSC) /
+1.66 MHz
+(PAL)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;Ricoh 5A22 (65C816-based)&lt;/td&gt;
+&lt;td&gt;3.58 MHz
+(max)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;HuC6280 (MOS 6502-based)&lt;/td&gt;
+&lt;td&gt;7.16 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;Motorola 68000 + Zilog Z80&lt;/td&gt;
+&lt;td&gt;12 MHz +
+4 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;ARM7TDMI&lt;/td&gt;
+&lt;td&gt;16.78 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;ARM946E-S + ARM7&lt;/td&gt;
+&lt;td&gt;67 MHz +
+33 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;Dual-Core ARM11 MPCore&lt;/td&gt;
+&lt;td&gt;268 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;IBM PowerPC &amp;quot;Broadway&amp;quot;&lt;/td&gt;
+&lt;td&gt;729 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;MIPS R4000-based CPU&lt;/td&gt;
+&lt;td&gt;333 MHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;NVIDIA Tegra X1
+(ARM Cortex-A57)&lt;/td&gt;
+&lt;td&gt;1.02 GHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="section" id="memory-configurations"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-4"&gt;Memory Configurations&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="29%" /&gt;
+&lt;col width="71%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;RAM&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;8 KB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;32 KB + 16 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;2 KB + 2 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;128 KB + 64 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;8 KB + 64 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;64 KB + 68 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;256 KB + 96 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;4 MB + 656 KB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;128 MB + 6 MB VRAM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;88 MB (24 MB + 64 MB GDDR3)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;32 MB (PSP-1000) / 64 MB (PSP-2000+)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;4 GB LPDDR4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The evolution from kilobytes to gigabytes of RAM represents a
+million-fold increase in memory capacity. The NES operated with just
+2 KB of main RAM, requiring extremely efficient programming. Modern
+consoles like the Switch have 4 GB, enabling complex 3D worlds and
+high-resolution textures.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="d-graphics-capabilities"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-5"&gt;2D Graphics Capabilities&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Early gaming consoles were built around dedicated 2D graphics hardware
+with hardware sprites and tile-based rendering systems.&lt;/p&gt;
+&lt;div class="section" id="color-depth-and-palette"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-6"&gt;Color Depth and Palette&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="28%" /&gt;
+&lt;col width="42%" /&gt;
+&lt;col width="31%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;Graphics Processor&lt;/th&gt;
+&lt;th class="head"&gt;Displayable Colors&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;Custom Sharp LR35902&lt;/td&gt;
+&lt;td&gt;4 shades of gray&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;Custom Sharp Z80&lt;/td&gt;
+&lt;td&gt;32,768, 56 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;PPU (2C02 or 2C03)&lt;/td&gt;
+&lt;td&gt;52, 25 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;S-PPU&lt;/td&gt;
+&lt;td&gt;32,768, 256 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;HuC6270A VDC&lt;/td&gt;
+&lt;td&gt;512, 482 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;Custom LSPC2-A2&lt;/td&gt;
+&lt;td&gt;65,536, 4,096 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;Custom 2D Core&lt;/td&gt;
+&lt;td&gt;32,768, 512 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;2D/3D Graphics Engine&lt;/td&gt;
+&lt;td&gt;32,768, 4,096 max&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;PICA200 GPU&lt;/td&gt;
+&lt;td&gt;16.8 million&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;ATI Hollywood GPU&lt;/td&gt;
+&lt;td&gt;16.8 million&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;Sony CXD2962GG + Media&lt;/td&gt;
+&lt;td&gt;16.8 million&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;NVIDIA Tegra X1&lt;/td&gt;
+&lt;td&gt;16.8 million&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sprite-capabilities"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-7"&gt;Sprite Capabilities&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="27%" /&gt;
+&lt;col width="31%" /&gt;
+&lt;col width="42%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;Sprite Size&lt;/th&gt;
+&lt;th class="head"&gt;Max Sprites on Screen&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;8x8 or 8x16 px&lt;/td&gt;
+&lt;td&gt;40 sprites, max 10 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;8x8 or 8x16 px&lt;/td&gt;
+&lt;td&gt;40 sprites, max 10 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;8x8 or 8x16 px&lt;/td&gt;
+&lt;td&gt;64 sprites, max 8 per line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;Up to 64x64 px&lt;/td&gt;
+&lt;td&gt;128 sprites, max 32 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;16x16 px&lt;/td&gt;
+&lt;td&gt;64 sprites, max 16 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;Up to 16x512 px&lt;/td&gt;
+&lt;td&gt;380 sprites, no strict
+limit&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;Up to 64x64 px&lt;/td&gt;
+&lt;td&gt;128 sprites, max 32 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;Up to 64x64 px&lt;/td&gt;
+&lt;td&gt;128 sprites, max 32 per
+line&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;Variable&lt;/td&gt;
+&lt;td&gt;Sprite handling via 3D
+engine&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;Variable&lt;/td&gt;
+&lt;td&gt;Sprite handling via 3D
+engine&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;Variable&lt;/td&gt;
+&lt;td&gt;Sprite handling via 3D
+engine&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;Variable&lt;/td&gt;
+&lt;td&gt;Sprite handling via 3D
+engine&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sprite-per-line limits were a critical constraint for 8-bit and 16-bit
+consoles. Developers had to carefully manage sprite placement to avoid
+flickering. The Neo Geo's massive sprite sizes (up to 16x512 pixels)
+and high sprite count made it exceptional for arcade-style action games.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="video-output-specifications"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-8"&gt;Video Output Specifications&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Display resolution, refresh rate, and aspect ratio define the visual
+output characteristics of each console.&lt;/p&gt;
+&lt;div class="section" id="display-characteristics"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-9"&gt;Display Characteristics&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="27%" /&gt;
+&lt;col width="33%" /&gt;
+&lt;col width="24%" /&gt;
+&lt;col width="15%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;Resolution&lt;/th&gt;
+&lt;th class="head"&gt;Refresh Rate&lt;/th&gt;
+&lt;th class="head"&gt;Aspect
+Ratio&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;160x144&lt;/td&gt;
+&lt;td&gt;59.7 Hz&lt;/td&gt;
+&lt;td&gt;10:9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;160x144&lt;/td&gt;
+&lt;td&gt;59.7 Hz&lt;/td&gt;
+&lt;td&gt;10:9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;256x240&lt;/td&gt;
+&lt;td&gt;60 Hz (NTSC)
+50 Hz (PAL)&lt;/td&gt;
+&lt;td&gt;4:3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;256x224
+512x448i&lt;/td&gt;
+&lt;td&gt;60 Hz (NTSC)
+50 Hz (PAL)&lt;/td&gt;
+&lt;td&gt;4:3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;256x224&lt;/td&gt;
+&lt;td&gt;59.94 Hz&lt;/td&gt;
+&lt;td&gt;4:3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;320x224&lt;/td&gt;
+&lt;td&gt;59.18 Hz&lt;/td&gt;
+&lt;td&gt;4:3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;240x160&lt;/td&gt;
+&lt;td&gt;59.7 Hz&lt;/td&gt;
+&lt;td&gt;3:2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;256x192
+(per screen)&lt;/td&gt;
+&lt;td&gt;59.8 Hz&lt;/td&gt;
+&lt;td&gt;4:3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;400x240 (top)
+320x240 (bottom)&lt;/td&gt;
+&lt;td&gt;60 Hz&lt;/td&gt;
+&lt;td&gt;5:3
+(top)
+4:3
+(bottom)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;640x480&lt;/td&gt;
+&lt;td&gt;60 Hz&lt;/td&gt;
+&lt;td&gt;4:3 or
+16:9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;480x272&lt;/td&gt;
+&lt;td&gt;60 Hz&lt;/td&gt;
+&lt;td&gt;16:9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;1280x720
+(Handheld)
+1920x1080 (Docked)&lt;/td&gt;
+&lt;td&gt;60 Hz&lt;/td&gt;
+&lt;td&gt;16:9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Resolution evolved from the Game Boy's 160x144 to Full HD (1920x1080)
+on the Switch when docked. Most classic consoles targeted NTSC's 60 Hz
+or PAL's 50 Hz refresh rates. The shift from 4:3 to 16:9 aspect ratios
+occurred around the PSP/Wii generation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="audio-capabilities"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-10"&gt;Audio Capabilities&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Audio capabilities progressed from simple tone generators to full PCM
+sample playback and streaming capabilities.&lt;/p&gt;
+&lt;div class="section" id="sound-architecture"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-11"&gt;Sound Architecture&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="30%" /&gt;
+&lt;col width="41%" /&gt;
+&lt;col width="30%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;Sound Channels&lt;/th&gt;
+&lt;th class="head"&gt;Sample Rate&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;4 (2 square, 1 wave,
+1 noise)&lt;/td&gt;
+&lt;td&gt;~8 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;4 (same as GB)&lt;/td&gt;
+&lt;td&gt;~8 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;5 (2 pulse, 1 triangle,
+1 noise, 1 DPCM)&lt;/td&gt;
+&lt;td&gt;~21.3 kHz (NTSC)
+~17.3 kHz (PAL)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;8 PCM&lt;/td&gt;
+&lt;td&gt;32 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;6 PCM&lt;/td&gt;
+&lt;td&gt;~7.16 kHz to
+~20 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;4 FM, 3 PSG, ADPCM-A,
+ADPCM-B&lt;/td&gt;
+&lt;td&gt;~15.7 kHz
+(ADPCM-A)
+~18.5 kHz
+(ADPCM-B)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;6 (2 direct PCM +
+4 PSG)&lt;/td&gt;
+&lt;td&gt;32 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;16 PCM&lt;/td&gt;
+&lt;td&gt;32 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;24 PCM&lt;/td&gt;
+&lt;td&gt;32 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;64 PCM&lt;/td&gt;
+&lt;td&gt;48 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;32 PCM&lt;/td&gt;
+&lt;td&gt;44.1 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;32 PCM&lt;/td&gt;
+&lt;td&gt;48 kHz&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="section" id="audio-output"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-12"&gt;Audio Output&lt;/a&gt;&lt;/h3&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="29%" /&gt;
+&lt;col width="43%" /&gt;
+&lt;col width="29%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Console&lt;/th&gt;
+&lt;th class="head"&gt;Audio Processor&lt;/th&gt;
+&lt;th class="head"&gt;Audio Output&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy&lt;/td&gt;
+&lt;td&gt;Custom Sharp LR35902&lt;/td&gt;
+&lt;td&gt;Mono&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Color&lt;/td&gt;
+&lt;td&gt;Custom Sharp Z80&lt;/td&gt;
+&lt;td&gt;Mono&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NES&lt;/td&gt;
+&lt;td&gt;Ricoh 2A03 (NTSC) /
+Ricoh 2A07 (PAL)&lt;/td&gt;
+&lt;td&gt;Mono&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;SNES&lt;/td&gt;
+&lt;td&gt;Sony SPC700 + DSP&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PC Engine&lt;/td&gt;
+&lt;td&gt;HuC6280 PSG&lt;/td&gt;
+&lt;td&gt;Mono&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Neo Geo&lt;/td&gt;
+&lt;td&gt;Yamaha YM2610&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Game Boy Adv.&lt;/td&gt;
+&lt;td&gt;Custom 2D Core&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo DS&lt;/td&gt;
+&lt;td&gt;2D/3D Graphics Engine&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Nintendo 3DS&lt;/td&gt;
+&lt;td&gt;PICA200 GPU&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Wii&lt;/td&gt;
+&lt;td&gt;ATI Hollywood GPU&lt;/td&gt;
+&lt;td&gt;Stereo / DPL II&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;PSP&lt;/td&gt;
+&lt;td&gt;Sony CXD2962GG + Media&lt;/td&gt;
+&lt;td&gt;Stereo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;NVIDIA Tegra X1&lt;/td&gt;
+&lt;td&gt;Stereo / DPL IIx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SNES was revolutionary with its 8-channel PCM audio at 32 kHz,
+enabling CD-quality sound. The transition from mono to stereo output
+occurred in the 16-bit generation. Modern consoles support Dolby
+Pro Logic surround sound encoding.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="special-graphics-features"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-13"&gt;Special Graphics Features&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Beyond basic sprite and tile rendering, many consoles included special
+graphics modes that enabled advanced visual effects.&lt;/p&gt;
+&lt;div class="section" id="hardware-effects-by-console"&gt;
+&lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-14"&gt;Hardware Effects by Console&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Game Boy / Game Boy Color:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;No special graphics modes beyond basic tile and sprite rendering&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;NES:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Attribute Tables (Limited Tile Coloring)&lt;/li&gt;
+&lt;li&gt;CHR-ROM for Tile-Based Graphics&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;SNES:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Mode 7&lt;/strong&gt;: Affine transformations for scaling and rotation, enabling
+pseudo-3D effects (used in games like F-Zero and Super Mario Kart)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Windowing Effects&lt;/strong&gt;: Variable transparency regions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HDMA&lt;/strong&gt; (Horizontal Direct Memory Access): Per-scanline effects&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Color Math&lt;/strong&gt;: Hardware addition/subtraction for transparency and
+lighting effects&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PC Engine:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;No special graphics modes beyond standard tile/sprite capabilities&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Neo Geo:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Scaling&lt;/strong&gt; for sprites&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Line Scroll&lt;/strong&gt;: Independent line offsets for parallax effects&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Raster Effects&lt;/strong&gt;: Per-scanline modifications&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Game Boy Advance:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Affine Transformation&lt;/strong&gt;: Mode 7-like scaling and rotation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mosaic Effect&lt;/strong&gt;: Hardware pixelation for special effects&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Alpha Blending&lt;/strong&gt;: Multi-layer transparency&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Object Priority&lt;/strong&gt;: Hardware Z-ordering for sprites and backgrounds&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Nintendo DS:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;3D Rendering&lt;/strong&gt;: Hardware-accelerated 3D graphics engine&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Extended Affine Transformations&lt;/strong&gt;: Advanced 2D rotation and scaling&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fog Effects&lt;/strong&gt;: Depth-based atmospheric effects&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multiple Background Layers&lt;/strong&gt;: Up to 4 background layers with
+independent scrolling&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Nintendo 3DS:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Stereoscopic 3D&lt;/strong&gt;: Glasses-free autostereoscopic 3D display&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Advanced Shader Support&lt;/strong&gt;: Programmable vertex and fragment shaders&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPU-Accelerated Rendering&lt;/strong&gt;: PICA200 graphics processor&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Wii:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;GPU Effects&lt;/strong&gt;: Programmable shaders, bloom, motion blur&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Texture Mapping&lt;/strong&gt;: Advanced texture filtering and mipmapping&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Bump Mapping&lt;/strong&gt;: Per-pixel lighting simulation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Anti-Aliasing&lt;/strong&gt;: Multi-sample anti-aliasing (MSAA)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PSP:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Transform &amp;amp; Lighting&lt;/strong&gt; (T&amp;amp;L): Vertex processing on GPU&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Texture Compression&lt;/strong&gt;: Efficient VRAM usage&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Advanced Alpha Blending&lt;/strong&gt;: Complex transparency effects&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Switch:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Advanced Shaders&lt;/strong&gt;: Physically-Based Rendering (PBR)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hardware-Accelerated Global Illumination&lt;/strong&gt;: Realistic lighting&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HDR&lt;/strong&gt; (High Dynamic Range): Expanded color and brightness range&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Post-Processing Effects&lt;/strong&gt;: Depth of field, screen-space ambient
+occlusion (SSAO), temporal anti-aliasing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SNES Mode 7 was revolutionary for its time, enabling pseudo-3D
+effects with 2D hardware. The transition from fixed-function 2D
+hardware to programmable 3D GPUs occurred around the Nintendo DS/PSP
+generation. Modern consoles like the Switch support physically-based
+rendering and advanced post-processing effects comparable to modern
+gaming PCs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-15"&gt;Conclusion&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The evolution of gaming console hardware represents one of the most
+dramatic technological progressions in computing history. From the
+humble Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's
+1+ GHz quad-core CPU and 4 GB of RAM, each generation brought order-of-
+magnitude improvements in capabilities.&lt;/p&gt;
+&lt;p&gt;Understanding these hardware specifications is essential for homebrew
+developers targeting specific platforms. The constraints of each
+system - limited sprite counts, scanline restrictions, memory budgets -
+defined the creative solutions developers employed to create memorable
+gaming experiences.&lt;/p&gt;
+&lt;p&gt;Whether you're developing a Game Boy game with 40 sprites and 4 colors,
+or a Switch title with millions of polygons and advanced shaders, these
+specifications provide the foundation for understanding what's possible
+on each platform.&lt;/p&gt;
+&lt;p&gt;For developers, these tables serve as quick references when planning
+projects. For enthusiasts, they illuminate why certain games looked and
+played the way they did. The ingenuity of developers working within
+these constraints produced some of gaming's most iconic titles.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="hardware"/><category term="hardware"/><category term="retro"/><category term="console"/><category term="comparison"/><category term="technical"/></entry></feed>

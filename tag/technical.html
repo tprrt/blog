@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | articles tagged "technical"</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Thomas Perrot" />
+
+    <script data-ad-client="ca-pub-8632147971669760"
+            async="async"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
+            crossorigin="anonymous">
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/technical.html">technical</a></li>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/archives">Archives</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Yet another blog about embedded Linux, the open source and hardware</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Mar 11, 2025</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="bookmark" title="Permanent Link to &quot;Retro Console Hardware Comparison: A Technical Deep Dive&quot;">Retro Console Hardware Comparison: A Technical Deep Dive</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2><a class="toc-backref" href="#toc-entry-1">Introduction</a></h2>
+<p>Understanding the hardware capabilities of classic gaming consoles
+provides valuable insight for both homebrew developers and retro gaming
+enthusiasts. Each console generation brought significant improvements in
+processing power, graphics capabilities, and audio quality, while
+working within tight memory constraints and power budgets.</p>
+<p>This guide provides detailed technical comparisons across multiple
+console generations, from the 8-bit Game Boy to modern hybrid systems
+like the Nintendo Switch. Whether you're developing homebrew games or
+simply curious about the technical evolution of gaming hardware, these
+tables offer a reference.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><a class="reference internal" href="#top">Table of Contents</a></p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="toc-entry-1">Introduction</a></li>
+<li><a class="reference internal" href="#cpu-and-memory-architecture" id="toc-entry-2">CPU and Memory Architecture</a><ul>
+<li><a class="reference internal" href="#processor-specifications" id="toc-entry-3">Processor Specifications</a></li>
+<li><a class="reference internal" href="#memory-configurations" id="toc-entry-4">Memory Configurations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#d-graphics-capabilities" id="toc-entry-5">2D Graphics Capabilities</a><ul>
+<li><a class="reference internal" href="#color-depth-and-palette" id="toc-entry-6">Color Depth and Palette</a></li>
+<li><a class="reference internal" href="#sprite-capabilities" id="toc-entry-7">Sprite Capabilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#video-output-specifications" id="toc-entry-8">Video Output Specifications</a><ul>
+<li><a class="reference internal" href="#display-characteristics" id="toc-entry-9">Display Characteristics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#audio-capabilities" id="toc-entry-10">Audio Capabilities</a><ul>
+<li><a class="reference internal" href="#sound-architecture" id="toc-entry-11">Sound Architecture</a></li>
+<li><a class="reference internal" href="#audio-output" id="toc-entry-12">Audio Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#special-graphics-features" id="toc-entry-13">Special Graphics Features</a><ul>
+<li><a class="reference internal" href="#hardware-effects-by-console" id="toc-entry-14">Hardware Effects by Console</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conclusion" id="toc-entry-15">Conclusion</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="cpu-and-memory-architecture">
+<h2><a class="toc-backref" href="#toc-entry-2">CPU and Memory Architecture</a></h2>
+<p>The processors and memory configurations of gaming consoles reveal much
+about their capabilities and limitations. Early consoles operated with
+kilobytes of RAM, while modern systems have gigabytes at their disposal.</p>
+<div class="section" id="processor-specifications">
+<h3><a class="toc-backref" href="#toc-entry-3">Processor Specifications</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="52%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">CPU</th>
+<th class="head">Clock
+Speed</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>4.19 MHz</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>8 MHz</td>
+</tr>
+<tr><td>NES</td>
+<td>Ricoh 2A03 (MOS 6502)</td>
+<td>1.79 MHz
+(NTSC) /
+1.66 MHz
+(PAL)</td>
+</tr>
+<tr><td>SNES</td>
+<td>Ricoh 5A22 (65C816-based)</td>
+<td>3.58 MHz
+(max)</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6280 (MOS 6502-based)</td>
+<td>7.16 MHz</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Motorola 68000 + Zilog Z80</td>
+<td>12 MHz +
+4 MHz</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>ARM7TDMI</td>
+<td>16.78 MHz</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>ARM946E-S + ARM7</td>
+<td>67 MHz +
+33 MHz</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>Dual-Core ARM11 MPCore</td>
+<td>268 MHz</td>
+</tr>
+<tr><td>Wii</td>
+<td>IBM PowerPC &quot;Broadway&quot;</td>
+<td>729 MHz</td>
+</tr>
+<tr><td>PSP</td>
+<td>MIPS R4000-based CPU</td>
+<td>333 MHz</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1
+(ARM Cortex-A57)</td>
+<td>1.02 GHz</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="memory-configurations">
+<h3><a class="toc-backref" href="#toc-entry-4">Memory Configurations</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">RAM</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>8 KB</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>32 KB + 16 KB VRAM</td>
+</tr>
+<tr><td>NES</td>
+<td>2 KB + 2 KB VRAM</td>
+</tr>
+<tr><td>SNES</td>
+<td>128 KB + 64 KB VRAM</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>8 KB + 64 KB VRAM</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>64 KB + 68 KB VRAM</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>256 KB + 96 KB VRAM</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>4 MB + 656 KB VRAM</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>128 MB + 6 MB VRAM</td>
+</tr>
+<tr><td>Wii</td>
+<td>88 MB (24 MB + 64 MB GDDR3)</td>
+</tr>
+<tr><td>PSP</td>
+<td>32 MB (PSP-1000) / 64 MB (PSP-2000+)</td>
+</tr>
+<tr><td>Switch</td>
+<td>4 GB LPDDR4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>The evolution from kilobytes to gigabytes of RAM represents a
+million-fold increase in memory capacity. The NES operated with just
+2 KB of main RAM, requiring extremely efficient programming. Modern
+consoles like the Switch have 4 GB, enabling complex 3D worlds and
+high-resolution textures.</p>
+</div>
+</div>
+<div class="section" id="d-graphics-capabilities">
+<h2><a class="toc-backref" href="#toc-entry-5">2D Graphics Capabilities</a></h2>
+<p>Early gaming consoles were built around dedicated 2D graphics hardware
+with hardware sprites and tile-based rendering systems.</p>
+<div class="section" id="color-depth-and-palette">
+<h3><a class="toc-backref" href="#toc-entry-6">Color Depth and Palette</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Graphics Processor</th>
+<th class="head">Displayable Colors</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>4 shades of gray</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>32,768, 56 max</td>
+</tr>
+<tr><td>NES</td>
+<td>PPU (2C02 or 2C03)</td>
+<td>52, 25 max</td>
+</tr>
+<tr><td>SNES</td>
+<td>S-PPU</td>
+<td>32,768, 256 max</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6270A VDC</td>
+<td>512, 482 max</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Custom LSPC2-A2</td>
+<td>65,536, 4,096 max</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Custom 2D Core</td>
+<td>32,768, 512 max</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>2D/3D Graphics Engine</td>
+<td>32,768, 4,096 max</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>PICA200 GPU</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>Wii</td>
+<td>ATI Hollywood GPU</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>PSP</td>
+<td>Sony CXD2962GG + Media</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1</td>
+<td>16.8 million</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sprite-capabilities">
+<h3><a class="toc-backref" href="#toc-entry-7">Sprite Capabilities</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="31%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Sprite Size</th>
+<th class="head">Max Sprites on Screen</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>8x8 or 8x16 px</td>
+<td>40 sprites, max 10 per
+line</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>8x8 or 8x16 px</td>
+<td>40 sprites, max 10 per
+line</td>
+</tr>
+<tr><td>NES</td>
+<td>8x8 or 8x16 px</td>
+<td>64 sprites, max 8 per line</td>
+</tr>
+<tr><td>SNES</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>16x16 px</td>
+<td>64 sprites, max 16 per
+line</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Up to 16x512 px</td>
+<td>380 sprites, no strict
+limit</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>Wii</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>PSP</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>Switch</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>Sprite-per-line limits were a critical constraint for 8-bit and 16-bit
+consoles. Developers had to carefully manage sprite placement to avoid
+flickering. The Neo Geo's massive sprite sizes (up to 16x512 pixels)
+and high sprite count made it exceptional for arcade-style action games.</p>
+</div>
+</div>
+<div class="section" id="video-output-specifications">
+<h2><a class="toc-backref" href="#toc-entry-8">Video Output Specifications</a></h2>
+<p>Display resolution, refresh rate, and aspect ratio define the visual
+output characteristics of each console.</p>
+<div class="section" id="display-characteristics">
+<h3><a class="toc-backref" href="#toc-entry-9">Display Characteristics</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="33%" />
+<col width="24%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Resolution</th>
+<th class="head">Refresh Rate</th>
+<th class="head">Aspect
+Ratio</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>160x144</td>
+<td>59.7 Hz</td>
+<td>10:9</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>160x144</td>
+<td>59.7 Hz</td>
+<td>10:9</td>
+</tr>
+<tr><td>NES</td>
+<td>256x240</td>
+<td>60 Hz (NTSC)
+50 Hz (PAL)</td>
+<td>4:3</td>
+</tr>
+<tr><td>SNES</td>
+<td>256x224
+512x448i</td>
+<td>60 Hz (NTSC)
+50 Hz (PAL)</td>
+<td>4:3</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>256x224</td>
+<td>59.94 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>320x224</td>
+<td>59.18 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>240x160</td>
+<td>59.7 Hz</td>
+<td>3:2</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>256x192
+(per screen)</td>
+<td>59.8 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>400x240 (top)
+320x240 (bottom)</td>
+<td>60 Hz</td>
+<td>5:3
+(top)
+4:3
+(bottom)</td>
+</tr>
+<tr><td>Wii</td>
+<td>640x480</td>
+<td>60 Hz</td>
+<td>4:3 or
+16:9</td>
+</tr>
+<tr><td>PSP</td>
+<td>480x272</td>
+<td>60 Hz</td>
+<td>16:9</td>
+</tr>
+<tr><td>Switch</td>
+<td>1280x720
+(Handheld)
+1920x1080 (Docked)</td>
+<td>60 Hz</td>
+<td>16:9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>Resolution evolved from the Game Boy's 160x144 to Full HD (1920x1080)
+on the Switch when docked. Most classic consoles targeted NTSC's 60 Hz
+or PAL's 50 Hz refresh rates. The shift from 4:3 to 16:9 aspect ratios
+occurred around the PSP/Wii generation.</p>
+</div>
+</div>
+<div class="section" id="audio-capabilities">
+<h2><a class="toc-backref" href="#toc-entry-10">Audio Capabilities</a></h2>
+<p>Audio capabilities progressed from simple tone generators to full PCM
+sample playback and streaming capabilities.</p>
+<div class="section" id="sound-architecture">
+<h3><a class="toc-backref" href="#toc-entry-11">Sound Architecture</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="41%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Sound Channels</th>
+<th class="head">Sample Rate</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>4 (2 square, 1 wave,
+1 noise)</td>
+<td>~8 kHz</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>4 (same as GB)</td>
+<td>~8 kHz</td>
+</tr>
+<tr><td>NES</td>
+<td>5 (2 pulse, 1 triangle,
+1 noise, 1 DPCM)</td>
+<td>~21.3 kHz (NTSC)
+~17.3 kHz (PAL)</td>
+</tr>
+<tr><td>SNES</td>
+<td>8 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>6 PCM</td>
+<td>~7.16 kHz to
+~20 kHz</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>4 FM, 3 PSG, ADPCM-A,
+ADPCM-B</td>
+<td>~15.7 kHz
+(ADPCM-A)
+~18.5 kHz
+(ADPCM-B)</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>6 (2 direct PCM +
+4 PSG)</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>16 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>24 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Wii</td>
+<td>64 PCM</td>
+<td>48 kHz</td>
+</tr>
+<tr><td>PSP</td>
+<td>32 PCM</td>
+<td>44.1 kHz</td>
+</tr>
+<tr><td>Switch</td>
+<td>32 PCM</td>
+<td>48 kHz</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="audio-output">
+<h3><a class="toc-backref" href="#toc-entry-12">Audio Output</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="43%" />
+<col width="29%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Audio Processor</th>
+<th class="head">Audio Output</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>Mono</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>Mono</td>
+</tr>
+<tr><td>NES</td>
+<td>Ricoh 2A03 (NTSC) /
+Ricoh 2A07 (PAL)</td>
+<td>Mono</td>
+</tr>
+<tr><td>SNES</td>
+<td>Sony SPC700 + DSP</td>
+<td>Stereo</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6280 PSG</td>
+<td>Mono</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Yamaha YM2610</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Custom 2D Core</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>2D/3D Graphics Engine</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>PICA200 GPU</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Wii</td>
+<td>ATI Hollywood GPU</td>
+<td>Stereo / DPL II</td>
+</tr>
+<tr><td>PSP</td>
+<td>Sony CXD2962GG + Media</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1</td>
+<td>Stereo / DPL IIx</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>The SNES was revolutionary with its 8-channel PCM audio at 32 kHz,
+enabling CD-quality sound. The transition from mono to stereo output
+occurred in the 16-bit generation. Modern consoles support Dolby
+Pro Logic surround sound encoding.</p>
+</div>
+</div>
+<div class="section" id="special-graphics-features">
+<h2><a class="toc-backref" href="#toc-entry-13">Special Graphics Features</a></h2>
+<p>Beyond basic sprite and tile rendering, many consoles included special
+graphics modes that enabled advanced visual effects.</p>
+<div class="section" id="hardware-effects-by-console">
+<h3><a class="toc-backref" href="#toc-entry-14">Hardware Effects by Console</a></h3>
+<p><strong>Game Boy / Game Boy Color:</strong></p>
+<ul class="simple">
+<li>No special graphics modes beyond basic tile and sprite rendering</li>
+</ul>
+<p><strong>NES:</strong></p>
+<ul class="simple">
+<li>Attribute Tables (Limited Tile Coloring)</li>
+<li>CHR-ROM for Tile-Based Graphics</li>
+</ul>
+<p><strong>SNES:</strong></p>
+<ul class="simple">
+<li><strong>Mode 7</strong>: Affine transformations for scaling and rotation, enabling
+pseudo-3D effects (used in games like F-Zero and Super Mario Kart)</li>
+<li><strong>Windowing Effects</strong>: Variable transparency regions</li>
+<li><strong>HDMA</strong> (Horizontal Direct Memory Access): Per-scanline effects</li>
+<li><strong>Color Math</strong>: Hardware addition/subtraction for transparency and
+lighting effects</li>
+</ul>
+<p><strong>PC Engine:</strong></p>
+<ul class="simple">
+<li>No special graphics modes beyond standard tile/sprite capabilities</li>
+</ul>
+<p><strong>Neo Geo:</strong></p>
+<ul class="simple">
+<li><strong>Hardware Scaling</strong> for sprites</li>
+<li><strong>Line Scroll</strong>: Independent line offsets for parallax effects</li>
+<li><strong>Raster Effects</strong>: Per-scanline modifications</li>
+</ul>
+<p><strong>Game Boy Advance:</strong></p>
+<ul class="simple">
+<li><strong>Affine Transformation</strong>: Mode 7-like scaling and rotation</li>
+<li><strong>Mosaic Effect</strong>: Hardware pixelation for special effects</li>
+<li><strong>Alpha Blending</strong>: Multi-layer transparency</li>
+<li><strong>Object Priority</strong>: Hardware Z-ordering for sprites and backgrounds</li>
+</ul>
+<p><strong>Nintendo DS:</strong></p>
+<ul class="simple">
+<li><strong>3D Rendering</strong>: Hardware-accelerated 3D graphics engine</li>
+<li><strong>Extended Affine Transformations</strong>: Advanced 2D rotation and scaling</li>
+<li><strong>Fog Effects</strong>: Depth-based atmospheric effects</li>
+<li><strong>Multiple Background Layers</strong>: Up to 4 background layers with
+independent scrolling</li>
+</ul>
+<p><strong>Nintendo 3DS:</strong></p>
+<ul class="simple">
+<li><strong>Stereoscopic 3D</strong>: Glasses-free autostereoscopic 3D display</li>
+<li><strong>Advanced Shader Support</strong>: Programmable vertex and fragment shaders</li>
+<li><strong>GPU-Accelerated Rendering</strong>: PICA200 graphics processor</li>
+</ul>
+<p><strong>Wii:</strong></p>
+<ul class="simple">
+<li><strong>GPU Effects</strong>: Programmable shaders, bloom, motion blur</li>
+<li><strong>Texture Mapping</strong>: Advanced texture filtering and mipmapping</li>
+<li><strong>Bump Mapping</strong>: Per-pixel lighting simulation</li>
+<li><strong>Hardware Anti-Aliasing</strong>: Multi-sample anti-aliasing (MSAA)</li>
+</ul>
+<p><strong>PSP:</strong></p>
+<ul class="simple">
+<li><strong>Hardware Transform &amp; Lighting</strong> (T&amp;L): Vertex processing on GPU</li>
+<li><strong>Texture Compression</strong>: Efficient VRAM usage</li>
+<li><strong>Advanced Alpha Blending</strong>: Complex transparency effects</li>
+</ul>
+<p><strong>Switch:</strong></p>
+<ul class="simple">
+<li><strong>Advanced Shaders</strong>: Physically-Based Rendering (PBR)</li>
+<li><strong>Hardware-Accelerated Global Illumination</strong>: Realistic lighting</li>
+<li><strong>HDR</strong> (High Dynamic Range): Expanded color and brightness range</li>
+<li><strong>Post-Processing Effects</strong>: Depth of field, screen-space ambient
+occlusion (SSAO), temporal anti-aliasing</li>
+</ul>
+<p><strong>Key Observations:</strong></p>
+<p>The SNES Mode 7 was revolutionary for its time, enabling pseudo-3D
+effects with 2D hardware. The transition from fixed-function 2D
+hardware to programmable 3D GPUs occurred around the Nintendo DS/PSP
+generation. Modern consoles like the Switch support physically-based
+rendering and advanced post-processing effects comparable to modern
+gaming PCs.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#toc-entry-15">Conclusion</a></h2>
+<p>The evolution of gaming console hardware represents one of the most
+dramatic technological progressions in computing history. From the
+humble Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's
+1+ GHz quad-core CPU and 4 GB of RAM, each generation brought order-of-
+magnitude improvements in capabilities.</p>
+<p>Understanding these hardware specifications is essential for homebrew
+developers targeting specific platforms. The constraints of each
+system - limited sprite counts, scanline restrictions, memory budgets -
+defined the creative solutions developers employed to create memorable
+gaming experiences.</p>
+<p>Whether you're developing a Game Boy game with 40 sprites and 4 colors,
+or a Switch title with millions of polygons and advanced shaders, these
+specifications provide the foundation for understanding what's possible
+on each platform.</p>
+<p>For developers, these tables serve as quick references when planning
+projects. For enthusiasts, they illuminate why certain games looked and
+played the way they did. The ingenuity of developers working within
+these constraints produced some of gaming's most iconic titles.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html">posted at 10:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/hardware.html" rel="tag">hardware</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/hardware.html" class="tags">hardware</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/console.html" class="tags">console</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/comparison.html" class="tags">comparison</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/technical.html" class="tags selected">technical</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-169118252-1");
+    pageTracker._trackPageview();
+    } catch(err) {}</script>
+</body>
+</html>
