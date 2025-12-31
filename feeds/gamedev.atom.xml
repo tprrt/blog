@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2025-12-31T10:00:00+01:00</updated><subtitle>Yet another blog about embedded Linux, the open source and hardware</subtitle><entry><title>Open-Source Game Engines for Retro Consoles</title><link href="https://tprrt.tupi.fr/retro-console-game-engines.html" rel="alternate"/><published>2025-12-31T10:00:00+01:00</published><updated>2025-12-31T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-12-31:/retro-console-game-engines.html</id><summary type="html">&lt;p class="first last"&gt;A guide to modern open-source game engines and frameworks for
-developing games on classic 8-bit to 128-bit consoles, all compatible with
-Linux.&lt;/p&gt;
+developing games on classic consoles from 8-bit to sixth generation, all
+compatible with Linux.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Retro console development has experienced a renaissance in recent years,
@@ -11,9 +11,9 @@ proprietary SDKs is now accessible to anyone with a Linux machine and a
 passion for classic gaming hardware.&lt;/p&gt;
 &lt;p&gt;This guide catalogs the best open-source game engines and frameworks
 available for developing games on classic consoles, from the 8-bit Game
-Boy Color to 128-bit systems like the PlayStation 2. All tools mentioned
-are compatible with Linux development environments, making them perfect
-for a fully free and open-source workflow.&lt;/p&gt;
+Boy Color to sixth generation systems like the PlayStation 2. All tools
+mentioned are compatible with Linux development environments, making them
+perfect for a fully free and open-source workflow.&lt;/p&gt;
 &lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title"&gt;&lt;a class="reference internal" href="#top"&gt;Table of Contents&lt;/a&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
@@ -29,7 +29,7 @@ for a fully free and open-source workflow.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#pc-engine-turbografx-16" id="toc-entry-10"&gt;PC Engine / TurboGrafx-16&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;a class="reference internal" href="#bit-and-128-bit-consoles" id="toc-entry-11"&gt;32-bit and 128-bit Consoles&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#fifth-and-sixth-generation-consoles" id="toc-entry-11"&gt;Fifth and Sixth Generation Consoles&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#sony-playstation-1-ps1" id="toc-entry-12"&gt;Sony PlayStation 1 (PS1)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#sega-saturn" id="toc-entry-13"&gt;Sega Saturn&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#nintendo-64" id="toc-entry-14"&gt;Nintendo 64&lt;/a&gt;&lt;/li&gt;
@@ -329,8 +329,8 @@ optimization.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class="section" id="bit-and-128-bit-consoles"&gt;
-&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-11"&gt;32-bit and 128-bit Consoles&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="section" id="fifth-and-sixth-generation-consoles"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-11"&gt;Fifth and Sixth Generation Consoles&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="section" id="sony-playstation-1-ps1"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-12"&gt;Sony PlayStation 1 (PS1)&lt;/a&gt;&lt;/h3&gt;
 &lt;div class="section" id="psn00bsdk"&gt;
@@ -682,7 +682,7 @@ expansion chip support. Available on Flathub.
 &lt;li&gt;&lt;strong&gt;GBDK-2020&lt;/strong&gt; (GBC): Simple C development&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;SGDK&lt;/strong&gt; (Mega Drive): Excellent documentation and community&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fifth/Sixth Generation:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;strong&gt;PSn00bSDK&lt;/strong&gt; (PS1): Clean, modern API&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Jo Engine&lt;/strong&gt; (Saturn): High-level engine with tutorials&lt;/li&gt;
@@ -697,7 +697,7 @@ expansion chip support. Available on Flathub.
 &lt;li&gt;&lt;strong&gt;PVSnesLib&lt;/strong&gt; (SNES): Comprehensive library&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;NightFox's Lib&lt;/strong&gt; (DS): High-level 2D development&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fifth/Sixth Generation:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;strong&gt;KallistiOS&lt;/strong&gt; (Dreamcast): Mature ecosystem&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;devkitPPC&lt;/strong&gt; (GC/Wii): Official toolchain&lt;/li&gt;
@@ -712,7 +712,7 @@ expansion chip support. Available on Flathub.
 &lt;li&gt;&lt;strong&gt;citro3d&lt;/strong&gt; (3DS): Direct hardware access&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;libnds&lt;/strong&gt; (DS): Low-level control&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;32-bit/128-bit:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fifth/Sixth Generation:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;strong&gt;PS2SDK&lt;/strong&gt; (PS2): Complex but powerful&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Yaul&lt;/strong&gt; (Saturn): Modern low-level library&lt;/li&gt;

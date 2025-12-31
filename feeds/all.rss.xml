@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tprrt's Blog</title><link>https://tprrt.tupi.fr/</link><description>Yet another blog about embedded Linux, the open source and hardware</description><atom:link href="/feeds/all.rss.xml" rel="self"/><lastBuildDate>Wed, 31 Dec 2025 10:00:00 +0100</lastBuildDate><item><title>Open-Source Game Engines for Retro Consoles</title><link>https://tprrt.tupi.fr/retro-console-game-engines.html</link><description>&lt;p class="first last"&gt;A guide to modern open-source game engines and frameworks for
-developing games on classic 8-bit to 128-bit consoles, all compatible with
-Linux.&lt;/p&gt;
+developing games on classic consoles from 8-bit to sixth generation, all
+compatible with Linux.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">tperrot</dc:creator><pubDate>Wed, 31 Dec 2025 10:00:00 +0100</pubDate><guid>tag:tprrt.tupi.fr,2025-12-31:/retro-console-game-engines.html</guid><category>gamedev</category><category>gamedev</category><category>retro</category><category>homebrew</category><category>console</category><category>open-source</category></item><item><title>Retro Console Hardware Comparison: A Technical Deep Dive</title><link>https://tprrt.tupi.fr/retro-console-hardware-comparison.html</link><description>&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
 specifications, graphics capabilities, audio systems, and special features
 across multiple generations of hardware.&lt;/p&gt;
