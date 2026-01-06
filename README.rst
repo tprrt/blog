@@ -13,6 +13,16 @@ My static blog
 My embedded Linux developer's blog built with Pelican, an static site generator
 written in Python. The content of this blog is written in reStructuredText.
 
+License
+=======
+
+This repository uses dual licensing:
+
+- **Content & Media** (files in ``content/`` directory including articles and
+  images): Licensed under `Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) <LICENSE-CONTENT>`_
+- **Code & Build System** (Pelican configuration, themes, plugins, and build
+  scripts): Licensed under `GNU General Public License v3.0 (GPLv3) <LICENSE>`_
+
 ----
 
 Use commands below to install required Python modules to build static pages and to push them on github:
