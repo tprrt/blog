@@ -21,6 +21,24 @@
             integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
             crossorigin="anonymous">
     </script>
+<style>
+    footer .license-info {
+        margin-top: 0.5em;
+        font-size: 0.9em;
+    }
+</style>
+<script>
+// Add license information to footer
+document.addEventListener('DOMContentLoaded', function() {
+    var footer = document.querySelector('footer p');
+    if (footer) {
+        var licenseInfo = document.createElement('p');
+        licenseInfo.className = 'license-info';
+        licenseInfo.innerHTML = 'Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>';
+        footer.parentNode.appendChild(licenseInfo);
+    }
+});
+</script>
 </head>
 <body>
     <header>
