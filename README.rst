@@ -23,6 +23,14 @@ This repository uses dual licensing:
 - **Code & Build System** (Pelican configuration, themes, plugins, and build
   scripts): Licensed under `GNU General Public License v3.0 (GPLv3) <LICENSE>`_
 
+Support
+=======
+
+If you find this blog useful and would like to support its development, you can
+make a donation via PayPal:
+
+https://paypal.me/tprrt
+
 ----
 
 Use commands below to install required Python modules to build static pages and to push them on github:
