@@ -1,6 +1,6 @@
 AUTHOR = 'Thomas Perrot'
 SITENAME = "Tprrt's Blog"
-SITESUBTITLE = "Yet another blog about embedded Linux, the open source and hardware"
+SITESUBTITLE = "Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness"
 SITEURL = ''
 
 PATH = 'content'

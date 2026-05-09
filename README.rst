@@ -10,7 +10,8 @@
 My static blog
 ==============
 
-My embedded Linux developer's blog built with Pelican, an static site generator
+My blog about embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming,
+retro gaming, and competitive fitness, built with Pelican, a static site generator
 written in Python. The content of this blog is written in reStructuredText.
 
 License
