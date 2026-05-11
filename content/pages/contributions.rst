@@ -45,6 +45,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `meta-raspberrypi patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/log/?qt=author&q=thomas.perrot>`_
     * `meta-riscv patches <https://github.com/riscv/meta-riscv/commits?author=tprrt>`_
     * `meta-security patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-security/log/?qt=author&q=thomas.perrot>`_
+    * `meta-selinux patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/log/?qt=author&q=thomas.perrot>`_
     * `meta-sifive patches <https://github.com/sifive/meta-sifive/commits?author=tprrt>`_
     * `meta-st-stm32mp patches <https://github.com/STMicroelectronics/meta-st-stm32mp/commits?author=tprrt>`_
     * `meta-tensorflow-lite patches <https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits?author=tprrt>`_
