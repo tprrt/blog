@@ -1,10 +1,10 @@
 ==============================================================
-Retro Console Hardware Comparison: A Technical Deep Dive
+Retro Console Hardware Comparison
 ==============================================================
 
 :date: 2025-03-11 10:00
 :modified: 2025-03-11 10:00
-:tags: hardware, retro, console, comparison, technical
+:tags: hardware, retro, console, comparison, technical, article
 :category: hardware
 :slug: retro-console-hardware-comparison
 :authors: tperrot
@@ -17,27 +17,15 @@ Retro Console Hardware Comparison: A Technical Deep Dive
 Introduction
 ============
 
-Understanding the hardware capabilities of classic gaming consoles
-provides valuable insight for both homebrew developers and retro gaming
-enthusiasts. Each console generation brought significant improvements in
-processing power, graphics capabilities, and audio quality, while
-working within tight memory constraints and power budgets.
-
-This guide provides detailed technical comparisons across multiple
-console generations, from the 8-bit Game Boy to modern hybrid systems
-like the Nintendo Switch. Whether you're developing homebrew games or
-simply curious about the technical evolution of gaming hardware, these
-tables offer a reference.
+Reference tables for the CPU, memory, graphics, video and audio hardware of
+consoles from the 8-bit Game Boy to the Nintendo Switch, for homebrew
+developers and retro gaming enthusiasts.
 
 .. contents:: Table of Contents
    :depth: 2
 
 CPU and Memory Architecture
 ============================
-
-The processors and memory configurations of gaming consoles reveal much
-about their capabilities and limitations. Early consoles operated with
-kilobytes of RAM, while modern systems have gigabytes at their disposal.
 
 Processor Specifications
 -------------------------
@@ -111,17 +99,14 @@ Memory Configurations
 
 **Key Observations:**
 
-The evolution from kilobytes to gigabytes of RAM represents a
-million-fold increase in memory capacity. The NES operated with just
-2 KB of main RAM, requiring extremely efficient programming. Modern
-consoles like the Switch have 4 GB, enabling complex 3D worlds and
-high-resolution textures.
+RAM grew from kilobytes to gigabytes, roughly a million-fold. The NES had 2 KB
+of main RAM; the Switch has 4 GB.
 
 2D Graphics Capabilities
 =========================
 
-Early gaming consoles were built around dedicated 2D graphics hardware
-with hardware sprites and tile-based rendering systems.
+Early consoles used dedicated 2D hardware with hardware sprites and tile-based
+rendering.
 
 Color Depth and Palette
 ------------------------
@@ -198,16 +183,12 @@ Sprite Capabilities
 
 **Key Observations:**
 
-Sprite-per-line limits were a critical constraint for 8-bit and 16-bit
-consoles. Developers had to carefully manage sprite placement to avoid
-flickering. The Neo Geo's massive sprite sizes (up to 16x512 pixels)
-and high sprite count made it exceptional for arcade-style action games.
+Sprite-per-line limits constrained 8-bit and 16-bit consoles, and developers
+had to manage sprite placement to avoid flicker. The Neo Geo's large sprites
+(up to 16x512 pixels) and high sprite count suited arcade-style action games.
 
 Video Output Specifications
 ============================
-
-Display resolution, refresh rate, and aspect ratio define the visual
-output characteristics of each console.
 
 Display Characteristics
 -----------------------
@@ -252,16 +233,12 @@ Display Characteristics
 
 **Key Observations:**
 
-Resolution evolved from the Game Boy's 160x144 to Full HD (1920x1080)
-on the Switch when docked. Most classic consoles targeted NTSC's 60 Hz
-or PAL's 50 Hz refresh rates. The shift from 4:3 to 16:9 aspect ratios
-occurred around the PSP/Wii generation.
+Resolution went from the Game Boy's 160x144 to 1920x1080 on a docked Switch.
+Most classic consoles targeted NTSC's 60 Hz or PAL's 50 Hz. The shift from 4:3
+to 16:9 came around the PSP/Wii generation.
 
 Audio Capabilities
 ==================
-
-Audio capabilities progressed from simple tone generators to full PCM
-sample playback and streaming capabilities.
 
 Sound Architecture
 ------------------
@@ -335,16 +312,12 @@ Audio Output
 
 **Key Observations:**
 
-The SNES was revolutionary with its 8-channel PCM audio at 32 kHz,
-enabling CD-quality sound. The transition from mono to stereo output
-occurred in the 16-bit generation. Modern consoles support Dolby
-Pro Logic surround sound encoding.
+The SNES had 8-channel PCM audio at 32 kHz. Output went from mono to stereo in
+the 16-bit generation, and the Wii and Switch support Dolby Pro Logic
+surround encoding.
 
 Special Graphics Features
 ==========================
-
-Beyond basic sprite and tile rendering, many consoles included special
-graphics modes that enabled advanced visual effects.
 
 Hardware Effects by Console
 ----------------------------
@@ -421,34 +394,17 @@ Hardware Effects by Console
 
 **Key Observations:**
 
-The SNES Mode 7 was revolutionary for its time, enabling pseudo-3D
-effects with 2D hardware. The transition from fixed-function 2D
-hardware to programmable 3D GPUs occurred around the Nintendo DS/PSP
-generation. Modern consoles like the Switch support physically-based
-rendering and advanced post-processing effects comparable to modern
-gaming PCs.
+SNES Mode 7 gave 2D hardware pseudo-3D effects. The move from fixed-function
+2D hardware to 3D GPUs came around the Nintendo DS/PSP generation, and the
+Switch supports physically-based rendering and post-processing comparable to
+a gaming PC.
 
 Conclusion
 ==========
 
-The evolution of gaming console hardware represents one of the most
-dramatic technological progressions in computing history. From the
-humble Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's
-1+ GHz quad-core CPU and 4 GB of RAM, each generation brought order-of-
-magnitude improvements in capabilities.
-
-Understanding these hardware specifications is essential for homebrew
-developers targeting specific platforms. The constraints of each
-system - limited sprite counts, scanline restrictions, memory budgets -
-defined the creative solutions developers employed to create memorable
-gaming experiences.
-
-Whether you're developing a Game Boy game with 40 sprites and 4 colors,
-or a Switch title with millions of polygons and advanced shaders, these
-specifications provide the foundation for understanding what's possible
-on each platform.
-
-For developers, these tables serve as quick references when planning
-projects. For enthusiasts, they illuminate why certain games looked and
-played the way they did. The ingenuity of developers working within
-these constraints produced some of gaming's most iconic titles.
+From the Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's 1+ GHz
+quad-core CPU and 4 GB of RAM, each generation gained roughly an order of
+magnitude. For homebrew developers, the per-system limits (sprite counts,
+scanline restrictions, memory budgets) decide what is feasible and shape how
+the code is written, from a Game Boy game with 40 sprites and 4 shades to a
+Switch title with advanced shaders.

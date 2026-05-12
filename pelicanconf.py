@@ -49,8 +49,8 @@ DISPLAY_HOME   = True
 DISPLAY_MENU   = True
 
 # urls
-ARCHIVES_URL       = 'archives'
-ARCHIVES_SAVE_AS   = 'archives/index.html'
+ARTICLES_URL       = 'articles'
+ARTICLES_SAVE_AS   = 'articles/index.html'
 AUTHORS_URL        = 'authors'
 AUTHORS_SAVE_AS    = 'authors/index.html'
 CATEGORIES_URL     = 'categories'
@@ -59,14 +59,19 @@ CONTACT_URL     = 'contact'
 CONTACT_SAVE_AS = 'contact/index.html'
 CONTRIBUTIONS_URL     = 'contributions'
 CONTRIBUTIONS_SAVE_AS = 'contributions/index.html'
+DIGESTS_URL        = 'digests'
+DIGESTS_SAVE_AS    = 'digests/index.html'
 TAGS_URL           = 'tags'
 TAGS_SAVE_AS       = 'tags/index.html'
 
+DIRECT_TEMPLATES = ['index', 'authors', 'categories', 'tags', 'articles', 'digests']
+
 # Menu
 MENU_INTERNAL_PAGES = (
-    ('Contributions', CONTRIBUTIONS_URL, CONTRIBUTIONS_SAVE_AS),
-    ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
+    ('Articles', ARTICLES_URL, ARTICLES_SAVE_AS),
+    ('Digests', DIGESTS_URL, DIGESTS_SAVE_AS),
     ('Categories', CATEGORIES_URL, CATEGORIES_SAVE_AS),
+    ('Contributions', CONTRIBUTIONS_URL, CONTRIBUTIONS_SAVE_AS),
     ('Contact', CONTACT_URL, CONTACT_SAVE_AS),
 )
 

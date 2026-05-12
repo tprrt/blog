@@ -4,34 +4,28 @@ Build an embedded Linux in less than 15 minutes
 
 :date: 2020-06-27 13:01
 :modified: 2025-06-11 14:53
-:tags: busybox, embedded, intermediate, linux, qemu
+:tags: busybox, embedded, intermediate, linux, qemu, article
 :category: linux
 :slug: build-an-embedded-linux-in-fifteen-min
 :authors: tperrot
-:summary: This article will explain how to build a minimal embedded Linux, in less than 15 minutes, and without a build framework.
+:summary: Building a minimal embedded Linux in less than 15 minutes, without a build framework.
 :lang: en
 :status: published
 
 Introduction
 ============
 
-Since some years, I haven't built an embedded Linux without using a framework, like `Open Embedded`_ from the `Yocto`_
-project.
-Then here, I wanted to make a guide to help you to build quickly, from "scratch" a very minimal embedded Linux to boot a
-target.
-The following examples have been written to boot a virtual Qemu target but, they can be adapted to boot a real target.
-Moreover, the build environment will be bootstrapped with a prebuilt cross-toolchain, I have chosen to use one provided
-by `Bootlin`_ and using glibc.
+I had not built an embedded Linux without a framework like `Open Embedded`_ from the `Yocto`_ project for years, so this guide builds a minimal one from scratch to boot a target. The examples boot a virtual Qemu target and can be adapted to a real one. The build environment is bootstrapped with a prebuilt glibc cross-toolchain from `Bootlin`_.
 
 Setup the environment
 =====================
 
-First, it is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:
+First, install the packages needed to use the cross-toolchain, compile the host tools and run Qemu:
 
 - The Ncurses libraries are only required to execute the command `make menuconfig`.
 - The certificates and wget will be used to download the prebuilt toolchain.
 - In the same way, git will be used to checkout the source of `Busybox`_ and `Linux`_.
-- The Qemu packages will be used to emulate system platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.
+- The Qemu packages emulate the target system and run static aarch64 binaries on the x86-64 host.
 
 .. code-block:: bash
 
@@ -53,7 +47,7 @@ First, it is required to install the packages that are needed to install and use
        qemu-user-static \
        wget
 
-Now, it is time to download and install the prebuilt toolchain:
+Download and extract the prebuilt toolchain:
 
 .. code-block:: bash
 
@@ -62,12 +56,12 @@ Now, it is time to download and install the prebuilt toolchain:
    wget https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
    tar xvjf aarch64--glibc--stable-2020.08-1.tar.bz2
 
-Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:
+Then set the environment variables needed to cross-compile:
 
-- ``PATH``: It shall be extended so that the cross-tools from the cross-toolchain will be available from the environment
-- ``CROSS_COMPILE``: In order to clarify the prefix used by the cross-tools
-- ``ARCH``: The architecture of the target platform
-  
+- ``PATH``: extended so the cross-tools are available
+- ``CROSS_COMPILE``: the prefix used by the cross-tools
+- ``ARCH``: the architecture of the target platform
+
 .. code-block:: bash
 
     ls ~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
@@ -76,7 +70,7 @@ Once the toolchain has been extracted you have to set the required environment v
     export PATH=~/src/aarch64--glibc--stable-2020.08-1/bin:$PATH
     export CROSS_COMPILE=aarch64-linux-
 
-Now, it is possible to call the cross-tools from the shell:
+The cross-tools can now be called from the shell:
 
 .. code-block:: bash
 
@@ -89,12 +83,10 @@ Now, it is possible to call the cross-tools from the shell:
     Thread model: posix
     gcc version 9.3.0 (Buildroot 2020.08-14-ge5a2a90)
 
-Concerning the variable ``PATH`` this one will be set afterwards because its value depends on the binary that will be built.
-
 Build the Linux kernel
 ======================
 
-So, the environment is ready to pull the sources of the latest stable branch of the kernel `Linux`_ and to build them:
+Fetch and build the latest stable branch of the `Linux`_ kernel:
 
 .. code-block:: bash
 
@@ -146,22 +138,19 @@ So, the environment is ready to pull the sources of the latest stable branch of 
       OBJCOPY arch/arm64/boot/Image
       GZIP    arch/arm64/boot/Image.gz
 
-The command ``make defconfig`` will apply the default configuration for the target platform (cf. ``ARCH=arm64``), and the
-compilation will be performed by ``make -j$(nproc)``.
+``make defconfig`` applies the default configuration for the target platform (``ARCH=arm64``) and ``make -j$(nproc)`` compiles.
 
-The commands ``git show HEAD`` and ``make defconfig`` are optional:
-- the first is useful to verify that the latest commit corresponding to the latest tag of the branch ``linux-5.4.y``.
-- the second can be used if you want to customize the kernel configuration.
+``git show HEAD`` and ``make menuconfig`` are optional:
 
-*NB*. The kernel `Linux`_ but also `Busybox`_ and some projects use `Kbuild`_ to manage the build options
+- ``git show HEAD`` checks that the head is the latest tag of the ``linux-5.4.y`` branch.
+- ``make menuconfig`` customizes the kernel configuration.
+
+*NB*. The Linux kernel, `Busybox`_ and other projects use `Kbuild`_ to manage build options.
 
 Populate the sysroot
 ====================
 
-The easy way to bootstrap a sysroot is to use `Busybox`_ that has been created to offer common UNIX tools into a single
-executable and it is size-optimized. To create a sysroot, it is only required to add a few configuration files.
-
-The steps to pull and build `Busybox`_ are similar to those of the kernel `Linux`_.
+The easiest way to bootstrap a sysroot is `Busybox`_, a size-optimized single executable providing common UNIX tools. A few configuration files complete the sysroot. Pulling and building `Busybox`_ works like the kernel.
 
 .. code-block:: bash
 
@@ -179,8 +168,7 @@ The steps to pull and build `Busybox`_ are similar to those of the kernel `Linux
 
    make install
 
-Here, the *LDFLAGS* is set to force static linking of `Busybox`_ quickly, but it is also possible to use
-*make menuconfig* to set *CONFIG_STATIC=y*. The advantage of the static executable is that it can be tested with Qemu:
+*LDFLAGS* forces static linking of `Busybox`_; *make menuconfig* with *CONFIG_STATIC=y* does the same. A static executable can be tested with Qemu:
 
 .. code-block:: bash
 
@@ -189,10 +177,9 @@ Here, the *LDFLAGS* is set to force static linking of `Busybox`_ quickly, but it
     qemu-aarch64-static busybox date
     Sat Jun 27 15:06:41 UTC 2020
 
-The binary *qemu-aarch64-static* allows to execute a binary built for another architecture on the host computer, for
-example here it allows to execute the `Busybox`_ binary compiled for an aarch64 target on a x86-64 host.
+*qemu-aarch64-static* runs a binary built for another architecture on the host, here the aarch64 `Busybox`_ on an x86-64 host.
 
-The last command *make install* created a tree into the *\_install* directory that can be used to populate the sysroot:
+*make install* created a tree in the *\_install* directory, used to populate the sysroot:
 
 .. code-block:: bash
 
@@ -213,7 +200,7 @@ The last command *make install* created a tree into the *\_install* directory th
     lrwxrwxrwx. 1 tperrot tperrot       7 Nov 30 15:22 zcat -> busybox
 
 
-In order, to finalize this minimal sysroot, it is required to create a rcS init script:
+To finish the sysroot, create an rcS init script:
 
 .. code-block:: bash
 
@@ -231,20 +218,17 @@ In order, to finalize this minimal sysroot, it is required to create a rcS init 
 Build the filesystem
 ====================
 
-The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
-There is two available possibilities, either build a *ramfs* or a *rootfs*.
+This step packages the sysroot tree into a filesystem the kernel can mount, either a *ramfs* or a *rootfs*:
 
-Globally, the difference between both is that:
+- the ramfs is a simple filesystem the kernel creates in RAM from an archive.
+- the rootfs is a filesystem the kernel mounts from a non-volatile device.
 
-- the ramfs is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.
-- the rootfs is a filesystem mounted from a non volatile device by the kernel.
-
-For more information about the difference between the ramfs and the rootfs, you can you refer to the `kernel documentation`_.
+See the `kernel documentation`_ for the difference between them.
 
 Build a ramfs
 -------------
 
-To build the ramfs we will use *cpio* and *gzip* to construct the compressed archive after modifying the rights:
+Build the ramfs with *cpio* and *gzip* after fixing the ownership:
 
 .. code-block:: bash
 
@@ -259,8 +243,7 @@ To build the ramfs we will use *cpio* and *gzip* to construct the compressed arc
 Build a rootfs
 --------------
 
-To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
-formatted to create a ext3 filesystem. Then the tree can be copied and the rights updated.
+For the rootfs, create an empty image, format it as ext3 through a loop device, then copy the tree and fix the ownership.
 
 .. code-block:: bash
 
@@ -276,7 +259,7 @@ formatted to create a ext3 filesystem. Then the tree can be copied and the right
 Boot the target
 ===============
 
-Following, the qemu commands to boot the minimal embedded Linux system that has been built.
+The qemu commands to boot the system:
 
 .. code-block:: bash
 
@@ -292,7 +275,7 @@ Following, the qemu commands to boot the minimal embedded Linux system that has 
 	-append "panic=5 ro ip=dhcp root=/dev/vda" \
 	-drive file=~/src/busybox/rootfs.img,format=raw,if=none,id=hd0 -device virtio-blk-device,drive=hd0
 
-Then the target will be boot to shell, *"It's alive!"*:
+The target boots to a shell:
 
 .. code-block:: bash
 

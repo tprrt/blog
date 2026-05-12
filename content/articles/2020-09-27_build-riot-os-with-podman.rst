@@ -4,27 +4,26 @@ Build RIOT-OS with Podman
 
 :date: 2020-09-27 13:01
 :modified: 2025-06-11 14:53
-:tags: container, podman, riot-os
+:tags: container, podman, riot-os, article
 :category: riot-os
 :slug: build-riot-os-with-podman
 :authors: tperrot
-:summary: This article is a tip that explains how it is possible to build a
-	  `RIOT-OS`_ application with `Podman`_.
+:summary: How to build a `RIOT-OS`_ application with `Podman`_ and the official
+	  build container.
 :lang: en
 :status: published
 
 Summary
 =======
 
-This article is a tip that explains how it is possible to build a `RIOT-OS`_
-application with `Podman`_ and the official build container. And I would like to
-take this opportunity to introduce you to `Podman`_ and `RIOT-OS`_.
+This tip shows how to build a `RIOT-OS`_ application with `Podman`_ and the
+official build container, with a short introduction to both.
 
 Podman
 ======
 
-Some Linux distribution, like `Fedora`_ chosen to officially support only
-`Podman`_ instead of `Docker`_ for several reasons:
+Some Linux distributions, like `Fedora`_, officially support only `Podman`_
+instead of `Docker`_, for several reasons:
 
 - It is daemonless container engine.
 - It is rootless.
@@ -33,15 +32,12 @@ Some Linux distribution, like `Fedora`_ chosen to officially support only
 - It introduces the notion of `Pods`_: a group of container(s) that share storage
   or network resources.
 
-Moreover, `Podman`_ is able to use the images built by the `Docker`_ engine and
-has been stored in `Docker`_ registry.
+`Podman`_ can also use images built by the `Docker`_ engine and stored in a
+`Docker`_ registry.
 
-However, most of the time the `Podman`_ commands are identical to that of
-`Docker`_, then a simple alias is enough to be misleading:
-*alias docker=podman*.
-
-But as `Podman`_ is rootless and safer than `Docker`_, then sometimes it is
-necessary to specify additional security parameters.
+Most `Podman`_ commands are identical to `Docker`_'s, so *alias docker=podman*
+is often enough. But because `Podman`_ is rootless, additional security
+parameters are sometimes needed.
 
 RIOT-OS
 =======
@@ -50,8 +46,8 @@ RIOT-OS
 real-time and multithreading abilities, and it runs on processors from 8bits to
 32bits.
 
-It was designed for `IoT`_ devices then to be low power consumption and it
-provides three very complete network stacks including some protocols as:
+It was designed for `IoT`_ devices with low power consumption in mind, and
+provides three network stacks supporting protocols such as:
 
 - `IPv6`_
 - `6LoWPAN`_
@@ -61,21 +57,16 @@ provides three very complete network stacks including some protocols as:
 The `RIOT-OS`_ project also provides some useful tools including a build
 container (`riotdocker`_).
 
-And the build environment of `RIOT-OS`_ offers a `Makefile`_ to build an
-application with this container simply by setting the variable *BUILD_IN_DOCKER*
-to  *1*. Then the prebuilt image is downloaded and instantiated to execute the
-`make`_ command.
+The `RIOT-OS`_ `Makefile`_ builds an application in this container when the
+variable *BUILD_IN_DOCKER* is set to *1*: the prebuilt image is downloaded and
+instantiated to run the `make`_ command.
 
-By default, this feature is configured to be used with the `Docker`_ engine,
-but it is possible to override some variables from the build environment
-either to use a custom prebuilt image, either use another engine or to use
-custom engine parameters.
+By default it uses the `Docker`_ engine, but variables in the build environment
+can be overridden to use a custom prebuilt image, another engine or custom
+engine parameters. Here they select `Podman`_ with the required parameters.
 
-Then here, we will use these environments variable to instantiate a container
-with `Podman`_ (instead of `Docker`_) and with the required parameters.
-
-Tip of the day
-==============
+Example
+=======
 
 In the following example, we build the Helloworld application for a STM32
 Discovery board.

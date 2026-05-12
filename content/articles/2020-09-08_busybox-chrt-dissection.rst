@@ -4,7 +4,7 @@ How the Busybox's chrt applet works
 
 :date: 2020-09-08 19:20
 :modified: 2025-06-11 14:53
-:tags: busybox, chrt, dissection, beginner
+:tags: busybox, chrt, dissection, beginner, article
 :category: busybox
 :slug: busybox-chrt-dissection
 :authors: tperrot
@@ -15,9 +15,7 @@ How the Busybox's chrt applet works
 Introduction
 ============
 
-In this article, I will dissect how the *chrt* applet from the release 1.32.0 of `Busybox`_ works, what it does, etc.
-
-This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.
+This article dissects the *chrt* applet from `Busybox`_ 1.32.0. The command reads or modifies the scheduling attributes of a process.
 
 .. code-block:: bash
 
@@ -41,17 +39,14 @@ This command is a Linux utils allowing to consult or to modify the scheduling at
    pid 6987's current scheduling policy: SCHED_FIFO
    pid 6987's current scheduling priority: 1
 
-`Busybox`_ provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
-and with some limitations.
+The `Busybox`_ applet is ten times smaller once compiled than the util-linux binary, with some limitations.
 
 
 The dissection
 ==============
 
-The implementation of the *chrt* applet is in the file `util-linux/chrt.c`_ that containing several functions which are
-called in the main function of this applet.
+The applet is implemented in `util-linux/chrt.c`_, whose main function calls several helpers and has three parts:
 
-The main function of this applet is divided into three main parts:
 - the first parses the command options
 - the second prints the scheduler's information
 - the last one, to apply scheduler changes in case of a set
@@ -131,7 +126,7 @@ Then the applet uses the Posix function *sched_getscheduler* provides by the sta
         if (pol < 0)
                 bb_perror_msg_and_die("can't %cet pid %u's policy", 'g', (int)pid);
 
-Finally, when the *chrt* applet is used to modify scheduling attributes then the Posix function *sched_getscheduler* is used and the new scheduling attributes are showed:
+Finally, when *chrt* modifies scheduling attributes, the Posix function *sched_setscheduler* applies them and the new attributes are shown:
 
 .. code-block:: c
 
@@ -181,7 +176,7 @@ This subsystem also exposes this information from */proc*:
 Limitations
 ===========
 
-Below a short list of limitations that I observed during my analysis of this applet.
+Limitations I observed in this applet:
 
 Resetting scheduling policy
 ---------------------------
@@ -195,6 +190,5 @@ Deadline support
 
 The *chrt* applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.
 
-.. _Busybox: https://www.busybox.net
 .. _Busybox: https://www.busybox.net
 .. _util-linux/chrt.c: https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c

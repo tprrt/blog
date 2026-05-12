@@ -1,38 +1,23 @@
 =================================================
-Secure Boot with AHAB on i.MX93: A Complete Guide
+Secure Boot with AHAB on i.MX93
 =================================================
 
 :date: 2024-08-06 19:21
 :modified: 2025-06-11 14:53
-:tags: security, embedded, imx93, secure-boot, ahab, nxp
+:tags: security, embedded, imx93, secure-boot, ahab, nxp, article
 :category: Security
 :slug: secure-boot-with-ahab-on-imx93
 :authors: tperrot
-:summary: Learn how to implement Secure Boot using AHAB on NXP i.MX93 processors
-	  to protect your embedded devices from unauthorized code execution.
+:summary: Signing the bootloader and burning the SRK fuses to enable AHAB
+	  secure boot on NXP i.MX93 processors.
 :lang: en
 :status: published
 
-**The security of embedded devices has never been more critical.** In a world
-where attacks targeting IoT systems are becoming increasingly sophisticated,
-ensuring the integrity of the boot process is a must. This is where **Secure
-Boot** comes in—an essential technology that guarantees only authorized code can
-execute on a device from the moment it starts. In this article, we will explore
-the implementation of Secure Boot using AHAB, the solution provided by NXP to
-secure the i.MX93 from its initial boot stages.
-
-**Why is Secure Boot crucial for your device?**
-
-A secure boot ensures that no malicious code interferes with the critical boot
-process, protecting your device from attacks targeting the bootloader and early
-boot stages. Furthermore, AHAB, integrated into i.MX93 processors, enables
-advanced authentication right from the initial boot stages, ensuring that only
-validated components can be loaded, thereby strengthening security from the
-get-go.
-
-Secure boot is a critical security feature that ensures only authenticated and
-authorized code can run on a device. It operates through a chain of trust, where
-each component verifies the integrity of the next element in the chain.
+**Secure Boot** ensures that only authenticated and authorized code runs on a
+device, from the first instruction. It works as a chain of trust: each
+component verifies the integrity of the next. This article covers the first
+link on the NXP i.MX93, using AHAB, NXP's mechanism for authenticating the
+initial boot stages.
 
 Several mechanisms must be used to authenticate each element of this chain, but
 the mechanism for authenticating the first boot stages depends on the target SoC.
@@ -49,15 +34,12 @@ For subsequent stages, you can implement mechanisms such as:
 - And finally, using OverlayFS combined with DM-crypt to mount encrypted,
   writable subfolders.
 
-Here, we'll focus on the first part of the secure boot process, using NXP's AHAB
-to authenticate the bootloader on the NXP i.MX93 in single-boot mode. We will
-also briefly discuss how to generate the keys to sign the bootloader and provide
-an introduction to AHAB.
+This article covers authenticating the bootloader with AHAB on the i.MX93 in
+single-boot mode, generating the signing keys, and a short introduction to AHAB.
 
-*Note: AHAB also provides a complementary encryption feature designed to protect
-the confidentiality and integrity of data, whereas secure boot focuses on
-verifying the integrity and authenticity of the boot process. This post will not
-cover encryption in detail.*
+*Note: AHAB also provides an encryption feature to protect the confidentiality
+and integrity of data, whereas secure boot verifies the integrity and
+authenticity of the boot process. Encryption is not covered here.*
 
 AHAB Architecture
 =================
@@ -395,11 +377,9 @@ execute unsigned bootloaders or those signed with invalid keys.
 Conclusion
 ==========
 
-By implementing AHAB on the i.MX93 platform, you can ensure that your boot
-process is protected from unauthorized code. The use of public key cryptography
-and secure containers adds an extra layer of security, making your device more
-resilient to attacks. This process is crucial for applications where integrity
-and authenticity from the very first boot stage are paramount.
+With the SRK hash fused and the device closed, the i.MX93 boots only bootloader
+containers signed with the OEM keys. Until then, an *OEM Open* device still runs
+unsigned images.
 
 .. _CST: https://www.nxp.com/webapp/sps/download/license.jsp?colCode=IMX_CST_TOOL_NEW
 .. _imx-mkimage: https://github.com/nxp-imx/imx-mkimage
