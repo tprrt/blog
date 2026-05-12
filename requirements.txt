@@ -10,3 +10,6 @@ ghp-import2>=1.0.1
 
 # Required by the Asset plugin
 webassets>=2.0
+
+# Required by the sitemap plugin
+pytz>=2026.2
