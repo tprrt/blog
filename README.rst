@@ -28,9 +28,10 @@ Support
 =======
 
 If you find this blog useful and would like to support its development, you can
-make a donation via PayPal:
+make a donation via PayPal or Ko-fi:
 
 https://paypal.me/tprrt
+https://ko-fi.com/tprrt
 
 ----
 

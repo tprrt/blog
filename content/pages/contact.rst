@@ -50,7 +50,7 @@ You want more information about me, I invite you to consult my
 Donate
 ======
 
-I accept charitable donations via `PayPal`_.
+I accept charitable donations via `PayPal`_ or `Ko-fi`_.
 
 .. _Curriculum vitae: https://github.com/tprrt/curriculum/raw/gh-pages/resume.pdf
 .. _Bluesky: https://bsky.app/profile/tprrt.bsky.social
@@ -65,6 +65,7 @@ I accept charitable donations via `PayPal`_.
 .. _Instagram: https://www.instagram.com/thomas.prrt
 .. _Instructables: https://www.instructables.com/member/tprrt
 .. _IRC: https://fr.wikipedia.org/wiki/Internet_Relay_Chat
+.. _Ko-fi: https://ko-fi.com/tprrt
 .. _Libera: https://libera.chat
 .. _Linkedin: https://www.linkedin.com/in/tprrt
 .. _Linktree: https://linktr.ee/tprrt
