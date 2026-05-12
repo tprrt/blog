@@ -4,7 +4,7 @@ Retro Console Hardware Comparison: A Technical Deep Dive
 
 :date: 2025-03-11 10:00
 :modified: 2025-03-11 10:00
-:tags: hardware, retro, console, comparison, technical
+:tags: hardware, retro, console, comparison, technical, article
 :category: hardware
 :slug: retro-console-hardware-comparison
 :authors: tperrot

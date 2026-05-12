@@ -4,7 +4,7 @@ Secure Boot with AHAB on i.MX93: A Complete Guide
 
 :date: 2024-08-06 19:21
 :modified: 2025-06-11 14:53
-:tags: security, embedded, imx93, secure-boot, ahab, nxp
+:tags: security, embedded, imx93, secure-boot, ahab, nxp, article
 :category: Security
 :slug: secure-boot-with-ahab-on-imx93
 :authors: tperrot

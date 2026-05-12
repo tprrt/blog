@@ -4,7 +4,7 @@ My blog opening
 
 :date: 2020-05-28 16:50
 :modified: 2025-06-11 14:53
-:tags: blog
+:tags: blog, article
 :category: misc
 :slug: my-blog-opening
 :authors: tperrot

@@ -4,7 +4,7 @@ Build RIOT-OS with Podman
 
 :date: 2020-09-27 13:01
 :modified: 2025-06-11 14:53
-:tags: container, podman, riot-os
+:tags: container, podman, riot-os, article
 :category: riot-os
 :slug: build-riot-os-with-podman
 :authors: tperrot

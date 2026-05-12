@@ -4,7 +4,7 @@ Open-Source Game Engines for Retro Consoles
 
 :date: 2025-12-31 10:00
 :modified: 2025-12-31 10:00
-:tags: gamedev, retro, homebrew, console, open-source
+:tags: gamedev, retro, homebrew, console, open-source, article
 :category: gamedev
 :slug: retro-console-game-engines
 :authors: tperrot

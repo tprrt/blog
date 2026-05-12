@@ -4,7 +4,7 @@ Zephyr Device Tree Guide
 
 :date: 2022-07-29 20:32
 :modified: 2022-07-29 20:32
-:tags: zephyr, device-tree, rtos, embedded
+:tags: zephyr, device-tree, rtos, embedded, article
 :category: Embedded
 :slug: zephyr-device-tree-guide
 :authors: tperrot

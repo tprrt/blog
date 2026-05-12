@@ -4,7 +4,7 @@ Build an embedded Linux in less than 15 minutes
 
 :date: 2020-06-27 13:01
 :modified: 2025-06-11 14:53
-:tags: busybox, embedded, intermediate, linux, qemu
+:tags: busybox, embedded, intermediate, linux, qemu, article
 :category: linux
 :slug: build-an-embedded-linux-in-fifteen-min
 :authors: tperrot

@@ -4,7 +4,7 @@ How the Busybox's chrt applet works
 
 :date: 2020-09-08 19:20
 :modified: 2025-06-11 14:53
-:tags: busybox, chrt, dissection, beginner
+:tags: busybox, chrt, dissection, beginner, article
 :category: busybox
 :slug: busybox-chrt-dissection
 :authors: tperrot
