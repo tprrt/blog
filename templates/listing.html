@@ -1,0 +1,24 @@
+{% macro render_listing(path_prefix, title) %}
+    <h1>{{ title }}</h1>
+
+    {% for year, year_group in dates|groupby('date.year')|reverse %}
+        {% for month, month_group in year_group|groupby('date.month')|reverse %}
+            {% set ns = namespace(articles=[]) %}
+            {% for article in month_group %}
+                {% if article.relative_source_path.startswith(path_prefix) %}
+                    {% set ns.articles = ns.articles + [article] %}
+                {% endif %}
+            {% endfor %}
+            {% if ns.articles %}
+                <h4 class="date">{{ (ns.articles|first).date|strftime('%b %Y') }}</h4>
+                <div class="post archives">
+                    <ul>
+                    {% for article in ns.articles %}
+                        <li><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}
