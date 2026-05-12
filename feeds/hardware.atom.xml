@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2025-03-11T10:00:00+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Retro Console Hardware Comparison: A Technical Deep Dive</title><link href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="alternate"/><published>2025-03-11T10:00:00+01:00</published><updated>2025-03-11T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-03-11:/retro-console-hardware-comparison.html</id><summary type="html">&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-12T14:24:07.436488+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Open-Source Hardware Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-12T14:24:07.436488+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="open-source-hardware"&gt;
+&lt;h2&gt;Open-Source Hardware&lt;/h2&gt;
+&lt;p&gt;This week saw a diverse range of developments in open-source hardware, showcasing the growing community and innovations across various projects and platforms.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="open-source-hardware-projects"&gt;
+&lt;h2&gt;Open Source Hardware Projects&lt;/h2&gt;
+&lt;p&gt;The open-source hardware community continues to flourish, with various projects being highlighted for their creativity and practicality. These projects often take the form of DIY solutions that introduce users to hardware ownership.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.xda-developers.com/5-open-source-hardware-projects-under-50/"&gt;5 open-source hardware projects under $50 that replaced my consumer gadgets&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/tag/open-source-hardware/"&gt;Open Source Hardware | Hackaday&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/List_of_open-source_hardware_projects"&gt;List of open-source hardware projects - Wikipedia&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="industry-trends-and-evolutions"&gt;
+&lt;h2&gt;Industry Trends and Evolutions&lt;/h2&gt;
+&lt;p&gt;Recent trends among major tech companies indicate a shift in their approach to open-source hardware. This includes both advances being made and notable program closures, highlighting a dynamic landscape.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.tomshardware.com/software/intel-shutters-open-source-evangelism-program-and-archives-key-community-projects-closures-point-to-significant-shift-in-open-source-leadership"&gt;Intel shutters open-source evangelism program and archives key community projects&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://techcrunch.com/tag/open-source-hardware/"&gt;Facebook speeds up its data center network with the launch of its Backpack switch platform&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://techcrunch.com/tag/open-source-hardware/"&gt;Microsoft open sources its next-gen cloud hardware design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="creative-diy-and-maker-culture"&gt;
+&lt;h2&gt;Creative DIY and Maker Culture&lt;/h2&gt;
+&lt;p&gt;Innovative DIY projects continue to inspire creativity within the maker community. From printer upgrades to practical tools, these projects showcase how open-source hardware empowers individuals to create custom solutions.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://makezine.com/article/maker-news/calling-all-prototypes-to-maker-faire-rome-2026/"&gt;Calling All Prototypes To Maker Faire Rome 2026&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/05/07/articulated-nautilus-flexi-print-3dthursday-3dprinting-2/"&gt;Articulated Nautilus Flexi Print #3DThursday #3DPrinting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/05/07/energy-core-lamp-futuristic-sci-fi-led-3dprinting-3dthursday/"&gt;Energy Core Lamp — Futuristic Sci-Fi LED #3DPrinting #3DThursday&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="educational-and-community-resources"&gt;
+&lt;h2&gt;Educational and Community Resources&lt;/h2&gt;
+&lt;p&gt;Various platforms and publications offer extensive resources and guidance for those interested in open-source hardware. These resources include curated lists, community discussions, and project showcases.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/aolofsson/awesome-opensource-hardware"&gt;GitHub - aolofsson/awesome-opensource-hardware&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://openhwfoundation.org/"&gt;OpenHW Foundation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.io/"&gt;Hackaday.io — The world's largest collaborative hardware development community&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retro Console Hardware Comparison: A Technical Deep Dive</title><link href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="alternate"/><published>2025-03-11T10:00:00+01:00</published><updated>2025-03-11T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-03-11:/retro-console-hardware-comparison.html</id><summary type="html">&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
 specifications, graphics capabilities, audio systems, and special features
 across multiple generations of hardware.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
@@ -696,4 +739,4 @@ projects. For enthusiasts, they illuminate why certain games looked and
 played the way they did. The ingenuity of developers working within
 these constraints produced some of gaming's most iconic titles.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="hardware"/><category term="hardware"/><category term="retro"/><category term="console"/><category term="comparison"/><category term="technical"/></entry></feed>
+</content><category term="hardware"/><category term="hardware"/><category term="retro"/><category term="console"/><category term="comparison"/><category term="technical"/><category term="article"/></entry></feed>

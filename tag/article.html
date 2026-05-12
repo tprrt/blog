@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | articles tagged "article"</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Thomas Perrot" />
+
+    <script data-ad-client="ca-pub-8632147971669760"
+            async="async"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
+            crossorigin="anonymous">
+    </script>
+<style>
+    footer .license-info {
+        margin-top: 0.5em;
+        font-size: 0.9em;
+    }
+</style>
+<script>
+// Add license information to footer
+document.addEventListener('DOMContentLoaded', function() {
+    var footer = document.querySelector('footer p');
+    if (footer) {
+        var licenseInfo = document.createElement('p');
+        licenseInfo.className = 'license-info';
+        licenseInfo.innerHTML = 'Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>';
+        footer.parentNode.appendChild(licenseInfo);
+    }
+});
+</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/article.html">article</a></li>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
+                <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Dec 31, 2025</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/retro-console-game-engines.html" rel="bookmark" title="Permanent Link to &quot;Open-Source Game Engines for Retro Consoles&quot;">Open-Source Game Engines for Retro Consoles</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2><a class="toc-backref" href="#toc-entry-1">Introduction</a></h2>
+<p>Retro console development has experienced a renaissance in recent years,
+thanks to passionate homebrew communities and modern open-source tooling.
+What was once the domain of professional game studios with expensive
+proprietary SDKs is now accessible to anyone with a Linux machine and a
+passion for classic gaming hardware.</p>
+<p>This guide catalogs the best open-source game engines and frameworks
+available for developing games on classic consoles, from the 8-bit Game
+Boy Color to sixth generation systems like the PlayStation 2. All tools
+mentioned are compatible with Linux development environments, making them
+perfect for a fully free and open-source workflow.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><a class="reference internal" href="#top">Table of Contents</a></p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="toc-entry-1">Introduction</a></li>
+<li><a class="reference internal" href="#bit-and-16-bit-consoles" id="toc-entry-2">8-bit and 16-bit Consoles</a><ul>
+<li><a class="reference internal" href="#game-boy-color-gbc" id="toc-entry-3">Game Boy Color (GBC)</a></li>
+<li><a class="reference internal" href="#game-boy-advance-gba" id="toc-entry-4">Game Boy Advance (GBA)</a></li>
+<li><a class="reference internal" href="#nintendo-ds-nds" id="toc-entry-5">Nintendo DS (NDS)</a></li>
+<li><a class="reference internal" href="#nintendo-3ds" id="toc-entry-6">Nintendo 3DS</a></li>
+<li><a class="reference internal" href="#super-nintendo-snes" id="toc-entry-7">Super Nintendo (SNES)</a></li>
+<li><a class="reference internal" href="#sega-mega-drive-genesis" id="toc-entry-8">Sega Mega Drive / Genesis</a></li>
+<li><a class="reference internal" href="#neo-geo" id="toc-entry-9">Neo Geo</a></li>
+<li><a class="reference internal" href="#pc-engine-turbografx-16" id="toc-entry-10">PC Engine / TurboGrafx-16</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fifth-and-sixth-generation-consoles" id="toc-entry-11">Fifth and Sixth Generation Consoles</a><ul>
+<li><a class="reference internal" href="#sony-playstation-1-ps1" id="toc-entry-12">Sony PlayStation 1 (PS1)</a></li>
+<li><a class="reference internal" href="#sega-saturn" id="toc-entry-13">Sega Saturn</a></li>
+<li><a class="reference internal" href="#nintendo-64" id="toc-entry-14">Nintendo 64</a></li>
+<li><a class="reference internal" href="#sega-dreamcast" id="toc-entry-15">Sega Dreamcast</a></li>
+<li><a class="reference internal" href="#sony-playstation-2-ps2" id="toc-entry-16">Sony PlayStation 2 (PS2)</a></li>
+<li><a class="reference internal" href="#nintendo-gamecube-wii" id="toc-entry-17">Nintendo GameCube / Wii</a></li>
+<li><a class="reference internal" href="#sony-playstation-portable-psp" id="toc-entry-18">Sony PlayStation Portable (PSP)</a></li>
+<li><a class="reference internal" href="#playstation-vita" id="toc-entry-19">PlayStation Vita</a></li>
+<li><a class="reference internal" href="#xbox-original" id="toc-entry-20">Xbox (Original)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#development-tools-and-workflow" id="toc-entry-21">Development Tools and Workflow</a><ul>
+<li><a class="reference internal" href="#devkitpro-toolchain" id="toc-entry-22">DevkitPro Toolchain</a></li>
+<li><a class="reference internal" href="#graphics-tools" id="toc-entry-23">Graphics Tools</a></li>
+<li><a class="reference internal" href="#music-and-sound-tools" id="toc-entry-24">Music and Sound Tools</a></li>
+<li><a class="reference internal" href="#emulators-for-testing" id="toc-entry-25">Emulators for Testing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recommendations-by-experience-level" id="toc-entry-26">Recommendations by Experience Level</a><ul>
+<li><a class="reference internal" href="#beginner-friendly" id="toc-entry-27">Beginner-Friendly</a></li>
+<li><a class="reference internal" href="#intermediate" id="toc-entry-28">Intermediate</a></li>
+<li><a class="reference internal" href="#advanced" id="toc-entry-29">Advanced</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#community-resources" id="toc-entry-30">Community Resources</a></li>
+<li><a class="reference internal" href="#conclusion" id="toc-entry-31">Conclusion</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="bit-and-16-bit-consoles">
+<h2><a class="toc-backref" href="#toc-entry-2">8-bit and 16-bit Consoles</a></h2>
+<div class="section" id="game-boy-color-gbc">
+<h3><a class="toc-backref" href="#toc-entry-3">Game Boy Color (GBC)</a></h3>
+<div class="section" id="gb-studio">
+<h4>GB Studio</h4>
+<p>For those wanting to create Game Boy games without writing code,
+<strong>GB Studio</strong> is the perfect starting point. This visual game editor
+features a drag-and-drop interface that lets you build complete RPGs,
+adventure games, platformers, and shooters without touching a single
+line of code.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Full visual scene editor with intuitive drag-and-drop</li>
+<li>Built-in sprite and background editors</li>
+<li>Integrated music tracker</li>
+<li>Event system for complex game logic</li>
+<li>Exports to actual GB/GBC ROMs that run on real hardware</li>
+<li>Cross-platform support (Linux, Windows, macOS)</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/chrismaltby/gb-studio">GitHub</a> |
+<a class="reference external" href="https://www.gbstudio.dev/">Website</a> |
+<a class="reference external" href="https://www.gbstudio.dev/docs/">Documentation</a></p>
+</div>
+<div class="section" id="gbdk-2020">
+<h4>GBDK-2020</h4>
+<p>For developers who prefer code, <strong>GBDK-2020</strong> is a modern fork of the
+classic Game Boy Development Kit. It brings C99 support and modern
+toolchain features to Game Boy development.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern C99 compiler</li>
+<li>ROM banking support for large games</li>
+<li>Libraries for sprites, backgrounds, and sound</li>
+<li>Compatible with both Game Boy and Game Boy Color</li>
+<li>Strong toolchain integration</li>
+</ul>
+<p><strong>License:</strong> Various (mostly permissive)</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/gbdk-2020/gbdk-2020">GitHub</a> |
+<a class="reference external" href="https://gbdk-2020.github.io/gbdk-2020/docs/api/">API Documentation</a></p>
+</div>
+</div>
+<div class="section" id="game-boy-advance-gba">
+<h3><a class="toc-backref" href="#toc-entry-4">Game Boy Advance (GBA)</a></h3>
+<div class="section" id="butano">
+<h4>Butano</h4>
+<p><strong>Butano</strong> is a modern C++17 game engine built on devkitARM that makes
+GBA development feel contemporary. It abstracts the hardware complexity
+while still giving you full control over the system's capabilities.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern C++17 syntax and features</li>
+<li>Sprite management with affine transformations</li>
+<li>Regular and affine background layers</li>
+<li>Audio support (DMG and DirectSound)</li>
+<li>Scene management system</li>
+<li>GBA-optimized math utilities</li>
+<li>Documentation and examples</li>
+<li>Active Discord community</li>
+</ul>
+<p><strong>License:</strong> zlib License</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/GValiente/butano">GitHub</a> |
+<a class="reference external" href="https://gvaliente.github.io/butano/">Documentation</a></p>
+</div>
+<div class="section" id="tonclib">
+<h4>Tonclib</h4>
+<p><strong>Tonclib</strong> is the veteran of GBA development. While less actively
+developed, it remains stable and is accompanied by some of the best
+documentation in retro game development.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Hardware abstraction layer</li>
+<li>Advanced sprite and background management</li>
+<li>Mode 7 (affine) support for pseudo-3D effects</li>
+<li>Built-in text rendering</li>
+<li>Excellent tutorial and documentation (Tonc)</li>
+<li>Used by many commercial-quality homebrews</li>
+</ul>
+<p><strong>License:</strong> MIT-like (custom permissive)</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/devkitPro/libtonc">GitHub</a> |
+<a class="reference external" href="https://www.coranac.com/tonc/text/">Tonc Tutorial</a></p>
+</div>
+</div>
+<div class="section" id="nintendo-ds-nds">
+<h3><a class="toc-backref" href="#toc-entry-5">Nintendo DS (NDS)</a></h3>
+<div class="section" id="nightfox-s-lib">
+<h4>NightFox's Lib</h4>
+<p><strong>NightFox's Lib</strong> provides a high-level 2D game library built on top
+of libnds, making DS development more approachable.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Sprite engine with rotation and scaling</li>
+<li>Tiled background support</li>
+<li>Collision detection</li>
+<li>2D and 3D text rendering</li>
+<li>Sound and MOD music playback</li>
+<li>File system access</li>
+<li>Includes examples and templates</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/knightfox75/nds_nflib">GitHub</a></p>
+</div>
+<div class="section" id="libnds-devkitarm">
+<h4>libnds + devkitARM</h4>
+<p>For those wanting full control, <strong>libnds</strong> is the official devkitPro
+library providing low-level access to all DS features.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete hardware access to both screens</li>
+<li>2D and 3D graphics support</li>
+<li>Touchscreen and button input</li>
+<li>WiFi networking support</li>
+<li>FAT file system access</li>
+<li>Audio subsystem control</li>
+<li>Most flexible but requires hardware knowledge</li>
+</ul>
+<p><strong>License:</strong> zlib License</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/devkitPro/libnds">GitHub</a> |
+<a class="reference external" href="https://libnds.devkitpro.org/">Documentation</a> |
+<a class="reference external" href="https://github.com/devkitPro/nds-examples">Examples</a></p>
+</div>
+</div>
+<div class="section" id="nintendo-3ds">
+<h3><a class="toc-backref" href="#toc-entry-6">Nintendo 3DS</a></h3>
+<div class="section" id="citro2d-citro3d">
+<h4>citro2d / citro3d</h4>
+<p>The <strong>citro</strong> libraries are the official devkitPro solution for 3DS
+development, providing hardware-accelerated 2D and 3D graphics.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Hardware-accelerated rendering via PICA200 GPU</li>
+<li>2D sprite batching (citro2d)</li>
+<li>Full 3D graphics pipeline (citro3d)</li>
+<li>Shader support</li>
+<li>Stereoscopic 3D rendering</li>
+<li>Text rendering</li>
+<li>Used by most modern 3DS homebrew</li>
+</ul>
+<p><strong>License:</strong> zlib License</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/devkitPro/citro3d">citro3d</a> |
+<a class="reference external" href="https://github.com/devkitPro/citro2d">citro2d</a> |
+<a class="reference external" href="https://github.com/devkitPro/citro3d/wiki">Documentation</a> |
+<a class="reference external" href="https://github.com/devkitPro/3ds-examples">Examples</a></p>
+</div>
+</div>
+<div class="section" id="super-nintendo-snes">
+<h3><a class="toc-backref" href="#toc-entry-7">Super Nintendo (SNES)</a></h3>
+<div class="section" id="pvsneslib">
+<h4>PVSnesLib</h4>
+<p><strong>PVSnesLib</strong> is a modern C library bringing contemporary development
+practices to the Super Nintendo.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern C API</li>
+<li>Sprite management (OAM)</li>
+<li>Background and tilemap support</li>
+<li>Mode 7 support for rotation and scaling</li>
+<li>Sound driver integration</li>
+<li>Gamepad input handling</li>
+<li>DMA and HDMA operations</li>
+<li>Documentation</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/alekmaul/pvsneslib">GitHub</a> |
+<a class="reference external" href="https://github.com/alekmaul/pvsneslib/wiki">Wiki</a></p>
+</div>
+<div class="section" id="libsfx">
+<h4>libSFX</h4>
+<p><strong>libSFX</strong> is a powerful macro assembler framework for SNES
+development, optimized for performance.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Assembly-first with C support</li>
+<li>Highly optimized for speed</li>
+<li>Full hardware access</li>
+<li>Super FX (GSU) support</li>
+<li>Music and sound effects</li>
+<li>Can integrate with C code</li>
+<li>Steeper learning curve but very capable</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/Optiroc/libSFX">GitHub</a> |
+<a class="reference external" href="https://github.com/Optiroc/libSFX/wiki">Wiki</a></p>
+</div>
+</div>
+<div class="section" id="sega-mega-drive-genesis">
+<h3><a class="toc-backref" href="#toc-entry-8">Sega Mega Drive / Genesis</a></h3>
+<div class="section" id="sgdk-sega-genesis-development-kit">
+<h4>SGDK (Sega Genesis Development Kit)</h4>
+<p><strong>SGDK</strong> has become the industry standard for Mega Drive homebrew
+development, with an incredibly active community and extensive
+documentation.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete development framework</li>
+<li>Sprite engine with hardware scrolling</li>
+<li>Multiple background plane support</li>
+<li>VDP (video display processor) management</li>
+<li>Z80 sound driver with XGM music format</li>
+<li>DMA operations</li>
+<li>Built-in collision detection</li>
+<li>ResComp resource compiler for assets</li>
+<li>Extensive tutorials and documentation</li>
+<li>Large, active community</li>
+<li>Excellent Linux support</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/Stephane-D/SGDK">GitHub</a> |
+<a class="reference external" href="https://github.com/Stephane-D/SGDK/wiki">Wiki</a> |
+<a class="reference external" href="https://segaxtreme.net/forums/sgdk.77/">Forums</a></p>
+</div>
+</div>
+<div class="section" id="neo-geo">
+<h3><a class="toc-backref" href="#toc-entry-9">Neo Geo</a></h3>
+<div class="section" id="ngdk-neo-geo-development-kit">
+<h4>NGDK (Neo Geo Development Kit)</h4>
+<p><strong>NGDK</strong> brings C development to the Neo Geo arcade platform and AES
+home console.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>C framework for Neo Geo development</li>
+<li>Sprite system management</li>
+<li>Background and fix layer handling</li>
+<li>Input handling for arcade controls</li>
+<li>Sound support (Z80 + YM2610)</li>
+<li>Asset conversion tools</li>
+<li>Example games included</li>
+</ul>
+<p><strong>License:</strong> Custom permissive</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/dciabrin/ngdevkit">GitHub</a> |
+<a class="reference external" href="https://github.com/dciabrin/ngdevkit/wiki">Wiki</a></p>
+</div>
+</div>
+<div class="section" id="pc-engine-turbografx-16">
+<h3><a class="toc-backref" href="#toc-entry-10">PC Engine / TurboGrafx-16</a></h3>
+<div class="section" id="huc-hudson-c-compiler">
+<h4>HuC (Hudson C Compiler)</h4>
+<p>The classic <strong>HuC</strong> compiler has been maintained by the community and
+remains a solid choice for PC Engine development.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>C compiler for PC Engine</li>
+<li>Support for HuCard and CD-ROM²</li>
+<li>PSG sound support</li>
+<li>Sprite management</li>
+<li>Background and tilemap support</li>
+<li>ADPCM audio for CD games</li>
+<li>Standard C library subset</li>
+</ul>
+<p><strong>License:</strong> BSD-like</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/uli/huc">GitHub</a></p>
+</div>
+<div class="section" id="squirrel-hudk">
+<h4>Squirrel (HuDK)</h4>
+<p><strong>Squirrel</strong> (HuDK) is a more modern alternative to HuC with improved
+optimization.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern PC Engine framework</li>
+<li>Better optimization than classic HuC</li>
+<li>CD-ROM support</li>
+<li>Active development</li>
+<li>Growing community</li>
+</ul>
+<p><strong>License:</strong> Open source</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/BlockoS/HuDK">GitHub</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="fifth-and-sixth-generation-consoles">
+<h2><a class="toc-backref" href="#toc-entry-11">Fifth and Sixth Generation Consoles</a></h2>
+<div class="section" id="sony-playstation-1-ps1">
+<h3><a class="toc-backref" href="#toc-entry-12">Sony PlayStation 1 (PS1)</a></h3>
+<div class="section" id="psn00bsdk">
+<h4>PSn00bSDK</h4>
+<p><strong>PSn00bSDK</strong> is a modern, lightweight SDK that makes PS1 development
+accessible and enjoyable. It's cleaner and more approachable than the
+old Psy-Q SDK.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern, clean API design</li>
+<li>Hardware 3D graphics (GTE) support</li>
+<li>2D sprite and primitive rendering</li>
+<li>CD-ROM file system access</li>
+<li>SPU sound support with ADPCM and XA audio</li>
+<li>Memory card management</li>
+<li>Controller input (standard and analog)</li>
+<li>Serial I/O support</li>
+<li>Examples</li>
+<li>Excellent Linux support</li>
+</ul>
+<p><strong>License:</strong> MPL 2.0</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK">GitHub</a> |
+<a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK/wiki">Wiki</a> |
+<a class="reference external" href="https://github.com/Lameguy64/PSn00bSDK/tree/master/examples">Examples</a></p>
+</div>
+</div>
+<div class="section" id="sega-saturn">
+<h3><a class="toc-backref" href="#toc-entry-13">Sega Saturn</a></h3>
+<div class="section" id="jo-engine">
+<h4>Jo Engine</h4>
+<p><strong>Jo Engine</strong> is a high-level 2D and 3D game engine that makes Saturn
+development approachable.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>High-level API for 2D and 3D</li>
+<li>Sprite engine with scaling and rotation</li>
+<li>3D model support with converter tools</li>
+<li>Audio support (PCM, CD audio)</li>
+<li>Save game management</li>
+<li>Collision detection</li>
+<li>Map and tilemap support</li>
+<li>USB dev cart support for rapid testing</li>
+<li>Video tutorials available</li>
+</ul>
+<p><strong>License:</strong> MIT</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/johannes-fetz/joengine">GitHub</a> |
+<a class="reference external" href="https://jo-engine.org/">Website</a> |
+<a class="reference external" href="https://github.com/johannes-fetz/joengine/wiki">Wiki</a></p>
+</div>
+<div class="section" id="yaul">
+<h4>Yaul</h4>
+<p><strong>Yaul</strong> is a modern alternative to the old Sega Basic Library,
+offering a clean API for advanced Saturn developers.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern library design</li>
+<li>Clean API</li>
+<li>VDP1 and VDP2 support</li>
+<li>SCU DMA operations</li>
+<li>CD block support</li>
+<li>SCSP (sound) support</li>
+<li>USB dev cart support</li>
+<li>Excellent documentation</li>
+</ul>
+<p><strong>License:</strong> BSD</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/ijacquez/libyaul">GitHub</a> |
+<a class="reference external" href="https://ijacquez.github.io/libyaul/">Documentation</a></p>
+</div>
+</div>
+<div class="section" id="nintendo-64">
+<h3><a class="toc-backref" href="#toc-entry-14">Nintendo 64</a></h3>
+<div class="section" id="libdragon">
+<h4>libdragon</h4>
+<p><strong>libdragon</strong> has revolutionized N64 development by making it far more
+accessible than the old Nintendo SDK.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Modern N64 development library</li>
+<li>3D graphics via RDP/RSP</li>
+<li>Audio subsystem support</li>
+<li>Controller input</li>
+<li>ROM file system</li>
+<li>Hardware sprites</li>
+<li>Much easier than old SDKs</li>
+<li>Very active community</li>
+<li>Good documentation</li>
+</ul>
+<p><strong>License:</strong> Unlicense (public domain)</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/DragonMinded/libdragon">GitHub</a> |
+<a class="reference external" href="https://dragonminded.github.io/libdragon/">Documentation</a></p>
+</div>
+</div>
+<div class="section" id="sega-dreamcast">
+<h3><a class="toc-backref" href="#toc-entry-15">Sega Dreamcast</a></h3>
+<div class="section" id="kallistios-kos">
+<h4>KallistiOS (KOS)</h4>
+<p><strong>KallistiOS</strong> is the de facto standard for Dreamcast homebrew, with an
+incredibly mature ecosystem.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete OS-like framework</li>
+<li>2D and 3D graphics (PowerVR)</li>
+<li>Network support (modem, broadband adapter)</li>
+<li>VMU (Visual Memory Unit) support</li>
+<li>Input device support</li>
+<li>CD-ROM file system (ISO9660)</li>
+<li>AICA SPU audio support</li>
+<li>Threading and multitasking</li>
+<li>USB development support</li>
+<li>Extensive library ecosystem</li>
+<li>Very mature and well-documented</li>
+</ul>
+<p><strong>License:</strong> BSD-style</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/KallistiOS/KallistiOS">GitHub</a> |
+<a class="reference external" href="https://kos-docs.dreamcast.wiki/">Documentation</a> |
+<a class="reference external" href="https://dcemulation.org/phpBB/">Forums</a></p>
+<p>Additional KOS libraries include GLdc (OpenGL-like API) and SDL ports,
+making cross-platform development easier.</p>
+</div>
+</div>
+<div class="section" id="sony-playstation-2-ps2">
+<h3><a class="toc-backref" href="#toc-entry-16">Sony PlayStation 2 (PS2)</a></h3>
+<div class="section" id="ps2sdk">
+<h4>PS2SDK</h4>
+<p><strong>PS2SDK</strong> provides complete access to the powerful PlayStation 2
+hardware.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete PS2 development SDK</li>
+<li>Graphics Synthesizer (GS) support for 2D/3D</li>
+<li>Emotion Engine and I/O Processor access</li>
+<li>Vector Unit (VU) programming</li>
+<li>Sound library (audsrv)</li>
+<li>USB and network support</li>
+<li>Memory card management</li>
+<li>DVD file system access</li>
+<li>Excellent Linux compatibility</li>
+<li>Large, active community</li>
+</ul>
+<p><strong>License:</strong> BSD/Academic Free License</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/ps2dev/ps2sdk">GitHub</a> |
+<a class="reference external" href="https://ps2dev.github.io/">Website</a> |
+<a class="reference external" href="https://github.com/ps2dev/ps2sdk/tree/master/samples">Examples</a></p>
+</div>
+</div>
+<div class="section" id="nintendo-gamecube-wii">
+<h3><a class="toc-backref" href="#toc-entry-17">Nintendo GameCube / Wii</a></h3>
+<div class="section" id="devkitppc-libogc">
+<h4>devkitPPC + libogc</h4>
+<p>The official <strong>devkitPro</strong> toolchain for GameCube and Wii provides
+hardware access.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Official devkitPro toolchain</li>
+<li>Full hardware access for both systems</li>
+<li>GX 3D graphics library</li>
+<li>ASND audio library</li>
+<li>Controller support (PAD/WPAD)</li>
+<li>Network library</li>
+<li>USB and SD card storage</li>
+<li>DVD reading</li>
+<li>Homebrew Channel integration (Wii)</li>
+<li>Large community</li>
+</ul>
+<p><strong>License:</strong> Various (permissive)</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/devkitPro/libogc">GitHub</a> |
+<a class="reference external" href="https://libogc.devkitpro.org/">Documentation</a> |
+<a class="reference external" href="https://github.com/devkitPro/gamecube-examples">Examples</a> |
+<a class="reference external" href="https://devkitpro.org/">devkitPro</a></p>
+</div>
+</div>
+<div class="section" id="sony-playstation-portable-psp">
+<h3><a class="toc-backref" href="#toc-entry-18">Sony PlayStation Portable (PSP)</a></h3>
+<div class="section" id="pspsdk">
+<h4>PSPSDK</h4>
+<p><strong>PSPSDK</strong> is the complete homebrew SDK for PSP development.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete PSP SDK</li>
+<li>3D graphics (GU library) with hardware acceleration</li>
+<li>2D sprite rendering</li>
+<li>Multi-format audio support</li>
+<li>WiFi and networking</li>
+<li>USB support</li>
+<li>Memory Stick access</li>
+<li>Save data management</li>
+<li>MP3, AAC playback</li>
+<li>Mature and stable</li>
+<li>Great Linux support</li>
+</ul>
+<p><strong>License:</strong> BSD/GPL</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/pspdev/pspsdk">GitHub</a> |
+<a class="reference external" href="https://forums.ps2dev.org/">Forums</a> |
+<a class="reference external" href="https://github.com/pspdev/psp-packages">Examples</a></p>
+</div>
+</div>
+<div class="section" id="playstation-vita">
+<h3><a class="toc-backref" href="#toc-entry-19">PlayStation Vita</a></h3>
+<div class="section" id="vita-sdk">
+<h4>Vita SDK</h4>
+<p><strong>Vita SDK</strong> provides a complete homebrew development solution for
+Sony's handheld.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Complete PS Vita SDK</li>
+<li>OpenGL ES-like graphics</li>
+<li>Touch screen support</li>
+<li>Accelerometer and gyroscope</li>
+<li>Camera support</li>
+<li>Network and WiFi</li>
+<li>Trophy system support</li>
+<li>Save data management</li>
+<li>Multi-format audio</li>
+<li>Very active homebrew scene</li>
+</ul>
+<p><strong>License:</strong> Various</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/vitasdk/vita-headers">GitHub</a> |
+<a class="reference external" href="https://vitasdk.org/">Website</a> |
+<a class="reference external" href="https://docs.vitasdk.org/">Documentation</a> |
+<a class="reference external" href="https://github.com/vitasdk/samples">Examples</a></p>
+</div>
+</div>
+<div class="section" id="xbox-original">
+<h3><a class="toc-backref" href="#toc-entry-20">Xbox (Original)</a></h3>
+<div class="section" id="nxdk">
+<h4>nxdk</h4>
+<p><strong>nxdk</strong> is a clean-room open-source Xbox SDK with no Microsoft code.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li>Open-source Xbox SDK</li>
+<li>Direct3D 8-like graphics API</li>
+<li>Audio support</li>
+<li>Controller input</li>
+<li>Network support</li>
+<li>Hard drive access</li>
+<li>SDL port available</li>
+<li>Growing community</li>
+</ul>
+<p><strong>License:</strong> Various (LGPL/MIT)</p>
+<p><strong>Links:</strong> <a class="reference external" href="https://github.com/XboxDev/nxdk">GitHub</a> |
+<a class="reference external" href="https://github.com/XboxDev/nxdk/wiki">Wiki</a> |
+<a class="reference external" href="https://github.com/XboxDev/nxdk/tree/master/samples">Examples</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="development-tools-and-workflow">
+<h2><a class="toc-backref" href="#toc-entry-21">Development Tools and Workflow</a></h2>
+<div class="section" id="devkitpro-toolchain">
+<h3><a class="toc-backref" href="#toc-entry-22">DevkitPro Toolchain</a></h3>
+<p>Many frameworks (GBA, DS, 3DS, GameCube/Wii) require the <strong>devkitPro</strong>
+toolchain, which works excellently on Linux:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://devkitpro.org/">Website</a></li>
+<li><a class="reference external" href="https://devkitpro.org/wiki/Getting_Started">Getting Started Guide</a></li>
+<li>Includes devkitARM, devkitPPC, and associated libraries</li>
+<li>Available via pacman (devkitPro package manager) on Fedora</li>
+</ul>
+</div>
+<div class="section" id="graphics-tools">
+<h3><a class="toc-backref" href="#toc-entry-23">Graphics Tools</a></h3>
+<p>For a fully open-source workflow, these tools are all free, open-source,
+and Linux-native:</p>
+<p><strong>Pixel Art Editors:</strong></p>
+<ul class="simple">
+<li><strong>Pixelorama</strong> (MIT): Modern pixel art editor with animation support,
+built with Godot. Excellent Aseprite alternative.
+<a class="reference external" href="https://pixelorama.org/">Website</a></li>
+<li><strong>LibreSprite</strong> (GPL v2): Fork of old GPL Aseprite with familiar
+interface. <a class="reference external" href="https://libresprite.github.io/">Website</a></li>
+<li><strong>GrafX2</strong> (GPL v2): Inspired by Deluxe Paint, excellent for retro
+graphics. <a class="reference external" href="http://grafx2.chez.com/">Website</a></li>
+<li><strong>Piskel</strong> (Apache 2.0): Web-based and offline pixel art editor.
+<a class="reference external" href="https://www.piskelapp.com/">Website</a></li>
+</ul>
+<p><strong>Tilemap Editor:</strong></p>
+<ul class="simple">
+<li><strong>Tiled</strong> (GPL v2/BSD): Industry-standard tilemap editor.
+<a class="reference external" href="https://www.mapeditor.org/">Website</a></li>
+</ul>
+<p><strong>General Graphics:</strong></p>
+<ul class="simple">
+<li><strong>GIMP</strong> (GPL v3+): Full-featured image editor.
+<a class="reference external" href="https://www.gimp.org/">Website</a></li>
+</ul>
+</div>
+<div class="section" id="music-and-sound-tools">
+<h3><a class="toc-backref" href="#toc-entry-24">Music and Sound Tools</a></h3>
+<p>All tools below are free, open-source, and Linux-native:</p>
+<p><strong>Chiptune (Hardware Chip Emulation):</strong></p>
+<ul class="simple">
+<li><strong>Furnace</strong> (GPL v2+): Multi-system chiptune tracker supporting 60+
+sound chips (NES, SNES, Genesis, Game Boy, etc.). Perfect for
+authentic retro console music. Available on Flathub.
+<a class="reference external" href="https://github.com/tildearrow/furnace">GitHub</a></li>
+</ul>
+<p><strong>Module Trackers (Sample-based):</strong></p>
+<ul class="simple">
+<li><strong>MilkyTracker</strong> (GPL v3): FastTracker II-inspired tracker for
+MOD/XM formats. <a class="reference external" href="https://milkytracker.org/">Website</a></li>
+<li><strong>Schism Tracker</strong> (GPL v2): Impulse Tracker clone for S3M/IT
+formats. <a class="reference external" href="http://schismtracker.org/">Website</a></li>
+</ul>
+<p><strong>NES/Famicom Specific:</strong></p>
+<ul class="simple">
+<li><strong>FamiStudio</strong> (MIT): DAW-style NES/Famicom music editor with
+expansion chip support. Available on Flathub.
+<a class="reference external" href="https://famistudio.org/">Website</a></li>
+</ul>
+<p><strong>Audio Editor:</strong></p>
+<ul class="simple">
+<li><strong>Audacity</strong> (GPL v2/v3): Multi-track audio editor and recorder.
+<a class="reference external" href="https://www.audacityteam.org/">Website</a></li>
+</ul>
+</div>
+<div class="section" id="emulators-for-testing">
+<h3><a class="toc-backref" href="#toc-entry-25">Emulators for Testing</a></h3>
+<p>All emulators below are open-source and Linux-compatible:</p>
+<ul class="simple">
+<li><strong>mGBA</strong>: Game Boy Advance - <a class="reference external" href="https://mgba.io/">Website</a></li>
+<li><strong>DeSmuME</strong>: Nintendo DS - <a class="reference external" href="https://desmume.org/">Website</a></li>
+<li><strong>Citra</strong>: Nintendo 3DS - <a class="reference external" href="https://citra-emu.org/">Website</a></li>
+<li><strong>bsnes</strong>: Super Nintendo -
+<a class="reference external" href="https://github.com/bsnes-emu/bsnes">GitHub</a></li>
+<li><strong>Genesis Plus GX</strong>: Sega Mega Drive -
+<a class="reference external" href="https://github.com/ekeeke/Genesis-Plus-GX">GitHub</a></li>
+<li><strong>Mednafen</strong>: Multi-system (PC Engine, PS1, Saturn, etc.) -
+<a class="reference external" href="https://mednafen.github.io/">Website</a></li>
+<li><strong>DuckStation</strong>: PlayStation 1 -
+<a class="reference external" href="https://github.com/stenzek/duckstation">GitHub</a></li>
+<li><strong>PCSX2</strong>: PlayStation 2 - <a class="reference external" href="https://pcsx2.net/">Website</a></li>
+<li><strong>Dolphin</strong>: GameCube/Wii - <a class="reference external" href="https://dolphin-emu.org/">Website</a></li>
+<li><strong>PPSSPP</strong>: PlayStation Portable - <a class="reference external" href="https://www.ppsspp.org/">Website</a></li>
+<li><strong>Vita3K</strong>: PlayStation Vita - <a class="reference external" href="https://vita3k.org/">Website</a></li>
+<li><strong>Flycast</strong>: Sega Dreamcast -
+<a class="reference external" href="https://github.com/flyinghead/flycast">GitHub</a></li>
+<li><strong>Mupen64Plus</strong>: Nintendo 64 -
+<a class="reference external" href="https://www.mupen64plus.org/">Website</a></li>
+<li><strong>xemu</strong>: Original Xbox - <a class="reference external" href="https://xemu.app/">Website</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="recommendations-by-experience-level">
+<h2><a class="toc-backref" href="#toc-entry-26">Recommendations by Experience Level</a></h2>
+<div class="section" id="beginner-friendly">
+<h3><a class="toc-backref" href="#toc-entry-27">Beginner-Friendly</a></h3>
+<p><strong>8-bit/16-bit:</strong></p>
+<ul class="simple">
+<li><strong>GB Studio</strong> (GBC): Visual editor, no coding required</li>
+<li><strong>GBDK-2020</strong> (GBC): Simple C development</li>
+<li><strong>SGDK</strong> (Mega Drive): Excellent documentation and community</li>
+</ul>
+<p><strong>Fifth/Sixth Generation:</strong></p>
+<ul class="simple">
+<li><strong>PSn00bSDK</strong> (PS1): Clean, modern API</li>
+<li><strong>Jo Engine</strong> (Saturn): High-level engine with tutorials</li>
+<li><strong>PSPSDK</strong> (PSP): Well-documented and stable</li>
+</ul>
+</div>
+<div class="section" id="intermediate">
+<h3><a class="toc-backref" href="#toc-entry-28">Intermediate</a></h3>
+<p><strong>8-bit/16-bit:</strong></p>
+<ul class="simple">
+<li><strong>Butano</strong> (GBA): Modern C++ with great docs</li>
+<li><strong>PVSnesLib</strong> (SNES): Comprehensive library</li>
+<li><strong>NightFox's Lib</strong> (DS): High-level 2D development</li>
+</ul>
+<p><strong>Fifth/Sixth Generation:</strong></p>
+<ul class="simple">
+<li><strong>KallistiOS</strong> (Dreamcast): Mature ecosystem</li>
+<li><strong>devkitPPC</strong> (GC/Wii): Official toolchain</li>
+<li><strong>Vita SDK</strong> (Vita): Active community</li>
+</ul>
+</div>
+<div class="section" id="advanced">
+<h3><a class="toc-backref" href="#toc-entry-29">Advanced</a></h3>
+<p><strong>8-bit/16-bit:</strong></p>
+<ul class="simple">
+<li><strong>libSFX</strong> (SNES): Assembly-first, highly optimized</li>
+<li><strong>citro3d</strong> (3DS): Direct hardware access</li>
+<li><strong>libnds</strong> (DS): Low-level control</li>
+</ul>
+<p><strong>Fifth/Sixth Generation:</strong></p>
+<ul class="simple">
+<li><strong>PS2SDK</strong> (PS2): Complex but powerful</li>
+<li><strong>Yaul</strong> (Saturn): Modern low-level library</li>
+<li><strong>libdragon</strong> (N64): RDP/RSP programming</li>
+<li><strong>nxdk</strong> (Xbox): Direct3D 8 development</li>
+</ul>
+</div>
+</div>
+<div class="section" id="community-resources">
+<h2><a class="toc-backref" href="#toc-entry-30">Community Resources</a></h2>
+<p><strong>General Communities:</strong></p>
+<ul class="simple">
+<li><strong>NESDev Forums</strong>: Multi-platform retro development -
+<a class="reference external" href="https://forums.nesdev.org/">Forums</a></li>
+<li><strong>GBAtemp</strong>: DS/3DS homebrew - <a class="reference external" href="https://gbatemp.net/">Website</a></li>
+<li><strong>devkitPro Discord</strong>: Nintendo handheld development</li>
+</ul>
+<p><strong>Platform-Specific:</strong></p>
+<ul class="simple">
+<li><strong>GBADev</strong>: Game Boy Advance - <a class="reference external" href="https://gbadev.net/">Website</a></li>
+<li><strong>PSXDev</strong>: PlayStation 1 - <a class="reference external" href="https://www.psxdev.net/">Website</a></li>
+<li><strong>PS2Dev Forums</strong>: PS2, PSP - <a class="reference external" href="https://forums.ps2dev.org/">Forums</a></li>
+<li><strong>DCEmulation</strong>: Dreamcast - <a class="reference external" href="https://dcemulation.org/">Website</a></li>
+<li><strong>SegaXtreme</strong>: Saturn, Mega Drive -
+<a class="reference external" href="https://segaxtreme.net/">Website</a></li>
+<li><strong>N64brew</strong>: Nintendo 64 - <a class="reference external" href="https://n64brew.dev/">Website</a></li>
+<li><strong>GC-Forever</strong>: GameCube/Wii - <a class="reference external" href="https://www.gc-forever.com/">Website</a></li>
+<li><strong>r/vitahacks</strong>: PS Vita homebrew</li>
+</ul>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#toc-entry-31">Conclusion</a></h2>
+<p>The retro console homebrew scene has never been more vibrant or accessible.
+With modern open-source toolchains, documentation, and active communities,
+developing games for classic consoles is now within reach of any motivated
+developer with a Linux machine.</p>
+<p>Whether you want to create a simple Game Boy puzzle game with GB Studio's
+visual editor, or push the limits of the PlayStation 2's Emotion Engine with
+assembly-optimized code, the tools are available and the communities are
+welcoming.</p>
+<p>The best part? This entire workflow can be accomplished with 100% free and
+open-source software, from the development tools to the graphics editors to the
+music trackers. This guide should give you everything you need to start your
+retro game development journey.</p>
+<p>Happy coding, and may your sprites never flicker!</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/retro-console-game-engines.html">posted at 10:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/homebrew.html" class="tags">homebrew</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/console.html" class="tags">console</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/open-source.html" class="tags">open-source</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Mar 11, 2025</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="bookmark" title="Permanent Link to &quot;Retro Console Hardware Comparison: A Technical Deep Dive&quot;">Retro Console Hardware Comparison: A Technical Deep Dive</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2><a class="toc-backref" href="#toc-entry-1">Introduction</a></h2>
+<p>Understanding the hardware capabilities of classic gaming consoles
+provides valuable insight for both homebrew developers and retro gaming
+enthusiasts. Each console generation brought significant improvements in
+processing power, graphics capabilities, and audio quality, while
+working within tight memory constraints and power budgets.</p>
+<p>This guide provides detailed technical comparisons across multiple
+console generations, from the 8-bit Game Boy to modern hybrid systems
+like the Nintendo Switch. Whether you're developing homebrew games or
+simply curious about the technical evolution of gaming hardware, these
+tables offer a reference.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><a class="reference internal" href="#top">Table of Contents</a></p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="toc-entry-1">Introduction</a></li>
+<li><a class="reference internal" href="#cpu-and-memory-architecture" id="toc-entry-2">CPU and Memory Architecture</a><ul>
+<li><a class="reference internal" href="#processor-specifications" id="toc-entry-3">Processor Specifications</a></li>
+<li><a class="reference internal" href="#memory-configurations" id="toc-entry-4">Memory Configurations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#d-graphics-capabilities" id="toc-entry-5">2D Graphics Capabilities</a><ul>
+<li><a class="reference internal" href="#color-depth-and-palette" id="toc-entry-6">Color Depth and Palette</a></li>
+<li><a class="reference internal" href="#sprite-capabilities" id="toc-entry-7">Sprite Capabilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#video-output-specifications" id="toc-entry-8">Video Output Specifications</a><ul>
+<li><a class="reference internal" href="#display-characteristics" id="toc-entry-9">Display Characteristics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#audio-capabilities" id="toc-entry-10">Audio Capabilities</a><ul>
+<li><a class="reference internal" href="#sound-architecture" id="toc-entry-11">Sound Architecture</a></li>
+<li><a class="reference internal" href="#audio-output" id="toc-entry-12">Audio Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#special-graphics-features" id="toc-entry-13">Special Graphics Features</a><ul>
+<li><a class="reference internal" href="#hardware-effects-by-console" id="toc-entry-14">Hardware Effects by Console</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conclusion" id="toc-entry-15">Conclusion</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="cpu-and-memory-architecture">
+<h2><a class="toc-backref" href="#toc-entry-2">CPU and Memory Architecture</a></h2>
+<p>The processors and memory configurations of gaming consoles reveal much
+about their capabilities and limitations. Early consoles operated with
+kilobytes of RAM, while modern systems have gigabytes at their disposal.</p>
+<div class="section" id="processor-specifications">
+<h3><a class="toc-backref" href="#toc-entry-3">Processor Specifications</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="52%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">CPU</th>
+<th class="head">Clock
+Speed</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>4.19 MHz</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>8 MHz</td>
+</tr>
+<tr><td>NES</td>
+<td>Ricoh 2A03 (MOS 6502)</td>
+<td>1.79 MHz
+(NTSC) /
+1.66 MHz
+(PAL)</td>
+</tr>
+<tr><td>SNES</td>
+<td>Ricoh 5A22 (65C816-based)</td>
+<td>3.58 MHz
+(max)</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6280 (MOS 6502-based)</td>
+<td>7.16 MHz</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Motorola 68000 + Zilog Z80</td>
+<td>12 MHz +
+4 MHz</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>ARM7TDMI</td>
+<td>16.78 MHz</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>ARM946E-S + ARM7</td>
+<td>67 MHz +
+33 MHz</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>Dual-Core ARM11 MPCore</td>
+<td>268 MHz</td>
+</tr>
+<tr><td>Wii</td>
+<td>IBM PowerPC &quot;Broadway&quot;</td>
+<td>729 MHz</td>
+</tr>
+<tr><td>PSP</td>
+<td>MIPS R4000-based CPU</td>
+<td>333 MHz</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1
+(ARM Cortex-A57)</td>
+<td>1.02 GHz</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="memory-configurations">
+<h3><a class="toc-backref" href="#toc-entry-4">Memory Configurations</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">RAM</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>8 KB</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>32 KB + 16 KB VRAM</td>
+</tr>
+<tr><td>NES</td>
+<td>2 KB + 2 KB VRAM</td>
+</tr>
+<tr><td>SNES</td>
+<td>128 KB + 64 KB VRAM</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>8 KB + 64 KB VRAM</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>64 KB + 68 KB VRAM</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>256 KB + 96 KB VRAM</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>4 MB + 656 KB VRAM</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>128 MB + 6 MB VRAM</td>
+</tr>
+<tr><td>Wii</td>
+<td>88 MB (24 MB + 64 MB GDDR3)</td>
+</tr>
+<tr><td>PSP</td>
+<td>32 MB (PSP-1000) / 64 MB (PSP-2000+)</td>
+</tr>
+<tr><td>Switch</td>
+<td>4 GB LPDDR4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>The evolution from kilobytes to gigabytes of RAM represents a
+million-fold increase in memory capacity. The NES operated with just
+2 KB of main RAM, requiring extremely efficient programming. Modern
+consoles like the Switch have 4 GB, enabling complex 3D worlds and
+high-resolution textures.</p>
+</div>
+</div>
+<div class="section" id="d-graphics-capabilities">
+<h2><a class="toc-backref" href="#toc-entry-5">2D Graphics Capabilities</a></h2>
+<p>Early gaming consoles were built around dedicated 2D graphics hardware
+with hardware sprites and tile-based rendering systems.</p>
+<div class="section" id="color-depth-and-palette">
+<h3><a class="toc-backref" href="#toc-entry-6">Color Depth and Palette</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Graphics Processor</th>
+<th class="head">Displayable Colors</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>4 shades of gray</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>32,768, 56 max</td>
+</tr>
+<tr><td>NES</td>
+<td>PPU (2C02 or 2C03)</td>
+<td>52, 25 max</td>
+</tr>
+<tr><td>SNES</td>
+<td>S-PPU</td>
+<td>32,768, 256 max</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6270A VDC</td>
+<td>512, 482 max</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Custom LSPC2-A2</td>
+<td>65,536, 4,096 max</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Custom 2D Core</td>
+<td>32,768, 512 max</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>2D/3D Graphics Engine</td>
+<td>32,768, 4,096 max</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>PICA200 GPU</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>Wii</td>
+<td>ATI Hollywood GPU</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>PSP</td>
+<td>Sony CXD2962GG + Media</td>
+<td>16.8 million</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1</td>
+<td>16.8 million</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sprite-capabilities">
+<h3><a class="toc-backref" href="#toc-entry-7">Sprite Capabilities</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="31%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Sprite Size</th>
+<th class="head">Max Sprites on Screen</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>8x8 or 8x16 px</td>
+<td>40 sprites, max 10 per
+line</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>8x8 or 8x16 px</td>
+<td>40 sprites, max 10 per
+line</td>
+</tr>
+<tr><td>NES</td>
+<td>8x8 or 8x16 px</td>
+<td>64 sprites, max 8 per line</td>
+</tr>
+<tr><td>SNES</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>16x16 px</td>
+<td>64 sprites, max 16 per
+line</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Up to 16x512 px</td>
+<td>380 sprites, no strict
+limit</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>Up to 64x64 px</td>
+<td>128 sprites, max 32 per
+line</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>Wii</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>PSP</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+<tr><td>Switch</td>
+<td>Variable</td>
+<td>Sprite handling via 3D
+engine</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>Sprite-per-line limits were a critical constraint for 8-bit and 16-bit
+consoles. Developers had to carefully manage sprite placement to avoid
+flickering. The Neo Geo's massive sprite sizes (up to 16x512 pixels)
+and high sprite count made it exceptional for arcade-style action games.</p>
+</div>
+</div>
+<div class="section" id="video-output-specifications">
+<h2><a class="toc-backref" href="#toc-entry-8">Video Output Specifications</a></h2>
+<p>Display resolution, refresh rate, and aspect ratio define the visual
+output characteristics of each console.</p>
+<div class="section" id="display-characteristics">
+<h3><a class="toc-backref" href="#toc-entry-9">Display Characteristics</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="33%" />
+<col width="24%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Resolution</th>
+<th class="head">Refresh Rate</th>
+<th class="head">Aspect
+Ratio</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>160x144</td>
+<td>59.7 Hz</td>
+<td>10:9</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>160x144</td>
+<td>59.7 Hz</td>
+<td>10:9</td>
+</tr>
+<tr><td>NES</td>
+<td>256x240</td>
+<td>60 Hz (NTSC)
+50 Hz (PAL)</td>
+<td>4:3</td>
+</tr>
+<tr><td>SNES</td>
+<td>256x224
+512x448i</td>
+<td>60 Hz (NTSC)
+50 Hz (PAL)</td>
+<td>4:3</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>256x224</td>
+<td>59.94 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>320x224</td>
+<td>59.18 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>240x160</td>
+<td>59.7 Hz</td>
+<td>3:2</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>256x192
+(per screen)</td>
+<td>59.8 Hz</td>
+<td>4:3</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>400x240 (top)
+320x240 (bottom)</td>
+<td>60 Hz</td>
+<td>5:3
+(top)
+4:3
+(bottom)</td>
+</tr>
+<tr><td>Wii</td>
+<td>640x480</td>
+<td>60 Hz</td>
+<td>4:3 or
+16:9</td>
+</tr>
+<tr><td>PSP</td>
+<td>480x272</td>
+<td>60 Hz</td>
+<td>16:9</td>
+</tr>
+<tr><td>Switch</td>
+<td>1280x720
+(Handheld)
+1920x1080 (Docked)</td>
+<td>60 Hz</td>
+<td>16:9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>Resolution evolved from the Game Boy's 160x144 to Full HD (1920x1080)
+on the Switch when docked. Most classic consoles targeted NTSC's 60 Hz
+or PAL's 50 Hz refresh rates. The shift from 4:3 to 16:9 aspect ratios
+occurred around the PSP/Wii generation.</p>
+</div>
+</div>
+<div class="section" id="audio-capabilities">
+<h2><a class="toc-backref" href="#toc-entry-10">Audio Capabilities</a></h2>
+<p>Audio capabilities progressed from simple tone generators to full PCM
+sample playback and streaming capabilities.</p>
+<div class="section" id="sound-architecture">
+<h3><a class="toc-backref" href="#toc-entry-11">Sound Architecture</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="41%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Sound Channels</th>
+<th class="head">Sample Rate</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>4 (2 square, 1 wave,
+1 noise)</td>
+<td>~8 kHz</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>4 (same as GB)</td>
+<td>~8 kHz</td>
+</tr>
+<tr><td>NES</td>
+<td>5 (2 pulse, 1 triangle,
+1 noise, 1 DPCM)</td>
+<td>~21.3 kHz (NTSC)
+~17.3 kHz (PAL)</td>
+</tr>
+<tr><td>SNES</td>
+<td>8 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>6 PCM</td>
+<td>~7.16 kHz to
+~20 kHz</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>4 FM, 3 PSG, ADPCM-A,
+ADPCM-B</td>
+<td>~15.7 kHz
+(ADPCM-A)
+~18.5 kHz
+(ADPCM-B)</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>6 (2 direct PCM +
+4 PSG)</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>16 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>24 PCM</td>
+<td>32 kHz</td>
+</tr>
+<tr><td>Wii</td>
+<td>64 PCM</td>
+<td>48 kHz</td>
+</tr>
+<tr><td>PSP</td>
+<td>32 PCM</td>
+<td>44.1 kHz</td>
+</tr>
+<tr><td>Switch</td>
+<td>32 PCM</td>
+<td>48 kHz</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="audio-output">
+<h3><a class="toc-backref" href="#toc-entry-12">Audio Output</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="43%" />
+<col width="29%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Console</th>
+<th class="head">Audio Processor</th>
+<th class="head">Audio Output</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Game Boy</td>
+<td>Custom Sharp LR35902</td>
+<td>Mono</td>
+</tr>
+<tr><td>Game Boy Color</td>
+<td>Custom Sharp Z80</td>
+<td>Mono</td>
+</tr>
+<tr><td>NES</td>
+<td>Ricoh 2A03 (NTSC) /
+Ricoh 2A07 (PAL)</td>
+<td>Mono</td>
+</tr>
+<tr><td>SNES</td>
+<td>Sony SPC700 + DSP</td>
+<td>Stereo</td>
+</tr>
+<tr><td>PC Engine</td>
+<td>HuC6280 PSG</td>
+<td>Mono</td>
+</tr>
+<tr><td>Neo Geo</td>
+<td>Yamaha YM2610</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Game Boy Adv.</td>
+<td>Custom 2D Core</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Nintendo DS</td>
+<td>2D/3D Graphics Engine</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Nintendo 3DS</td>
+<td>PICA200 GPU</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Wii</td>
+<td>ATI Hollywood GPU</td>
+<td>Stereo / DPL II</td>
+</tr>
+<tr><td>PSP</td>
+<td>Sony CXD2962GG + Media</td>
+<td>Stereo</td>
+</tr>
+<tr><td>Switch</td>
+<td>NVIDIA Tegra X1</td>
+<td>Stereo / DPL IIx</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Observations:</strong></p>
+<p>The SNES was revolutionary with its 8-channel PCM audio at 32 kHz,
+enabling CD-quality sound. The transition from mono to stereo output
+occurred in the 16-bit generation. Modern consoles support Dolby
+Pro Logic surround sound encoding.</p>
+</div>
+</div>
+<div class="section" id="special-graphics-features">
+<h2><a class="toc-backref" href="#toc-entry-13">Special Graphics Features</a></h2>
+<p>Beyond basic sprite and tile rendering, many consoles included special
+graphics modes that enabled advanced visual effects.</p>
+<div class="section" id="hardware-effects-by-console">
+<h3><a class="toc-backref" href="#toc-entry-14">Hardware Effects by Console</a></h3>
+<p><strong>Game Boy / Game Boy Color:</strong></p>
+<ul class="simple">
+<li>No special graphics modes beyond basic tile and sprite rendering</li>
+</ul>
+<p><strong>NES:</strong></p>
+<ul class="simple">
+<li>Attribute Tables (Limited Tile Coloring)</li>
+<li>CHR-ROM for Tile-Based Graphics</li>
+</ul>
+<p><strong>SNES:</strong></p>
+<ul class="simple">
+<li><strong>Mode 7</strong>: Affine transformations for scaling and rotation, enabling
+pseudo-3D effects (used in games like F-Zero and Super Mario Kart)</li>
+<li><strong>Windowing Effects</strong>: Variable transparency regions</li>
+<li><strong>HDMA</strong> (Horizontal Direct Memory Access): Per-scanline effects</li>
+<li><strong>Color Math</strong>: Hardware addition/subtraction for transparency and
+lighting effects</li>
+</ul>
+<p><strong>PC Engine:</strong></p>
+<ul class="simple">
+<li>No special graphics modes beyond standard tile/sprite capabilities</li>
+</ul>
+<p><strong>Neo Geo:</strong></p>
+<ul class="simple">
+<li><strong>Hardware Scaling</strong> for sprites</li>
+<li><strong>Line Scroll</strong>: Independent line offsets for parallax effects</li>
+<li><strong>Raster Effects</strong>: Per-scanline modifications</li>
+</ul>
+<p><strong>Game Boy Advance:</strong></p>
+<ul class="simple">
+<li><strong>Affine Transformation</strong>: Mode 7-like scaling and rotation</li>
+<li><strong>Mosaic Effect</strong>: Hardware pixelation for special effects</li>
+<li><strong>Alpha Blending</strong>: Multi-layer transparency</li>
+<li><strong>Object Priority</strong>: Hardware Z-ordering for sprites and backgrounds</li>
+</ul>
+<p><strong>Nintendo DS:</strong></p>
+<ul class="simple">
+<li><strong>3D Rendering</strong>: Hardware-accelerated 3D graphics engine</li>
+<li><strong>Extended Affine Transformations</strong>: Advanced 2D rotation and scaling</li>
+<li><strong>Fog Effects</strong>: Depth-based atmospheric effects</li>
+<li><strong>Multiple Background Layers</strong>: Up to 4 background layers with
+independent scrolling</li>
+</ul>
+<p><strong>Nintendo 3DS:</strong></p>
+<ul class="simple">
+<li><strong>Stereoscopic 3D</strong>: Glasses-free autostereoscopic 3D display</li>
+<li><strong>Advanced Shader Support</strong>: Programmable vertex and fragment shaders</li>
+<li><strong>GPU-Accelerated Rendering</strong>: PICA200 graphics processor</li>
+</ul>
+<p><strong>Wii:</strong></p>
+<ul class="simple">
+<li><strong>GPU Effects</strong>: Programmable shaders, bloom, motion blur</li>
+<li><strong>Texture Mapping</strong>: Advanced texture filtering and mipmapping</li>
+<li><strong>Bump Mapping</strong>: Per-pixel lighting simulation</li>
+<li><strong>Hardware Anti-Aliasing</strong>: Multi-sample anti-aliasing (MSAA)</li>
+</ul>
+<p><strong>PSP:</strong></p>
+<ul class="simple">
+<li><strong>Hardware Transform &amp; Lighting</strong> (T&amp;L): Vertex processing on GPU</li>
+<li><strong>Texture Compression</strong>: Efficient VRAM usage</li>
+<li><strong>Advanced Alpha Blending</strong>: Complex transparency effects</li>
+</ul>
+<p><strong>Switch:</strong></p>
+<ul class="simple">
+<li><strong>Advanced Shaders</strong>: Physically-Based Rendering (PBR)</li>
+<li><strong>Hardware-Accelerated Global Illumination</strong>: Realistic lighting</li>
+<li><strong>HDR</strong> (High Dynamic Range): Expanded color and brightness range</li>
+<li><strong>Post-Processing Effects</strong>: Depth of field, screen-space ambient
+occlusion (SSAO), temporal anti-aliasing</li>
+</ul>
+<p><strong>Key Observations:</strong></p>
+<p>The SNES Mode 7 was revolutionary for its time, enabling pseudo-3D
+effects with 2D hardware. The transition from fixed-function 2D
+hardware to programmable 3D GPUs occurred around the Nintendo DS/PSP
+generation. Modern consoles like the Switch support physically-based
+rendering and advanced post-processing effects comparable to modern
+gaming PCs.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#toc-entry-15">Conclusion</a></h2>
+<p>The evolution of gaming console hardware represents one of the most
+dramatic technological progressions in computing history. From the
+humble Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's
+1+ GHz quad-core CPU and 4 GB of RAM, each generation brought order-of-
+magnitude improvements in capabilities.</p>
+<p>Understanding these hardware specifications is essential for homebrew
+developers targeting specific platforms. The constraints of each
+system - limited sprite counts, scanline restrictions, memory budgets -
+defined the creative solutions developers employed to create memorable
+gaming experiences.</p>
+<p>Whether you're developing a Game Boy game with 40 sprites and 4 colors,
+or a Switch title with millions of polygons and advanced shaders, these
+specifications provide the foundation for understanding what's possible
+on each platform.</p>
+<p>For developers, these tables serve as quick references when planning
+projects. For enthusiasts, they illuminate why certain games looked and
+played the way they did. The ingenuity of developers working within
+these constraints produced some of gaming's most iconic titles.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html">posted at 10:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/hardware.html" rel="tag">hardware</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/hardware.html" class="tags">hardware</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/console.html" class="tags">console</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/comparison.html" class="tags">comparison</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/technical.html" class="tags">technical</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Aug 06, 2024</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html" rel="bookmark" title="Permanent Link to &quot;Secure Boot with AHAB on i.MX93: A Complete Guide&quot;">Secure Boot with AHAB on i.MX93: A Complete Guide</a>
+                </h2>
+
+                
+                
+
+                <p><strong>The security of embedded devices has never been more critical.</strong> In a world
+where attacks targeting IoT systems are becoming increasingly sophisticated,
+ensuring the integrity of the boot process is a must. This is where <strong>Secure
+Boot</strong> comes in—an essential technology that guarantees only authorized code can
+execute on a device from the moment it starts. In this article, we will explore
+the implementation of Secure Boot using AHAB, the solution provided by NXP to
+secure the i.MX93 from its initial boot stages.</p>
+<p><strong>Why is Secure Boot crucial for your device?</strong></p>
+<p>A secure boot ensures that no malicious code interferes with the critical boot
+process, protecting your device from attacks targeting the bootloader and early
+boot stages. Furthermore, AHAB, integrated into i.MX93 processors, enables
+advanced authentication right from the initial boot stages, ensuring that only
+validated components can be loaded, thereby strengthening security from the
+get-go.</p>
+<p>Secure boot is a critical security feature that ensures only authenticated and
+authorized code can run on a device. It operates through a chain of trust, where
+each component verifies the integrity of the next element in the chain.</p>
+<p>Several mechanisms must be used to authenticate each element of this chain, but
+the mechanism for authenticating the first boot stages depends on the target SoC.
+The i.MX93 series uses NXP's Advanced High Assurance Boot (AHAB) to secure the
+first boot stages.</p>
+<p>For subsequent stages, you can implement mechanisms such as:</p>
+<ul class="simple">
+<li>Using U-Boot's &quot;verified boot&quot; feature to sign the kernel,</li>
+<li>Using the default environment (cf. USE_DEFAULT_ENV_FILE), and restricting
+write access to only a few environment variables (cf. ENV_WRITEABLE_LIST),
+which are necessary for writable access, such as for OTA updates,</li>
+<li>Using DM-verity to authenticate the root filesystem,</li>
+<li>And finally, using OverlayFS combined with DM-crypt to mount encrypted,
+writable subfolders.</li>
+</ul>
+<p>Here, we'll focus on the first part of the secure boot process, using NXP's AHAB
+to authenticate the bootloader on the NXP i.MX93 in single-boot mode. We will
+also briefly discuss how to generate the keys to sign the bootloader and provide
+an introduction to AHAB.</p>
+<p><em>Note: AHAB also provides a complementary encryption feature designed to protect
+the confidentiality and integrity of data, whereas secure boot focuses on
+verifying the integrity and authenticity of the boot process. This post will not
+cover encryption in detail.</em></p>
+<div class="section" id="ahab-architecture">
+<h2>AHAB Architecture</h2>
+<p>The AHAB authentication mechanism is based on public key cryptography using
+asymmetric keys.</p>
+<p>On the i.MX93, AHAB support is provided by a security co-processor, the EdgeLock
+enclave (ELE), which handles the authentication of binaries signed with one or
+more private keys. This co-processor contains fuses that must be burned with the
+hash of the public keys.</p>
+<div class="section" id="ahab-containers">
+<h3>AHAB Containers</h3>
+<p>Since multiple boot stages (e.g., TF-A, OP-TEE, U-Boot, etc.) and firmwares are
+required to boot i.MX93 platforms, these binaries are packed into containers
+using the <a class="reference external" href="https://github.com/nxp-imx/imx-mkimage">imx-mkimage</a> tool:</p>
+<div class="highlight"><pre><span></span>bl31.bin
+lpddr4_dmem_1d_v202201.bin
+lpddr4_dmem_2d_v202201.bin
+lpddr4_imem_1d_v202201.bin
+lpddr4_imem_2d_v202201.bin
+mx93a1-ahab-container.img
+tee.bin
+u-boot.bin
+u-boot-spl.bin
+</pre></div>
+<p>In i.MX93 single-boot mode, the bootloader image contains at least three
+containers:</p>
+<ul class="simple">
+<li><strong>mx93a1-ahab-container.img</strong>: Contains the ELE Firmware.</li>
+<li><strong>u-boot-atf-container.img</strong>: Contains at least the SPL.</li>
+<li><strong>flash.bin</strong>: Contains TF-A, OP-TEE, and U-Boot.</li>
+</ul>
+<div class="highlight"><pre><span></span>        *start ----&gt; +---------------------------+ ---------
+                     |   1st Container header    |   ^
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     | Padding for 1kB alignment |   |
+*start + 0x400 ----&gt; +---------------------------+   |
+                     |   2nd Container header    |   |
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     |          Padding          |   |  Authenticated at
+                     +---------------------------+   |  ELE ROM/FW Level
+                     |           ELE FW          |   |
+                     +---------------------------+   |
+                     |          Padding          |   |
+                     +---------------------------+   |
+                     |       Cortex-M Image      |   |
+                     +---------------------------+   |
+                     |         SPL Image         |   v
+                     +---------------------------+ ---------
+                     |   3rd Container header    |   ^
+                     |       and signature       |   |
+                     +---------------------------+   |
+                     |          Padding          |   | Authenticated
+                     +---------------------------+   | at SPL Level
+                     |            TF-A           |   |
+                     +---------------------------+   |
+                     |           OP-TEE          |   |
+                     +---------------------------+   |
+                     |           U-Boot          |   v
+                     +---------------------------+ ---------
+</pre></div>
+<p>These containers are signed offline using <a class="reference external" href="https://www.nxp.com/webapp/sps/download/license.jsp?colCode=IMX_CST_TOOL_NEW">NXP Code-Signing Tools (CST)</a>, which
+also allow the creation of an OEM private key infrastructure (PKI) and the
+generation of the associated public keys (SRK) table, which is burned into the
+fuses. The CST can also be used with the PKCS#11 standard to access
+cryptographic services from tokens or devices such as HSM, TPM, and smart cards.</p>
+<p>The first container is signed with NXP keys and is authenticated by the ELE ROM,
+while the other containers are signed with OEM keys.</p>
+</div>
+<div class="section" id="ahab-boot-flow">
+<h3>AHAB Boot Flow</h3>
+<p>In single boot mode, the Cortex-A55 ROM reads data from the selected boot
+device, loading all containers in the chosen boot image set one by one. All
+images within each container (e.g., EdgeLock secure enclave firmware, Cortex-M33
+firmware, A55 firmware, OP-TEE, and U-Boot) are loaded, and the EdgeLock secure
+enclave (ELE) is tasked with authenticating them. The ELE firmware is
+authenticated by the ELE ROM, and images in the second container are verified by
+the ELE firmware.</p>
+<p>If the bootloader image contains more than two containers, the third and
+subsequent containers are authenticated by the SPL instead of the ELE.</p>
+</div>
+</div>
+<div class="section" id="pki-generation">
+<h2>PKI Generation</h2>
+<p>To authenticate the bootloader, we need to generate keys. These keys can be
+created with the <a class="reference external" href="https://www.nxp.com/webapp/sps/download/license.jsp?colCode=IMX_CST_TOOL_NEW">CST</a>. The private key will be used to sign the bootloader, and
+the public key will be burned into the i.MX93 fuses to authenticate the
+bootloader during boot.</p>
+<p>Follow these steps to generate the keys:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cst-3.4.1/keys
+<span class="nb">echo</span><span class="w"> </span><span class="m">00000001</span><span class="w"> </span>&gt;<span class="w"> </span>serial
+</pre></div>
+<p>Write the passphrase for the certificate (replace &quot;fooahabcert&quot; with your
+choice) in two lines, separated by <tt class="docutils literal">\n</tt>. It is important to store this
+passphrase securely with backups:</p>
+<div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;fooahabcert\nfooahabcert&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>key_pass.txt
+</pre></div>
+<p>Generate a P384 ECC PKI tree with a subordinate SGK key on CST:</p>
+<div class="highlight"><pre><span></span>./ahab_pki_tree.sh
+<span class="o">[</span>...<span class="o">]</span>
+Do<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>CA<span class="w"> </span>key<span class="w"> </span><span class="o">(</span>y/n<span class="o">)</span>?:<span class="w"> </span>n
+
+Key<span class="w"> </span><span class="nb">type</span><span class="w"> </span>options<span class="w"> </span><span class="o">(</span>confirm<span class="w"> </span>targeted<span class="w"> </span>device<span class="w"> </span>supports<span class="w"> </span>desired<span class="w"> </span>key<span class="w"> </span><span class="nb">type</span><span class="o">)</span>:
+Select<span class="w"> </span>the<span class="w"> </span>key<span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="o">(</span>possible<span class="w"> </span>values:<span class="w"> </span>rsa,<span class="w"> </span>rsa-pss,<span class="w"> </span>ecc<span class="o">)</span>?:<span class="w"> </span>ecc
+Enter<span class="w"> </span>length<span class="w"> </span><span class="k">for</span><span class="w"> </span>elliptic<span class="w"> </span>curve<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span><span class="k">for</span><span class="w"> </span>PKI<span class="w"> </span>tree:
+Possible<span class="w"> </span>values<span class="w"> </span>p256,<span class="w"> </span>p384,<span class="w"> </span>p521:<span class="w">  </span>p384
+Enter<span class="w"> </span>the<span class="w"> </span>digest<span class="w"> </span>algorithm<span class="w"> </span>to<span class="w"> </span>use:<span class="w"> </span>sha384
+Enter<span class="w"> </span>PKI<span class="w"> </span>tree<span class="w"> </span>duration<span class="w"> </span><span class="o">(</span>years<span class="o">)</span>:<span class="w"> </span><span class="m">10</span>
+Do<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>the<span class="w"> </span>SRK<span class="w"> </span>certificates<span class="w"> </span>to<span class="w"> </span>have<span class="w"> </span>the<span class="w"> </span>CA<span class="w"> </span>flag<span class="w"> </span>set?<span class="w"> </span><span class="o">(</span>y/n<span class="o">)</span>?:<span class="w"> </span>n
+</pre></div>
+<p>Generate the Signing Root Keys (SRK) Table and SRK Hash for 64-bit Linux machines:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>../crts/
+../linux64/bin/srktool<span class="w"> </span>-a<span class="w"> </span>-d<span class="w"> </span>sha256<span class="w"> </span>-s<span class="w"> </span>sha384<span class="w"> </span>-t<span class="w"> </span>SRK_1_2_3_4_table.bin<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-e<span class="w"> </span>SRK_1_2_3_4_fuse.bin<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span>-c<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>SRK1_sha384_secp384r1_v3_usr_crt.pem,<span class="se">\</span>
+<span class="w">    </span>SRK2_sha384_secp384r1_v3_usr_crt.pem,<span class="se">\</span>
+<span class="w">    </span>SRK3_sha384_secp384r1_v3_usr_crt.pem,<span class="se">\</span>
+<span class="w">    </span>SRK4_sha384_secp384r1_v3_usr_crt.pem
+</pre></div>
+<p>Do not enter spaces between the commas when specifying the SRKs in the &quot;-c&quot; or
+&quot;--certs&quot; option. Otherwise, the certificates specified after the first space
+will be excluded from the table.</p>
+<p>Regenerate the SRK HASH (SRK_1_2_3_4_fuse.bin) using SHA256 with the
+SRK_1_2_3_4_table.bin:</p>
+<div class="highlight"><pre><span></span>openssl<span class="w"> </span>dgst<span class="w"> </span>-binary<span class="w"> </span>-sha256<span class="w"> </span>SRK_1_2_3_4_table.bin
+</pre></div>
+<p>Optionally, verify that the sha256sum of SRK_1_2_3_4_table matches the SRK_1_2_3_4_fuse.bin:</p>
+<div class="highlight"><pre><span></span>od<span class="w"> </span>-t<span class="w"> </span>x4<span class="w"> </span>SRK_1_2_3_4_fuse.bin
+<span class="m">0000000</span><span class="w"> </span>29eec727<span class="w"> </span>eaed9aa7<span class="w"> </span>c7e53bc0<span class="w"> </span>36835f78
+<span class="m">0000020</span><span class="w"> </span>6901bc47<span class="w"> </span>b244753c<span class="w"> </span>f78d3162<span class="w"> </span>27ae36b9
+<span class="m">0000040</span>
+</pre></div>
+</div>
+<div class="section" id="bootloader-signature">
+<h2>Bootloader Signature</h2>
+<p>The CST uses CSF description files to sign (and encrypt) containers generated by
+imx-mkimage with OEM keys. When imx-mkimage generates containers, it also
+specifies the block offsets to be used in the CSF description files. For
+example, imx-mkimage returns the following values for your bootloader:</p>
+<div class="highlight"><pre><span></span>CST: CONTAINER 0 offset: 0x0
+CST: CONTAINER 0: Signature Block: offset is at 0x190
+CST: CONTAINER 0 offset: 0x400
+CST: CONTAINER 0: Signature Block: offset is at 0x490
+</pre></div>
+<p>Where <em>0x190</em> is the block offset for the second container header and <em>0x490</em> is
+the block offset for the third container header.</p>
+<p>The CSF description file used to sign a container contains three sections:</p>
+<ul class="simple">
+<li><em>[Header]</em>: Information about the HAB version to use for signing.</li>
+<li><em>[Authenticate Data]</em>: Information about the key used to sign.</li>
+<li><em>[Install SRK]</em>: Information about the container being signed.</li>
+</ul>
+<p>The following CSF description files were used to sign the
+<em>u-boot-atf-container.img</em> in our example:</p>
+<div class="highlight"><pre><span></span><span class="k">[Header]</span>
+<span class="na">Target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">AHAB</span>
+<span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1.0</span>
+
+<span class="k">[Install SRK]</span>
+<span class="c1"># SRK table generated by srktool</span>
+<span class="na">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SRK_1_2_3_4_table.bin&quot;</span>
+<span class="c1"># Public key certificate in PEM format</span>
+<span class="na">Source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SRK1_sha384_secp384r1_v3_usr_crt.pem&quot;</span>
+<span class="c1"># Index of the public key certificate within the SRK table (0 .. 3)</span>
+<span class="na">Source index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span>
+<span class="c1"># Type of SRK set (NXP or OEM)</span>
+<span class="na">Source set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">OEM</span>
+<span class="c1"># bitmask of the revoked SRKs</span>
+<span class="na">Revocations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0x0</span>
+
+<span class="k">[Authenticate Data]</span>
+<span class="c1"># Binary to be signed generated by mkimage</span>
+<span class="na">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;u-boot-atf-container.img&quot;</span>
+<span class="c1"># Offsets = Container header  Signature block (printed out by mkimage)</span>
+<span class="na">Offsets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0x0 0x190</span>
+</pre></div>
+<p>The following CSF description files were used to sign <em>flash.bin</em> in our
+example:</p>
+<div class="highlight"><pre><span></span><span class="k">[Header]</span>
+<span class="na">Target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">AHAB</span>
+<span class="na">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1.0</span>
+
+<span class="k">[Install SRK]</span>
+<span class="c1"># SRK table generated by srktool</span>
+<span class="na">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SRK_1_2_3_4_table.bin&quot;</span>
+<span class="c1"># Public key certificate in PEM format</span>
+<span class="na">Source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SRK1_sha384_secp384r1_v3_usr_crt.pem&quot;</span>
+<span class="c1"># Index of the public key certificate within the SRK table (0 .. 3)</span>
+<span class="na">Source index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0</span>
+<span class="c1"># Type of SRK set (NXP or OEM)</span>
+<span class="na">Source set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">OEM</span>
+<span class="c1"># bitmask of the revoked SRKs</span>
+<span class="na">Revocations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0x0</span>
+
+<span class="k">[Authenticate Data]</span>
+<span class="c1"># Binary to be signed generated by mkimage</span>
+<span class="na">File</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;flash.bin&quot;</span>
+<span class="c1"># Offsets = Container header  Signature block (printed out by mkimage)</span>
+<span class="na">Offsets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0x400 0x490</span>
+</pre></div>
+<p>The first step is to generate a <em>u-boot-atf-container.img</em>, then copy the block
+offsets into the CSF description file to sign it:</p>
+<div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">SOC</span><span class="o">=</span>iMX9<span class="w"> </span><span class="nv">REV</span><span class="o">=</span>A1<span class="w"> </span><span class="nv">dtbs</span><span class="o">=</span>imx93-11x11-evk.dtb<span class="w"> </span>u-boot-atf-container.img
+</pre></div>
+<p>Next, sign it with the following command and replace the unsigned version:</p>
+<div class="highlight"><pre><span></span>cst<span class="w"> </span>-i<span class="w"> </span>u-boot-atf-container.img.csf<span class="w"> </span>-o<span class="w"> </span>u-boot-atf-container.img.signed
+mv<span class="w"> </span>u-boot-atf-container.img.signed<span class="w"> </span>u-boot-atf-container.img
+</pre></div>
+<p>Then generate a <em>flash.bin</em> containing the signed <em>u-boot-atf-container.img</em>:</p>
+<div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">SOC</span><span class="o">=</span>iMX9<span class="w"> </span><span class="nv">REV</span><span class="o">=</span>A1<span class="w"> </span><span class="nv">V2X</span><span class="o">=</span>NO<span class="w"> </span><span class="nv">dtbs</span><span class="o">=</span>imx93-11x11-evk.dtb<span class="w"> </span>flash_singleboot
+</pre></div>
+<p>Finally, sign the resulting <em>flash.bin</em>:</p>
+<div class="highlight"><pre><span></span>cst<span class="w"> </span>-i<span class="w"> </span>flash.bin.csf<span class="w"> </span>-o<span class="w"> </span>flash.bin.signed
+</pre></div>
+</div>
+<div class="section" id="burn-fuses">
+<h2>Burn Fuses</h2>
+<p>Once the signed <em>flash.bin</em> is flashed, you need to burn the public keys used to
+sign the bootloader into the i.MX93 fuses to finalize AHAB secure boot. This
+requires using a U-Boot that provides AHAB functionalities, such as checking ELE
+events during bootloader authentication and securing the device.</p>
+<div class="section" id="program-srk">
+<h3>Program SRK</h3>
+<p>The following commands enable AHAB secure boot by programming the
+<em>SRK_HASH[255:0]</em> fuses on i.MX93, ensuring that only bootloaders signed with
+keys matching the SRK hash programmed into the fuses will be accepted:</p>
+<div class="highlight"><pre><span></span>fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>0x29eec727
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>0xeaed9aa7
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>0xc7e53bc0
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">3</span><span class="w"> </span>0x36835f78
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">4</span><span class="w"> </span>0x6901bc47
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">5</span><span class="w"> </span>0xb244753c
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>0xf78d3162
+fuse<span class="w"> </span>prog<span class="w"> </span>-y<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">7</span><span class="w"> </span>0x27ae36b9
+</pre></div>
+</div>
+<div class="section" id="close-the-device">
+<h3>Close the Device</h3>
+<p>Once the SRK fuses are programmed, you can &quot;close&quot; the device to allow only the
+bootloader signed with keys matching the SRK table to boot:</p>
+<div class="highlight"><pre><span></span>ahab_close
+</pre></div>
+<p>Before closing the device, you can verify that the fuses have been written
+correctly by checking that no ELE events are raised:</p>
+<div class="highlight"><pre><span></span>ahab_status
+Lifecycle:<span class="w"> </span>0x00000008,<span class="w"> </span>OEM<span class="w"> </span>Open
+
+No<span class="w"> </span>Events<span class="w"> </span>Found!
+<span class="o">=</span>&gt;
+Lifecycle:<span class="w"> </span>0x00000008,<span class="w"> </span>OEM<span class="w"> </span>Open
+
+No<span class="w"> </span>Events<span class="w"> </span>Found!
+</pre></div>
+<p>Once the device is closed, the <em>ahab_status</em> command will show <em>OEM closed</em>:</p>
+<div class="highlight"><pre><span></span>ahab_status
+Lifecycle:<span class="w"> </span>0x00000020,<span class="w"> </span>OEM<span class="w"> </span>closed
+
+No<span class="w"> </span>Events<span class="w"> </span>Found!
+<span class="o">=</span>&gt;
+Lifecycle:<span class="w"> </span>0x00000020,<span class="w"> </span>OEM<span class="w"> </span>closed
+No<span class="w"> </span>Events<span class="w"> </span>Found!
+</pre></div>
+<p>As long as <em>OEM Open</em> appears in the status, the device is not secured and can still
+execute unsigned bootloaders or those signed with invalid keys.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>By implementing AHAB on the i.MX93 platform, you can ensure that your boot
+process is protected from unauthorized code. The use of public key cryptography
+and secure containers adds an extra layer of security, making your device more
+resilient to attacks. This process is crucial for applications where integrity
+and authenticity from the very first boot stage are paramount.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/secure-boot-with-ahab-on-imx93.html">posted at 19:21</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/security.html" rel="tag">Security</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/security.html" class="tags">security</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/imx93.html" class="tags">imx93</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/secure-boot.html" class="tags">secure-boot</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/ahab.html" class="tags">ahab</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/nxp.html" class="tags">nxp</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Jul 29, 2022</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html" rel="bookmark" title="Permanent Link to &quot;Zephyr Device Tree Guide&quot;">Zephyr Device Tree Guide</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The goal of the <a class="reference external" href="https://zephyrproject.org/">Zephyr project</a>, hosted by the Linux foundation, since 2016, is to provide a safe and secured real time operating system (RTOS) for connected devices that are too small for Linux, or for core companion, through the Apache 2.0 open source license.</p>
+<p>It is designed for resource-constrained devices such as microcontrollers and Internet of Things (IoT) devices, to be modular and scalable. This makes it ideal for a wide range of devices, from simple sensors to complex systems. The operating system is written in C and is fully compatible with the C11 and C++17 standards.</p>
+<p>One of the key benefits of the Zephyr device model is its small footprint, it can be configured to run on devices with as little as 10 KB of memory.</p>
+<p>It supports multiple 32 bits and 64 bits architectures: Cortex-A, Cortex-M, Cortex-R, RISC-V, x86-64, etc.
+But it also support several boards and extensions: Feather, nRF52840, ST Discovery, ST Nucleo, ESP-32, etc.
+It is able to manage several kinds of connectivity: Bluetooth, ethernet, wifi, LoRa.
+And it support some network protocols: IPv4, IPv6,UDP, TCP, CoAP, LWM2M, MQTT, DNS, etc.</p>
+<p>As Linux, Zephyr use <a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html">Kconfig</a>, and its device model is mainly based on <a class="reference external" href="https://www.devicetree.org/">device tree</a>.</p>
+</div>
+<div class="section" id="device-tree">
+<h2>Device tree</h2>
+<p>Device trees are tree data structures that describe the hardware components and their relationships in a system.
+They are stored in a text file, named device tree sources (*.dts), and they written by developers to describe hardware architectures of SoCs and boards.
+And they are used by the operating system to determine how to initialize and interact with the hardware.</p>
+<p>Each node describe a device of the system, has its own properties that describe their characteristics, and they have only one parent (except for the root node).</p>
+<p>Each device driver is associated with a specific device tree node, which represents a hardware component in the system. The device driver provides the necessary code and data to control the behavior of the hardware component.</p>
+<div class="highlight"><pre><span></span><span class="nl">test_i2c_bme280</span><span class="p">:</span><span class="w"> </span><span class="n">bme280</span><span class="err">@</span><span class="mi">6</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x6</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<p>In the Linux kernel, device tree sources are compiled to device tree binaries (dtb) that are parsed, at boot, by bootloader stages (U-Boot, TF-A...) and the kernel to allow support several hardware configuration with same binaries.</p>
+<p>But in Zephyr, device tree sources are transformed to a &quot;devicetree_generated.h&quot; C header file at build, that contains macro definitions and data structures allowing device drivers to access information about the hardware components in the system, such as the memory mapping of a device, its pin assignments, and its IRQ numbers:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define DT_COMPAT_HAS_OKAY_bosch_bme280 1</span>
+<span class="cp">#define DT_N_INST_bosch_bme280_NUM_OKAY 1</span>
+<span class="cp">#define DT_FOREACH_OKAY_bosch_bme280(fn) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77)</span>
+<span class="cp">#define DT_FOREACH_OKAY_VARGS_bosch_bme280(fn, ...) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77, __VA_ARGS__)</span>
+<span class="cp">#define DT_FOREACH_OKAY_INST_bosch_bme280(fn) fn(0)</span>
+<span class="cp">#define DT_FOREACH_OKAY_INST_VARGS_bosch_bme280(fn, ...) fn(0, __VA_ARGS__)</span>
+<span class="cp">#define DT_COMPAT_bosch_bme280_BUS_i2c 1</span>
+</pre></div>
+<p>Where:</p>
+<ul class="simple">
+<li><strong>DT_COMPAT_HAS_OKAY_bosch_bme280</strong>: indicates that there is at least one instance of BME280</li>
+<li><strong>DT_N_INST_bosch_bme280_NUM_OKAY</strong>: defines the number of BME280 instances that are marked okay</li>
+<li><strong>DT_FOREACH_OKAY_bosch_bme280</strong>: allows you to apply a function <em>fn</em> to each instance of the BME280</li>
+<li><strong>DT_FOREACH_OKAY_VARGS_bosch_bme280</strong>: also allows you to apply a function <em>fn</em> to each instance of the BME280, but with additional arguments</li>
+<li><strong>DT_FOREACH_OKAY_INST_bosch_bme280</strong>: allows you to apply a function <em>fn</em> to each instance of the BME280, passing the instance number as an argument</li>
+<li><strong>DT_FOREACH_OKAY_INST_VARGS_bosch_bme280</strong>: is similar to the previous macro, but this one allows for additional arguments</li>
+<li><strong>DT_COMPAT_bosch_bme280_BUS_i2c</strong>: indicates that the BME280 device is connected to an I2C bus.</li>
+<li><strong>DT_N_S_soc_S_i2c_40005400_S_bme280_77</strong>: refers to a specific node in the device tree, here it refers to the BME280 sensor connected to the I2C controller with the base address 0x40005400 within the SoC. The sensor's address on this I2C bus is 0x77.</li>
+</ul>
+<p>In addition, device tree sources can be extended or overridden, for example to connect additional devices to a board, or to disable board devices which will not be used:</p>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">aliases</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">bme280</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="o">&amp;</span><span class="n">spi1</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;disabled&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="o">&amp;</span><span class="n">i2c1</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;okay&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="nl">bme280</span><span class="p">:</span><span class="w"> </span><span class="n">bme280</span><span class="err">@</span><span class="mi">77</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span><span class="p">;</span>
+<span class="w">                </span><span class="n">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x77</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="section" id="binding">
+<h2>Binding</h2>
+<p>Content of device tree sources is described in binding files, that are written in human readable and easy to parse YAML.
+Binding files can be also used to validate device tree sources by comparing the information in the YAML file with the information in the device tree sources.</p>
+<div class="highlight"><pre><span></span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BME280 integrated environmental sensor</span>
+
+<span class="nt">compatible</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bosch,bme280&quot;</span>
+
+<span class="nt">include</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">sensor-device.yaml</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">i2c-device.yaml</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<div class="section" id="device-driver">
+<h2>Device driver</h2>
+<p>In Zephyr, a device driver can access the properties of an associated node in the device tree using the macro that are defined in C header files.
+For example, the following code can be used to initialize a BME280 sensor using properties defined in the device tree:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;device.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;drivers/i2c.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;devicetree.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr.h&gt;</span>
+
+<span class="c1">// Define the node identifier for the BME280 sensor</span>
+<span class="cp">#define BME280_NODE DT_N_S_soc_S_i2c_40005400_S_bme280_77</span>
+
+<span class="c1">// Function to initialize the BME280 sensor</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">bme280_init</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Check if the node is available</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">device_is_ready</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;Device %s is not ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENODEV</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Retrieve the I2C device associated with the BME280 node</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">i2c_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_BUS</span><span class="p">(</span><span class="n">BME280_NODE</span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">device_is_ready</span><span class="p">(</span><span class="n">i2c_dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;I2C device not ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENODEV</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Write some initialization code here, such as configuring registers</span>
+
+<span class="w">    </span><span class="n">printk</span><span class="p">(</span><span class="s">&quot;BME280 sensor initialized</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Initialize the BME280 sensor at boot time</span>
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">bme280_init</span><span class="p">,</span><span class="w"> </span><span class="n">APPLICATION</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_APPLICATION_INIT_PRIORITY</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Those who have already implemented BSP or driver on Linux shouldn't encounter too much difficulty, but on the other hand, the step is a little higher for people coming from the world of micro-controllers.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html">posted at 20:32</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/device-tree.html" class="tags">device-tree</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Sep 27, 2020</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" rel="bookmark" title="Permanent Link to &quot;Build RIOT-OS with Podman&quot;">Build RIOT-OS with Podman</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="summary">
+<h2>Summary</h2>
+<p>This article is a tip that explains how it is possible to build a <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>
+application with <a class="reference external" href="https://podman.io">Podman</a> and the official build container. And I would like to
+take this opportunity to introduce you to <a class="reference external" href="https://podman.io">Podman</a> and <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>.</p>
+</div>
+<div class="section" id="podman">
+<h2>Podman</h2>
+<p>Some Linux distribution, like <a class="reference external" href="https://getfedora.org">Fedora</a> chosen to officially support only
+<a class="reference external" href="https://podman.io">Podman</a> instead of <a class="reference external" href="https://www.docker.com">Docker</a> for several reasons:</p>
+<ul class="simple">
+<li>It is daemonless container engine.</li>
+<li>It is rootless.</li>
+<li>It follows Open Container Initiative (<a class="reference external" href="https://opencontainers.org">OCI</a>) standards.</li>
+<li>It is safer than the <a class="reference external" href="https://www.docker.com">Docker</a> engine.</li>
+<li>It introduces the notion of <a class="reference external" href="https://kubernetes.io/docs/concepts/workloads/pods">Pods</a>: a group of container(s) that share storage
+or network resources.</li>
+</ul>
+<p>Moreover, <a class="reference external" href="https://podman.io">Podman</a> is able to use the images built by the <a class="reference external" href="https://www.docker.com">Docker</a> engine and
+has been stored in <a class="reference external" href="https://www.docker.com">Docker</a> registry.</p>
+<p>However, most of the time the <a class="reference external" href="https://podman.io">Podman</a> commands are identical to that of
+<a class="reference external" href="https://www.docker.com">Docker</a>, then a simple alias is enough to be misleading:
+<em>alias docker=podman</em>.</p>
+<p>But as <a class="reference external" href="https://podman.io">Podman</a> is rootless and safer than <a class="reference external" href="https://www.docker.com">Docker</a>, then sometimes it is
+necessary to specify additional security parameters.</p>
+</div>
+<div class="section" id="riot-os">
+<h2>RIOT-OS</h2>
+<p><a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> is a memory-constrained <a class="reference external" href="https://en.wikipedia.org/wiki/Real-time_operating_system">RTOS</a>, such as <a class="reference external" href="https://en.wikipedia.org/wiki/Contiki">Contiki</a>, that provides
+real-time and multithreading abilities, and it runs on processors from 8bits to
+32bits.</p>
+<p>It was designed for <a class="reference external" href="https://en.wikipedia.org/wiki/Internet_of_things">IoT</a> devices then to be low power consumption and it
+provides three very complete network stacks including some protocols as:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/IPv6">IPv6</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/6LoWPAN">6LoWPAN</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol">CoAP</a></li>
+<li>etc.</li>
+</ul>
+<p>The <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> project also provides some useful tools including a build
+container (<a class="reference external" href="https://github.com/RIOT-OS/riotdocker">riotdocker</a>).</p>
+<p>And the build environment of <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> offers a <a class="reference external" href="https://en.wikipedia.org/wiki/Makefile">Makefile</a> to build an
+application with this container simply by setting the variable <em>BUILD_IN_DOCKER</em>
+to  <em>1</em>. Then the prebuilt image is downloaded and instantiated to execute the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Make_(software)">make</a> command.</p>
+<p>By default, this feature is configured to be used with the <a class="reference external" href="https://www.docker.com">Docker</a> engine,
+but it is possible to override some variables from the build environment
+either to use a custom prebuilt image, either use another engine or to use
+custom engine parameters.</p>
+<p>Then here, we will use these environments variable to instantiate a container
+with <a class="reference external" href="https://podman.io">Podman</a> (instead of <a class="reference external" href="https://www.docker.com">Docker</a>) and with the required parameters.</p>
+</div>
+<div class="section" id="tip-of-the-day">
+<h2>Tip of the day</h2>
+<p>In the following example, we build the Helloworld application for a STM32
+Discovery board.
+To do that we specify the engine by setting the variable <em>DOCKER</em> to the value
+<em>podman</em>. The variable <em>DOCKER_USER</em> is set empty because in the variable
+<em>DOCKER_RUN_FLAGS</em> the parameter <em>--userns</em> is set to <em>keep-id</em> to map the
+uid:gid of the current rootless user (from host) with the values that will be
+used into the container.</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">BUILD_IN_DOCKER</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER</span><span class="o">=</span><span class="s2">&quot;podman&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_USER</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_RUN_FLAGS</span><span class="o">=</span><span class="s2">&quot;--rm -i -t --security-opt seccomp=unconfined --security-opt label=disable --userns=keep-id&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_MAKE_ARGS</span><span class="o">=</span><span class="s2">&quot;-j</span><span class="k">$(</span>nproc<span class="k">)</span><span class="s2">&quot;</span>
+
+make<span class="w"> </span><span class="nv">BOARD</span><span class="o">=</span>stm32l476g-disco
+Launching<span class="w"> </span>build<span class="w"> </span>container<span class="w"> </span>using<span class="w"> </span>image<span class="w"> </span><span class="s2">&quot;riot/riotbuild:latest&quot;</span>.
+podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-i<span class="w"> </span>-t<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">seccomp</span><span class="o">=</span>unconfined<span class="w"> </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span>--userns<span class="o">=</span>keep-id<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/usr/share/zoneinfo/Europe/Paris:/etc/localtime:ro&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/RIOT:/data/riotbuild/riotbase:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTBASE=/data/riotbuild/riotbase&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;CCACHE_BASEDIR=/data/riotbuild/riotbase&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;BUILD_DIR=/data/riotbuild/riotbase/build&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen:/data/riotbuild/riotproject:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTPROJECT=/data/riotbuild/riotproject&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTCPU=/data/riotbuild/riotbase/cpu&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTBOARD=/data/riotbuild/riotbase/boards&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;RIOTMAKE=/data/riotbuild/riotbase/makefiles&#39;</span><span class="w">     </span>-v<span class="w"> </span><span class="s1">&#39;/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:/home/tperrot/dev/tprrt/pwm-ramp-gen/.git:delegated&#39;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span><span class="w">  </span>-w<span class="w"> </span><span class="s1">&#39;/data/riotbuild/riotproject/&#39;</span><span class="w"> </span><span class="s1">&#39;riot/riotbuild:latest&#39;</span><span class="w"> </span>make<span class="w"> </span><span class="s1">&#39;BOARD=stm32l476g-disco&#39;</span><span class="w">   </span>-j8
+Building<span class="w"> </span>application<span class="w"> </span><span class="s2">&quot;hello-world&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s2">&quot;stm32l476g-disco&quot;</span><span class="w"> </span>with<span class="w"> </span>MCU<span class="w"> </span><span class="s2">&quot;stm32&quot;</span>.
+
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>cloning<span class="w"> </span>stm32cmsis
+fatal:<span class="w"> </span>not<span class="w"> </span>a<span class="w"> </span>git<span class="w"> </span>repository:<span class="w"> </span>/data/riotbuild/riotbase/../.git/modules/RIOT
+Cloning<span class="w"> </span>into<span class="w"> </span><span class="s1">&#39;/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4&#39;</span>...
+remote:<span class="w"> </span>Enumerating<span class="w"> </span>objects:<span class="w"> </span><span class="m">364</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Counting<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Compressing<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">71</span>/71<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+remote:<span class="w"> </span>Total<span class="w"> </span><span class="m">364</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">309</span><span class="o">)</span>,<span class="w"> </span>reused<span class="w"> </span><span class="m">344</span><span class="w"> </span><span class="o">(</span>delta<span class="w"> </span><span class="m">289</span><span class="o">)</span>,<span class="w"> </span>pack-reused<span class="w"> </span><span class="m">0</span>
+Receiving<span class="w"> </span>objects:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">364</span>/364<span class="o">)</span>,<span class="w"> </span><span class="m">709</span>.56<span class="w"> </span>KiB<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">561</span>.00<span class="w"> </span>KiB/s,<span class="w"> </span><span class="k">done</span>.
+Resolving<span class="w"> </span>deltas:<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="o">(</span><span class="m">309</span>/309<span class="o">)</span>,<span class="w"> </span><span class="k">done</span>.
+HEAD<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span>at<span class="w"> </span>e442c72<span class="w"> </span>Release<span class="w"> </span>v1.6.1
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>updating<span class="w"> </span>stm32cmsis<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+<span class="nb">echo</span><span class="w"> </span>e442c72651e8d4757f6562acc14da949644944ce<span class="w">   </span>&gt;<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/include/vendor/cmsis/l4/.pkg-state.git-downloaded
+<span class="o">[</span>INFO<span class="o">]</span><span class="w"> </span>patch<span class="w"> </span>stm32cmsis
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/boards/stm32l476g-disco
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/core
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/drivers
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/cortexm_common
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/periph
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/drivers/periph_common
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/stmclk
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/auto_init
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/cortexm_common/periph
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/cpu/stm32/vectors
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/malloc_thread_safe
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/newlib_syscalls_default
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/pm_layered
+<span class="s2">&quot;make&quot;</span><span class="w"> </span>-C<span class="w"> </span>/data/riotbuild/riotbase/sys/stdio_uart
+<span class="w">   </span>text<span class="w">    </span>data<span class="w">     </span>bss<span class="w">     </span>dec<span class="w">     </span>hex<span class="w"> </span>filename
+<span class="w">   </span><span class="m">8900</span><span class="w">     </span><span class="m">112</span><span class="w">    </span><span class="m">2300</span><span class="w">   </span><span class="m">11312</span><span class="w">    </span>2c30<span class="w"> </span>/data/riotbuild/riotproject/bin/stm32l476g-disco/hello-world.elf
+</pre></div>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/build-riot-os-with-podman.html">posted at 13:01</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/riot-os.html" rel="tag">riot-os</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/container.html" class="tags">container</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/podman.html" class="tags">podman</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/riot-os.html" class="tags">riot-os</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Sep 08, 2020</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="bookmark" title="Permanent Link to &quot;How the Busybox's chrt applet works&quot;">How the Busybox's chrt applet works</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>In this article, I will dissect how the <em>chrt</em> applet from the release 1.32.0 of <a class="reference external" href="https://www.busybox.net">Busybox</a> works, what it does, etc.</p>
+<p>This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.</p>
+<div class="highlight"><pre><span></span>chrt<span class="w"> </span>-m
+SCHED_OTHER<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">    </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_FIFO<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">     </span>:<span class="w"> </span><span class="m">1</span>/99
+SCHED_RR<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">       </span>:<span class="w"> </span><span class="m">1</span>/99
+SCHED_BATCH<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">    </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_IDLE<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">     </span>:<span class="w"> </span><span class="m">0</span>/0
+SCHED_DEADLINE<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w"> </span>:<span class="w"> </span><span class="m">0</span>/0
+
+pidof<span class="w"> </span>firefox
+<span class="m">6987</span><span class="w"> </span><span class="m">6851</span><span class="w"> </span><span class="m">6825</span><span class="w"> </span><span class="m">6816</span><span class="w"> </span><span class="m">6800</span><span class="w"> </span><span class="m">6771</span><span class="w"> </span><span class="m">6767</span><span class="w"> </span><span class="m">6761</span><span class="w"> </span><span class="m">6720</span><span class="w"> </span><span class="m">6611</span>
+
+chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span>
+pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_OTHER</span>
+<span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">0</span>
+
+sudo<span class="w"> </span>chrt<span class="w"> </span>-f<span class="w"> </span>-p<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">6987</span>
+chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span>
+pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_FIFO</span>
+<span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">1</span>
+</pre></div>
+<p><a class="reference external" href="https://www.busybox.net">Busybox</a> provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
+and with some limitations.</p>
+</div>
+<div class="section" id="the-dissection">
+<h2>The dissection</h2>
+<p>The implementation of the <em>chrt</em> applet is in the file <a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c">util-linux/chrt.c</a> that containing several functions which are
+called in the main function of this applet.</p>
+<p>The main function of this applet is divided into three main parts:
+- the first parses the command options
+- the second prints the scheduler's information
+- the last one, to apply scheduler changes in case of a set</p>
+<p>At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:</p>
+<div class="highlight"><pre><span></span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;^&quot;</span>
+<span class="w">                </span><span class="s">&quot;+&quot;</span><span class="w"> </span><span class="s">&quot;mprfobi&quot;</span>
+<span class="w">                </span><span class="s">&quot;</span><span class="se">\0</span><span class="s">&quot;</span>
+<span class="w">                </span><span class="cm">/* only one policy accepted: */</span>
+<span class="w">                </span><span class="s">&quot;r--fobi:f--robi:o--rfbi:b--rfoi:i--rfob&quot;</span>
+<span class="p">);</span>
+</pre></div>
+<p>If the (-m) is set then the min and max valid priorities for each scheduling policies are shown and the command exits:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print min/max and exit */</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_OTHER</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_FIFO</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_RR</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_BATCH</span><span class="p">);</span>
+<span class="w">        </span><span class="n">show_min_max</span><span class="p">(</span><span class="n">SCHED_IDLE</span><span class="p">);</span>
+<span class="w">        </span><span class="n">fflush_stdout_and_exit</span><span class="p">(</span><span class="n">EXIT_SUCCESS</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>The function <em>show_min_max</em> uses the Posix functions <em>sched_get_priority_max</em> and <em>sched_get_priority_min</em> from the
+standard C library to send a syscall to the kernel in order to obtain the min and max values accepted by each policy:</p>
+<div class="highlight"><pre><span></span><span class="n">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
+<span class="n">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_min</span><span class="p">(</span><span class="n">pol</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">max</span><span class="o">|</span><span class="n">min</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SCHED_%s not supported</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</pre></div>
+<p>Otherwise the required options and arguments to show or to apply real-time attributes of a process:</p>
+<div class="highlight"><pre><span></span><span class="c1">//if (opt &amp; OPT_r)</span>
+<span class="c1">//  policy = SCHED_RR; - default, already set</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_f</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_FIFO</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_o</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_OTHER</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_b</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_BATCH</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_i</span><span class="p">)</span>
+<span class="w">    </span><span class="n">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SCHED_IDLE</span><span class="p">;</span>
+
+<span class="n">argv</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">optind</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="w">    </span><span class="n">bb_show_usage</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">OPT_p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
+<span class="w">            </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pid_str</span><span class="p">;</span>
+<span class="w">            </span><span class="n">pid_str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="cm">/* else &quot;-p PID&quot;, and *argv == NULL */</span>
+<span class="w">    </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xatoul_range</span><span class="p">(</span><span class="n">pid_str</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">((</span><span class="kt">unsigned</span><span class="p">)(</span><span class="kt">pid_t</span><span class="p">)</span><span class="n">ULONG_MAX</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!*</span><span class="n">argv</span><span class="p">)</span>
+<span class="w">            </span><span class="n">bb_show_usage</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<p>Then the applet uses the Posix function <em>sched_getscheduler</em> provides by the standard C library to obtain the scheduling attributes of the process specified by the pid.</p>
+<div class="highlight"><pre><span></span><span class="nl">print_rt_info</span><span class="p">:</span>
+<span class="w">    </span><span class="n">pol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_getscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;g&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
+</pre></div>
+<p>Finally, when the <em>chrt</em> applet is used to modify scheduling attributes then the Posix function <em>sched_getscheduler</em> is used and the new scheduling attributes are showed:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;s&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="cm">/* &quot;-p PRIO PID [...]&quot; */</span>
+<span class="w">    </span><span class="k">goto</span><span class="w"> </span><span class="n">print_rt_info</span><span class="p">;</span>
+</pre></div>
+<p>The function <em>sched_setscheduler</em> and <em>sched_getscheduler</em> will send a syscall to the scheduler subsystem of the kernel Linux.
+This subsystem also exposes this information from <em>/proc</em>:</p>
+<div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/6987/sched
+WebExtensions<span class="w"> </span><span class="o">(</span><span class="m">6987</span>,<span class="w"> </span><span class="c1">#threads: 23)</span>
+-------------------------------------------------------------------
+se.exec_start<span class="w">                                </span>:<span class="w">       </span><span class="m">4421312</span>.640001
+se.vruntime<span class="w">                                  </span>:<span class="w">        </span><span class="m">344438</span>.942254
+se.sum_exec_runtime<span class="w">                          </span>:<span class="w">         </span><span class="m">38238</span>.466094
+se.nr_migrations<span class="w">                             </span>:<span class="w">                 </span><span class="m">6811</span>
+nr_switches<span class="w">                                  </span>:<span class="w">                </span><span class="m">49452</span>
+nr_voluntary_switches<span class="w">                        </span>:<span class="w">                </span><span class="m">21749</span>
+nr_involuntary_switches<span class="w">                      </span>:<span class="w">                </span><span class="m">27703</span>
+se.load.weight<span class="w">                               </span>:<span class="w">              </span><span class="m">1048576</span>
+se.runnable_weight<span class="w">                           </span>:<span class="w">              </span><span class="m">1048576</span>
+se.avg.load_sum<span class="w">                              </span>:<span class="w">                 </span><span class="m">3415</span>
+se.avg.runnable_load_sum<span class="w">                     </span>:<span class="w">                 </span><span class="m">3415</span>
+se.avg.util_sum<span class="w">                              </span>:<span class="w">              </span><span class="m">3497621</span>
+se.avg.load_avg<span class="w">                              </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.runnable_load_avg<span class="w">                     </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.util_avg<span class="w">                              </span>:<span class="w">                   </span><span class="m">74</span>
+se.avg.last_update_time<span class="w">                      </span>:<span class="w">        </span><span class="m">4421312640000</span>
+se.avg.util_est.ewma<span class="w">                         </span>:<span class="w">                   </span><span class="m">75</span>
+se.avg.util_est.enqueued<span class="w">                     </span>:<span class="w">                   </span><span class="m">75</span>
+policy<span class="w">                                       </span>:<span class="w">                    </span><span class="m">0</span>
+prio<span class="w">                                         </span>:<span class="w">                  </span><span class="m">120</span>
+clock-delta<span class="w">                                  </span>:<span class="w">                   </span><span class="m">89</span>
+mm-&gt;numa_scan_seq<span class="w">                            </span>:<span class="w">                    </span><span class="m">0</span>
+numa_pages_migrated<span class="w">                          </span>:<span class="w">                    </span><span class="m">0</span>
+numa_preferred_nid<span class="w">                           </span>:<span class="w">                   </span>-1
+total_numa_faults<span class="w">                            </span>:<span class="w">                    </span><span class="m">0</span>
+<span class="nv">current_node</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">numa_group_id</span><span class="o">=</span><span class="m">0</span>
+numa_faults<span class="w"> </span><span class="nv">node</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">task_private</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">task_shared</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">group_private</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">group_shared</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+<div class="section" id="limitations">
+<h2>Limitations</h2>
+<p>Below a short list of limitations that I observed during my analysis of this applet.</p>
+<div class="section" id="resetting-scheduling-policy">
+<h3>Resetting scheduling policy</h3>
+<p>The <em>chrt</em> applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a
+process forks to create children. This feature, introduced since Linux 2.6.32, can be only enabled or disabled at the
+build of busybox and it is applied on all scheduling attributes modifications done with this applet.</p>
+</div>
+<div class="section" id="deadline-support">
+<h3>Deadline support</h3>
+<p>The <em>chrt</em> applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.</p>
+</div>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/busybox-chrt-dissection.html">posted at 19:20</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/busybox.html" rel="tag">busybox</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/busybox.html" class="tags">busybox</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/chrt.html" class="tags">chrt</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/dissection.html" class="tags">dissection</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/beginner.html" class="tags">beginner</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">Jun 27, 2020</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html" rel="bookmark" title="Permanent Link to &quot;Build an embedded Linux in less than 15 minutes&quot;">Build an embedded Linux in less than 15 minutes</a>
+                </h2>
+
+                
+                
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Since some years, I haven't built an embedded Linux without using a framework, like <a class="reference external" href="https://openembedded.org">Open Embedded</a> from the <a class="reference external" href="https://yoctoproject.org">Yocto</a>
+project.
+Then here, I wanted to make a guide to help you to build quickly, from &quot;scratch&quot; a very minimal embedded Linux to boot a
+target.
+The following examples have been written to boot a virtual Qemu target but, they can be adapted to boot a real target.
+Moreover, the build environment will be bootstrapped with a prebuilt cross-toolchain, I have chosen to use one provided
+by <a class="reference external" href="https://toolchains.bootlin.com">Bootlin</a> and using glibc.</p>
+</div>
+<div class="section" id="setup-the-environment">
+<h2>Setup the environment</h2>
+<p>First, it is required to install the packages that are needed to install and use the cross-toolchain but also to compile the host tools and to provide Qemu:</p>
+<ul class="simple">
+<li>The Ncurses libraries are only required to execute the command <cite>make menuconfig</cite>.</li>
+<li>The certificates and wget will be used to download the prebuilt toolchain.</li>
+<li>In the same way, git will be used to checkout the source of <a class="reference external" href="https://busybox.net">Busybox</a> and <a class="reference external" href="https://www.kernel.org">Linux</a>.</li>
+<li>The Qemu packages will be used to emulate system platform and to execute static binaries cross-compiled for aarch64 on the x86-64 host.</li>
+</ul>
+<div class="highlight"><pre><span></span>apt<span class="w"> </span>update
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>bc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ca-certificates<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>cpio<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>file<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>flex<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>ipxe-qemu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libncurses5-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libncursesw5-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libssl-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu-system-aarch64<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>qemu-user-static<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>wget
+</pre></div>
+<p>Now, it is time to download and install the prebuilt toolchain:</p>
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/src
+<span class="nb">cd</span><span class="w"> </span>~/src
+wget<span class="w"> </span>https://toolchains.bootlin.com/downloads/releases/toolchains/aarch64/tarballs/aarch64--glibc--stable-2020.08-1.tar.bz2
+tar<span class="w"> </span>xvjf<span class="w"> </span>aarch64--glibc--stable-2020.08-1.tar.bz2
+</pre></div>
+<p>Once the toolchain has been extracted you have to set the required environment variables to cross-compile binaries:</p>
+<ul class="simple">
+<li><tt class="docutils literal">PATH</tt>: It shall be extended so that the cross-tools from the cross-toolchain will be available from the environment</li>
+<li><tt class="docutils literal">CROSS_COMPILE</tt>: In order to clarify the prefix used by the cross-tools</li>
+<li><tt class="docutils literal">ARCH</tt>: The architecture of the target platform</li>
+</ul>
+<div class="highlight"><pre><span></span>ls<span class="w"> </span>~/src/aarch64--glibc--stable-2020.08-1/bin/*gcc
+~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>aarch64-linux-
+</pre></div>
+<p>Now, it is possible to call the cross-tools from the shell:</p>
+<div class="highlight"><pre><span></span>aarch64-linux-gcc<span class="w"> </span>-v
+Using<span class="w"> </span>built-in<span class="w"> </span>specs.
+<span class="nv">COLLECT_GCC</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/aarch64-linux-gcc.br_real
+<span class="nv">COLLECT_LTO_WRAPPER</span><span class="o">=</span>~/src/aarch64--glibc--stable-2020.08-1/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/9.3.0/lto-wrapper
+Target:<span class="w"> </span>aarch64-buildroot-linux-gnu
+&lt;...&gt;
+Thread<span class="w"> </span>model:<span class="w"> </span>posix
+gcc<span class="w"> </span>version<span class="w"> </span><span class="m">9</span>.3.0<span class="w"> </span><span class="o">(</span>Buildroot<span class="w"> </span><span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span>
+</pre></div>
+<p>Concerning the variable <tt class="docutils literal">PATH</tt> this one will be set afterwards because its value depends on the binary that will be built.</p>
+</div>
+<div class="section" id="build-the-linux-kernel">
+<h2>Build the Linux kernel</h2>
+<p>So, the environment is ready to pull the sources of the latest stable branch of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a> and to build them:</p>
+<div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+<span class="nb">cd</span><span class="w"> </span>linux
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>local/linux-5.4.y<span class="w"> </span>origin/linux-5.4.y
+<span class="c1"># git show HEAD</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>arm64
+
+make<span class="w"> </span>defconfig
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/basic/fixdep
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/conf.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/confdata.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/expr.o
+<span class="w">  </span>LEX<span class="w">     </span>scripts/kconfig/lexer.lex.c
+<span class="w">  </span>YACC<span class="w">    </span>scripts/kconfig/parser.tab.<span class="o">[</span>ch<span class="o">]</span>
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/lexer.lex.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/parser.tab.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/preprocess.o
+<span class="w">  </span>HOSTCC<span class="w">  </span>scripts/kconfig/symbol.o
+<span class="w">  </span>HOSTLD<span class="w">  </span>scripts/kconfig/conf
+***<span class="w"> </span>Default<span class="w"> </span>configuration<span class="w"> </span>is<span class="w"> </span>based<span class="w"> </span>on<span class="w"> </span><span class="s1">&#39;defconfig&#39;</span>
+<span class="c1">#</span>
+<span class="c1"># configuration written to .config</span>
+<span class="c1">#</span>
+
+<span class="c1"># make menuconfig</span>
+
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+<span class="w">  </span>&lt;...&gt;
+<span class="w">  </span>AR<span class="w">      </span>drivers/net/ethernet/built-in.a
+<span class="w">  </span>AR<span class="w">      </span>drivers/net/built-in.a
+<span class="w">  </span>AR<span class="w">      </span>drivers/built-in.a
+<span class="w">  </span>GEN<span class="w">     </span>.version
+<span class="w">  </span>CHK<span class="w">     </span>include/generated/compile.h
+<span class="w">  </span>LD<span class="w">      </span>vmlinux.o
+<span class="w">  </span>MODPOST<span class="w"> </span>vmlinux.o
+<span class="w">  </span>MODINFO<span class="w"> </span>modules.builtin.modinfo
+<span class="w">  </span>LD<span class="w">      </span>.tmp_vmlinux.kallsyms1
+<span class="w">  </span>KSYM<span class="w">    </span>.tmp_vmlinux.kallsyms1.o
+<span class="w">  </span>LD<span class="w">      </span>.tmp_vmlinux.kallsyms2
+<span class="w">  </span>KSYM<span class="w">    </span>.tmp_vmlinux.kallsyms2.o
+<span class="w">  </span>LD<span class="w">      </span>vmlinux
+<span class="w">  </span>SORTEX<span class="w">  </span>vmlinux
+<span class="w">  </span>SYSMAP<span class="w">  </span>System.map
+<span class="w">  </span>Building<span class="w"> </span>modules,<span class="w"> </span>stage<span class="w"> </span><span class="m">2</span>.
+<span class="w">  </span>MODPOST<span class="w"> </span><span class="m">531</span><span class="w"> </span>modules
+<span class="w">  </span>OBJCOPY<span class="w"> </span>arch/arm64/boot/Image
+<span class="w">  </span>GZIP<span class="w">    </span>arch/arm64/boot/Image.gz
+</pre></div>
+<p>The command <tt class="docutils literal">make defconfig</tt> will apply the default configuration for the target platform (cf. <tt class="docutils literal">ARCH=arm64</tt>), and the
+compilation will be performed by <tt class="docutils literal">make <span class="pre">-j$(nproc)</span></tt>.</p>
+<p>The commands <tt class="docutils literal">git show HEAD</tt> and <tt class="docutils literal">make defconfig</tt> are optional:
+- the first is useful to verify that the latest commit corresponding to the latest tag of the branch <tt class="docutils literal"><span class="pre">linux-5.4.y</span></tt>.
+- the second can be used if you want to customize the kernel configuration.</p>
+<p><em>NB</em>. The kernel <a class="reference external" href="https://www.kernel.org">Linux</a> but also <a class="reference external" href="https://busybox.net">Busybox</a> and some projects use <a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kbuild.html">Kbuild</a> to manage the build options</p>
+</div>
+<div class="section" id="populate-the-sysroot">
+<h2>Populate the sysroot</h2>
+<p>The easy way to bootstrap a sysroot is to use <a class="reference external" href="https://busybox.net">Busybox</a> that has been created to offer common UNIX tools into a single
+executable and it is size-optimized. To create a sysroot, it is only required to add a few configuration files.</p>
+<p>The steps to pull and build <a class="reference external" href="https://busybox.net">Busybox</a> are similar to those of the kernel <a class="reference external" href="https://www.kernel.org">Linux</a>.</p>
+<div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git://git.busybox.net/busybox
+<span class="nb">cd</span><span class="w"> </span>busybox
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>local/1_32_stable<span class="w"> </span>origin/1_32_stable
+<span class="c1"># git show HEAD</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>aarch64
+<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;--static&quot;</span>
+
+make<span class="w"> </span>defconfig
+<span class="c1"># make menuconfig</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+make<span class="w"> </span>install
+</pre></div>
+<p>Here, the <em>LDFLAGS</em> is set to force static linking of <a class="reference external" href="https://busybox.net">Busybox</a> quickly, but it is also possible to use
+<em>make menuconfig</em> to set <em>CONFIG_STATIC=y</em>. The advantage of the static executable is that it can be tested with Qemu:</p>
+<div class="highlight"><pre><span></span>qemu-aarch64-static<span class="w"> </span>busybox<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Hello!&quot;</span>
+Hello!
+qemu-aarch64-static<span class="w"> </span>busybox<span class="w"> </span>date
+Sat<span class="w"> </span>Jun<span class="w"> </span><span class="m">27</span><span class="w"> </span><span class="m">15</span>:06:41<span class="w"> </span>UTC<span class="w"> </span><span class="m">2020</span>
+</pre></div>
+<p>The binary <em>qemu-aarch64-static</em> allows to execute a binary built for another architecture on the host computer, for
+example here it allows to execute the <a class="reference external" href="https://busybox.net">Busybox</a> binary compiled for an aarch64 target on a x86-64 host.</p>
+<p>The last command <em>make install</em> created a tree into the <em>_install</em> directory that can be used to populate the sysroot:</p>
+<div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>_install
+total<span class="w"> </span><span class="m">4</span>
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w"> </span><span class="m">974</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>bin
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">  </span><span class="m">11</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>linuxrc<span class="w"> </span>-&gt;<span class="w"> </span>bin/busybox
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w"> </span><span class="m">986</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>sbin
+drwxr-xr-x.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">  </span><span class="m">14</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>usr
+
+ls<span class="w"> </span>-l<span class="w"> </span>_install/bin
+&lt;...&gt;
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>umount<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>uname<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>usleep<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>vi<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>watch<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+lrwxrwxrwx.<span class="w"> </span><span class="m">1</span><span class="w"> </span>tperrot<span class="w"> </span>tperrot<span class="w">       </span><span class="m">7</span><span class="w"> </span>Nov<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">15</span>:22<span class="w"> </span>zcat<span class="w"> </span>-&gt;<span class="w"> </span>busybox
+</pre></div>
+<p>In order, to finalize this minimal sysroot, it is required to create a rcS init script:</p>
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>_install/proc<span class="w"> </span>_install/sys<span class="w"> </span>_install/dev<span class="w"> </span>_install/etc<span class="w"> </span>_install/etc/init.d
+cat<span class="w"> </span>&gt;<span class="w"> </span>_install/etc/init.d/rcS<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">#!/bin/sh</span>
+<span class="s">mount -t proc none /proc</span>
+<span class="s">mount -t sysfs none /sys</span>
+<span class="s">/sbin/mdev -s</span>
+<span class="s">[ ! -h /etc/mtab ]  &amp;&amp; ln -s /proc/mounts /etc/mtab</span>
+<span class="s">[ ! -f /etc/resolv.conf ] &amp;&amp; cat /proc/net/pnp &gt; /etc/resolv.conf</span>
+<span class="s">EOF</span>
+chmod<span class="w"> </span>+x<span class="w"> </span>_install/etc/init.d/rcS
+</pre></div>
+</div>
+<div class="section" id="build-the-filesystem">
+<h2>Build the filesystem</h2>
+<p>The target of this step is to package the sysroot tree into a filesystem that can be mounted by the kernel.
+There is two available possibilities, either build a <em>ramfs</em> or a <em>rootfs</em>.</p>
+<p>Globally, the difference between both is that:</p>
+<ul class="simple">
+<li>the ramfs is a very simple filesystem that can be used by the kernel to create a block device into the RAM space from an archive.</li>
+<li>the rootfs is a filesystem mounted from a non volatile device by the kernel.</li>
+</ul>
+<p>For more information about the difference between the ramfs and the rootfs, you can you refer to the <a class="reference external" href="https://www.kernel.org/doc/html/latest/filesystems/ramfs-rootfs-initramfs.html">kernel documentation</a>.</p>
+<div class="section" id="build-a-ramfs">
+<h3>Build a ramfs</h3>
+<p>To build the ramfs we will use <em>cpio</em> and <em>gzip</em> to construct the compressed archive after modifying the rights:</p>
+<div class="highlight"><pre><span></span>mkdir<span class="w"> </span>_rootfs
+rsync<span class="w"> </span>-a<span class="w"> </span>_install/<span class="w"> </span>_rootfs
+chown<span class="w"> </span>-R<span class="w"> </span>root:root<span class="w"> </span>_rootfs
+<span class="nb">cd</span><span class="w"> </span>_rootfs
+find<span class="w"> </span>.<span class="w"> </span><span class="p">|</span><span class="w"> </span>cpio<span class="w"> </span>-o<span class="w"> </span>--format<span class="o">=</span>newc<span class="w"> </span>&gt;<span class="w"> </span>../rootfs.cpio
+<span class="nb">cd</span><span class="w"> </span>..
+gzip<span class="w"> </span>-c<span class="w"> </span>rootfs.cpio<span class="w"> </span>&gt;<span class="w"> </span>rootfs.cpio.gz
+</pre></div>
+</div>
+<div class="section" id="build-a-rootfs">
+<h3>Build a rootfs</h3>
+<p>To build the rootfs, the first step is to create an empty binary blob that will be mounted into a loop device to be
+formatted to create a ext3 filesystem. Then the tree can be copied and the rights updated.</p>
+<div class="highlight"><pre><span></span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>rootfs.img<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">10</span>
+mke2fs<span class="w"> </span>-j<span class="w"> </span>rootfs.img
+mkdir<span class="w"> </span>_rootfs
+mount<span class="w"> </span>-o<span class="w"> </span>loop<span class="w"> </span>rootfs.img<span class="w"> </span>_rootfs
+rsync<span class="w"> </span>-a<span class="w"> </span>_install/<span class="w"> </span>_rootfs
+chown<span class="w"> </span>-R<span class="w"> </span>root:root<span class="w"> </span>_rootfs
+sync
+umount<span class="w"> </span>_rootfs
+</pre></div>
+</div>
+</div>
+<div class="section" id="boot-the-target">
+<h2>Boot the target</h2>
+<p>Following, the qemu commands to boot the minimal embedded Linux system that has been built.</p>
+<div class="highlight"><pre><span></span><span class="c1"># With the ramfs</span>
+qemu-system-aarch64<span class="w"> </span>-nographic<span class="w"> </span>-no-reboot<span class="w"> </span>-machine<span class="w"> </span>virt<span class="w"> </span>-cpu<span class="w"> </span>cortex-a57<span class="w"> </span>-smp<span class="w"> </span><span class="m">2</span><span class="w"> </span>-m<span class="w"> </span><span class="m">256</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-kernel<span class="w"> </span>~/src/linux/arch/arm64/boot/Image<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-initrd<span class="w"> </span>~/src/busybox/rootfs.cpio.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-append<span class="w"> </span><span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/ram rdinit=/sbin/init&quot;</span>
+
+<span class="c1"># With the rootfs</span>
+qemu-system-aarch64<span class="w"> </span>-nographic<span class="w"> </span>-no-reboot<span class="w"> </span>-machine<span class="w"> </span>virt<span class="w"> </span>-cpu<span class="w"> </span>cortex-a57<span class="w"> </span>-smp<span class="w"> </span><span class="m">2</span><span class="w"> </span>-m<span class="w"> </span><span class="m">256</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-kernel<span class="w"> </span>~/src/linux/arch/arm64/boot/Image<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-append<span class="w"> </span><span class="s2">&quot;panic=5 ro ip=dhcp root=/dev/vda&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-drive<span class="w"> </span><span class="nv">file</span><span class="o">=</span>~/src/busybox/rootfs.img,format<span class="o">=</span>raw,if<span class="o">=</span>none,id<span class="o">=</span>hd0<span class="w"> </span>-device<span class="w"> </span>virtio-blk-device,drive<span class="o">=</span>hd0
+</pre></div>
+<p>Then the target will be boot to shell, <em>&quot;It's alive!&quot;</em>:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Booting<span class="w"> </span>Linux<span class="w"> </span>on<span class="w"> </span>physical<span class="w"> </span>CPU<span class="w"> </span>0x0000000000<span class="w"> </span><span class="o">[</span>0x411fd070<span class="o">]</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Linux<span class="w"> </span>version<span class="w"> </span><span class="m">5</span>.10.0-rc5<span class="w"> </span><span class="o">(</span>tperrot@27ea4a863f61<span class="o">)</span><span class="w"> </span><span class="o">(</span>aarch64-linux-gcc.br_real<span class="w"> </span><span class="o">(</span>Buildroot<span class="w"> </span><span class="m">2020</span>.08-14-ge5a2a90<span class="o">)</span><span class="w"> </span><span class="m">9</span>.3.0,<span class="w"> </span>GNU<span class="w"> </span>ld<span class="w"> </span><span class="o">(</span>GNU<span class="w"> </span>Binutils<span class="o">)</span><span class="w"> </span><span class="m">2</span>.33.1<span class="o">)</span><span class="w"> </span><span class="c1">#1 SMP PREEMPT Mon Nov 30 14:40:05 UTC 2020</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.000000<span class="o">]</span><span class="w"> </span>Machine<span class="w"> </span>model:<span class="w"> </span>linux,dummy-virt
+&lt;...&gt;
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.858346<span class="o">]</span><span class="w"> </span>Sending<span class="w"> </span>DHCP<span class="w"> </span>requests<span class="w"> </span>.,<span class="w"> </span>OK
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.870558<span class="o">]</span><span class="w"> </span>IP-Config:<span class="w"> </span>Got<span class="w"> </span>DHCP<span class="w"> </span>answer<span class="w"> </span>from<span class="w"> </span><span class="m">10</span>.0.2.2,<span class="w"> </span>my<span class="w"> </span>address<span class="w"> </span>is<span class="w"> </span><span class="m">10</span>.0.2.15
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.870909<span class="o">]</span><span class="w"> </span>IP-Config:<span class="w"> </span>Complete:
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871199<span class="o">]</span><span class="w">      </span><span class="nv">device</span><span class="o">=</span>eth0,<span class="w"> </span><span class="nv">hwaddr</span><span class="o">=</span><span class="m">52</span>:54:00:12:34:56,<span class="w"> </span><span class="nv">ipaddr</span><span class="o">=</span><span class="m">10</span>.0.2.15,<span class="w"> </span><span class="nv">mask</span><span class="o">=</span><span class="m">255</span>.255.255.0,<span class="w"> </span><span class="nv">gw</span><span class="o">=</span><span class="m">10</span>.0.2.2
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871566<span class="o">]</span><span class="w">      </span><span class="nv">host</span><span class="o">=</span><span class="m">10</span>.0.2.15,<span class="w"> </span><span class="nv">domain</span><span class="o">=</span>,<span class="w"> </span>nis-domain<span class="o">=(</span>none<span class="o">)</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871825<span class="o">]</span><span class="w">      </span><span class="nv">bootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2,<span class="w"> </span><span class="nv">rootserver</span><span class="o">=</span><span class="m">10</span>.0.2.2,<span class="w"> </span><span class="nv">rootpath</span><span class="o">=</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.871866<span class="o">]</span><span class="w">      </span><span class="nv">nameserver0</span><span class="o">=</span><span class="m">10</span>.0.2.3
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.872389<span class="o">]</span>
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.875863<span class="o">]</span><span class="w"> </span>ALSA<span class="w"> </span>device<span class="w"> </span>list:
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.876151<span class="o">]</span><span class="w">   </span>No<span class="w"> </span>soundcards<span class="w"> </span>found.
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.879353<span class="o">]</span><span class="w"> </span>uart-pl011<span class="w"> </span><span class="m">9000000</span>.pl011:<span class="w"> </span>no<span class="w"> </span>DMA<span class="w"> </span>platform<span class="w"> </span>data
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.920237<span class="o">]</span><span class="w"> </span>Freeing<span class="w"> </span>unused<span class="w"> </span>kernel<span class="w"> </span>memory:<span class="w"> </span>5952K
+<span class="o">[</span><span class="w">    </span><span class="m">0</span>.921223<span class="o">]</span><span class="w"> </span>Run<span class="w"> </span>/sbin/init<span class="w"> </span>as<span class="w"> </span>init<span class="w"> </span>process
+
+Please<span class="w"> </span>press<span class="w"> </span>Enter<span class="w"> </span>to<span class="w"> </span>activate<span class="w"> </span>this<span class="w"> </span>console.
+</pre></div>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/build-an-embedded-linux-in-fifteen-min.html">posted at 13:01</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/busybox.html" class="tags">busybox</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/intermediate.html" class="tags">intermediate</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/qemu.html" class="tags">qemu</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>            <h4 class="date">May 28, 2020</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/my-blog-opening.html" rel="bookmark" title="Permanent Link to &quot;My blog opening&quot;">My blog opening</a>
+                </h2>
+
+                
+                
+
+                <p>Welcome,</p>
+<p>After closing my last blog seventeen years ago, in order to share my knowledge and my little experiments about
+embedded open source. As you might have guessed, this blog will mainly focus on embedded Linux operating systems,
+but also about open firmware and rtos, as well as related topics like virtualization, security, etc.</p>
+<p>I hope you will like the articles of this blog, enjoy the reading.</p>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/my-blog-opening.html">posted at 16:50</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/blog.html" class="tags">blog</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags selected">article</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-169118252-1");
+    pageTracker._trackPageview();
+    } catch(err) {}</script>
+</body>
+</html>

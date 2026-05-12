@@ -150,4 +150,4 @@ build of busybox and it is applied on all scheduling attributes modifications do
 &lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't provide the required scheduling options (-d, -T, -P and -D) to set the deadline scheduling attributes of a process.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="busybox"/><category term="busybox"/><category term="chrt"/><category term="dissection"/><category term="beginner"/></entry></feed>
+</content><category term="busybox"/><category term="busybox"/><category term="chrt"/><category term="dissection"/><category term="beginner"/><category term="article"/></entry></feed>
