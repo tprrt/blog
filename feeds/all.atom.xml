@@ -1,5 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/all.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-15T08:01:42.048798+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Linux Gaming Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-05-15T08:01:42.048798+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/all.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-15T08:08:19.190095+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Yocto Project 6.0 "wrynose" is out — and I contributed!</title><link href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="alternate"/><published>2026-05-13T12:00:00+02:00</published><updated>2026-05-15T08:08:19.189137+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-13:/yocto-project-6-0-wrynose-release.html</id><summary type="html">&lt;p class="first last"&gt;Yocto Project 6.0 &amp;quot;wrynose&amp;quot;, the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;The &lt;a class="reference external" href="https://www.yoctoproject.org/software-overview/downloads/"&gt;Yocto Project 6.0&lt;/a&gt;, codenamed &lt;strong&gt;wrynose&lt;/strong&gt;, was released on May 13, 2026. This
+is the new &lt;strong&gt;Long-Term Support (LTS)&lt;/strong&gt; release, succeeding 5.0 &amp;quot;scarthgap&amp;quot;. I am
+happy to have my name in the contributors list for this release, and I wanted to
+take the opportunity to write a short overview of what is new.&lt;/p&gt;
+&lt;p&gt;If you are migrating from 5.0, make sure to read the migration guides for the
+intermediate releases: &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.1.html"&gt;5.1 (styhead)&lt;/a&gt;, &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.2.html"&gt;5.2 (walnascar)&lt;/a&gt;, and &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.3.html"&gt;5.3 (whinlatter)&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="major-component-upgrades"&gt;
+&lt;h2&gt;Major component upgrades&lt;/h2&gt;
+&lt;p&gt;The toolchain and core components received significant version bumps:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Linux kernel 6.18&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GCC 15.2&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;glibc 2.43&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LLVM/Clang 22.1.3&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Python 3.14.4&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;systemd 259.5&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Go 1.26.2&lt;/strong&gt;, &lt;strong&gt;Rust 1.94.1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;QEMU 10.2.0&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;U-Boot 2026.01&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Over 300 recipe upgrades in total.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="rust-in-the-linux-kernel"&gt;
+&lt;h2&gt;Rust in the Linux kernel&lt;/h2&gt;
+&lt;p&gt;One of the most significant additions is first-class Rust support for building the
+Linux kernel and out-of-tree kernel modules:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;A new &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;kernel-yocto-rust&lt;/span&gt;&lt;/tt&gt; class adds the required dependencies to build Rust
+components of the kernel.&lt;/li&gt;
+&lt;li&gt;A new &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;module-rust&lt;/span&gt;&lt;/tt&gt; class supports building out-of-tree Rust kernel modules. A
+skeleton example is available under &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;meta-skeleton/recipes-kernel/rust-out-of-tree-module&lt;/span&gt;&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;Enabling Rust in the kernel is now as simple as adding &lt;tt class="docutils literal"&gt;rust&lt;/tt&gt; to
+&lt;tt class="docutils literal"&gt;KERNEL_FEATURES&lt;/tt&gt; in a recipe that inherits &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;kernel-yocto&lt;/span&gt;&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="security-improvements-on-by-default"&gt;
+&lt;h2&gt;Security improvements on by default&lt;/h2&gt;
+&lt;p&gt;Several security and hardening features that were previously opt-in are now
+&lt;strong&gt;enabled by default&lt;/strong&gt; in the nodistro setup:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;security_flags.inc&lt;/tt&gt; — adds security-related compiler and linker flags.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;no-static-libs.inc&lt;/span&gt;&lt;/tt&gt; — disables most static libraries.&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;uninative&lt;/tt&gt; — allows reuse of native sstate built on one distro on another,
+also enabled by default now.&lt;/li&gt;
+&lt;li&gt;OpenSSL now &lt;strong&gt;disables TLS 1.0/1.1 by default&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="new-sbom-and-cve-tooling"&gt;
+&lt;h2&gt;New SBOM and CVE tooling&lt;/h2&gt;
+&lt;p&gt;The CVE analysis and SBOM generation story got a major overhaul:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;A new &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;sbom-cve-check&lt;/span&gt;&lt;/tt&gt; class replaces the old &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;cve-check&lt;/span&gt;&lt;/tt&gt; class for
+post-build CVE analysis of images. It uses the new &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;python3-sbom-cve-check&lt;/span&gt;&lt;/tt&gt;
+tool internally.&lt;/li&gt;
+&lt;li&gt;A new &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;sbom-cve-check-recipe&lt;/span&gt;&lt;/tt&gt; class allows CVE analysis at the recipe level,
+without building the full software.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SPDX 2.2 support has been dropped&lt;/strong&gt;; the project now supports SPDX 3 only.&lt;/li&gt;
+&lt;li&gt;New variables &lt;tt class="docutils literal"&gt;SPDX_INCLUDE_KERNEL_CONFIG&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;SPDX_INCLUDE_PACKAGECONFIG&lt;/tt&gt;
+allow exporting richer metadata into SPDX documents.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bitbake-and-tooling-improvements"&gt;
+&lt;h2&gt;BitBake and tooling improvements&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bitbake-setup&lt;/span&gt;&lt;/tt&gt; received a lot of love in this release:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Non-destructive update behavior: local commits and modifications are preserved
+during &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bitbake-setup&lt;/span&gt; update&lt;/tt&gt;.&lt;/li&gt;
+&lt;li&gt;Shared State is now shared between builds by default (&lt;tt class="docutils literal"&gt;SSTATE_DIR&lt;/tt&gt; and
+&lt;tt class="docutils literal"&gt;BB_HASHSERVE_DB_DIR&lt;/tt&gt; set in &lt;tt class="docutils literal"&gt;site.conf&lt;/tt&gt;).&lt;/li&gt;
+&lt;li&gt;VSCode configuration files are now generated by default.&lt;/li&gt;
+&lt;li&gt;The &lt;tt class="docutils literal"&gt;unpack_update()&lt;/tt&gt; function allows updating a Git repository in-place.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wic-is-now-an-external-project"&gt;
+&lt;h2&gt;WIC is now an external project&lt;/h2&gt;
+&lt;p&gt;The WIC image creator tool has been extracted from OpenEmbedded-Core and is now
+maintained as a &lt;a class="reference external" href="https://git.yoctoproject.org/wic/"&gt;standalone project&lt;/a&gt;. The recipe in OE-Core now builds from
+this external source. A new &lt;tt class="docutils literal"&gt;wicenv&lt;/tt&gt; image type was also added.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="devtool-ide-integration"&gt;
+&lt;h2&gt;devtool IDE integration&lt;/h2&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;devtool &lt;span class="pre"&gt;ide-sdk&lt;/span&gt;&lt;/tt&gt; command saw several improvements:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;gdbserver&lt;/tt&gt; attach mode support.&lt;/li&gt;
+&lt;li&gt;GDB pretty-printing for C++ STL types.&lt;/li&gt;
+&lt;li&gt;Kernel module development support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-s-next"&gt;
+&lt;h2&gt;What's next&lt;/h2&gt;
+&lt;p&gt;As an LTS release, wrynose will receive long-term maintenance. If you are on
+scarthgap (5.0), now is a good time to plan your migration. The migration guide
+is available at the &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html"&gt;Yocto Project documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Embedded Linux"/><category term="yocto"/><category term="openembedded"/><category term="embedded"/><category term="linux"/><category term="oe-core"/><category term="article"/></entry><entry><title>Linux Gaming Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-05-15T08:08:19.190095+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -47,7 +142,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/AMD-K5-CPUs"&gt;AMD K5 CPUs The Latest To Be Retired With Linux's Aging Hardware Support | Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-15T08:01:42.048798+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-15T08:08:19.190095+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -90,7 +185,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://hackaday.io/"&gt;Hackaday.io — The world's largest collaborative hardware development community&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-15T08:01:42.048798+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-15T08:08:19.190095+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -134,7 +229,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos"&gt;Zephyr RTOS on Silicon Labs platforms&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-05-15T08:01:42.048194+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-05-15T08:08:19.189137+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-and-hyrox"&gt;
@@ -169,7 +264,7 @@
 &lt;/ul&gt;
 &lt;p&gt;This digest captures the latest developments in CrossFit, HYROX, and powerlifting, illustrating a vibrant landscape focused on competitive fitness and community engagement.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-05-15T08:01:42.048798+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-05-15T08:08:19.190095+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -212,7 +307,7 @@
 &lt;li&gt;Catch up on community discussions within the &lt;a class="reference external" href="https://mender.io/blog/the-future-of-the-embedded-linux-ecosystem"&gt;Linux Plumbers Conference 2023&lt;/a&gt; focusing on the embedded Linux ecosystem.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-05-15T08:01:42.048798+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-05-15T08:08:19.190095+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-digest"&gt;

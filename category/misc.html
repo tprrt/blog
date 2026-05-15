@@ -102,12 +102,80 @@ but also about open firmware and rtos, as well as related topics like virtualiza
         </div>
         <div class="clear"></div>
     </div>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2GHH38HV9"></script> <!-- NOSONAR -->
-    <script>
+<style>
+    #cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #333;
+        color: #eee;
+        padding: 0.8em 2em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1em;
+        z-index: 9999;
+        font-size: 0.9em;
+    }
+    #cookie-banner.hidden { display: none; }
+    #cookie-banner button {
+        padding: 0.4em 1.2em;
+        cursor: pointer;
+        border: none;
+        border-radius: 3px;
+        font-size: 1em;
+    }
+    #cookie-accept { background: #5a9; color: #fff; }
+    #cookie-decline { background: #777; color: #fff; }
+</style>
+
+<div id="cookie-banner" class="hidden">
+    <span>This site uses cookies to measure audience. Do you accept analytics cookies?</span>
+    <div>
+        <button id="cookie-accept">Accept</button>
+        <button id="cookie-decline">Decline</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    var consent = localStorage.getItem('cookieConsent');
+
+    function loadGA() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-Q2GHH38HV9'; // NOSONAR
+        document.head.appendChild(s);
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-Q2GHH38HV9');
-    </script>
+        window.gtag = function() { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-Q2GHH38HV9');
+    }
+
+    if (consent === 'accepted') {
+        loadGA();
+        return;
+    }
+
+    if (consent !== null) return;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var banner = document.getElementById('cookie-banner');
+        banner.classList.remove('hidden');
+
+        document.getElementById('cookie-accept').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            banner.classList.add('hidden');
+            loadGA();
+        });
+
+        document.getElementById('cookie-decline').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'declined');
+            banner.classList.add('hidden');
+        });
+    });
+})();
+</script>
 </body>
 </html>

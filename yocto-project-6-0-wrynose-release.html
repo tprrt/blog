@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | Yocto Project 6.0 &quot;wrynose&quot; is out — and I contributed!</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link href="/feeds/embedded-linux.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories Atom Feed" />
+    <link href="/feeds/embedded-linux.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Thomas Perrot" />
+
+    <script data-ad-client="ca-pub-8632147971669760"
+            async="async"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            integrity="sha256-H0yTZ/g80w4995dyBRDArJlCXWcYuBANtPbA82uyu00="
+            crossorigin="anonymous">
+    </script>
+<style>
+    footer .license-info {
+        margin-top: 0.5em;
+        font-size: 0.9em;
+    }
+</style>
+<script>
+// Add license information to footer
+document.addEventListener('DOMContentLoaded', function() {
+    var footer = document.querySelector('footer p');
+    if (footer) {
+        var licenseInfo = document.createElement('p');
+        licenseInfo.className = 'license-info';
+        licenseInfo.innerHTML = 'Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>';
+        footer.parentNode.appendChild(licenseInfo);
+    }
+});
+</script>
+
+    <meta name="keywords" content="yocto,openembedded,embedded,linux,oe-core,article" />
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
+                <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">May 13, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="bookmark" title="Permanent Link to &quot;Yocto Project 6.0 &quot;wrynose&quot; is out — and I contributed!&quot;">Yocto Project 6.0 &quot;wrynose&quot; is out — and I contributed!</a>
+                </h2>
+
+                
+                
+
+                <p>The <a class="reference external" href="https://www.yoctoproject.org/software-overview/downloads/">Yocto Project 6.0</a>, codenamed <strong>wrynose</strong>, was released on May 13, 2026. This
+is the new <strong>Long-Term Support (LTS)</strong> release, succeeding 5.0 &quot;scarthgap&quot;. I am
+happy to have my name in the contributors list for this release, and I wanted to
+take the opportunity to write a short overview of what is new.</p>
+<p>If you are migrating from 5.0, make sure to read the migration guides for the
+intermediate releases: <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.1.html">5.1 (styhead)</a>, <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.2.html">5.2 (walnascar)</a>, and <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.3.html">5.3 (whinlatter)</a>.</p>
+<div class="section" id="major-component-upgrades">
+<h2>Major component upgrades</h2>
+<p>The toolchain and core components received significant version bumps:</p>
+<ul class="simple">
+<li><strong>Linux kernel 6.18</strong></li>
+<li><strong>GCC 15.2</strong></li>
+<li><strong>glibc 2.43</strong></li>
+<li><strong>LLVM/Clang 22.1.3</strong></li>
+<li><strong>Python 3.14.4</strong></li>
+<li><strong>systemd 259.5</strong></li>
+<li><strong>Go 1.26.2</strong>, <strong>Rust 1.94.1</strong></li>
+<li><strong>QEMU 10.2.0</strong></li>
+<li><strong>U-Boot 2026.01</strong></li>
+</ul>
+<p>Over 300 recipe upgrades in total.</p>
+</div>
+<div class="section" id="rust-in-the-linux-kernel">
+<h2>Rust in the Linux kernel</h2>
+<p>One of the most significant additions is first-class Rust support for building the
+Linux kernel and out-of-tree kernel modules:</p>
+<ul class="simple">
+<li>A new <tt class="docutils literal"><span class="pre">kernel-yocto-rust</span></tt> class adds the required dependencies to build Rust
+components of the kernel.</li>
+<li>A new <tt class="docutils literal"><span class="pre">module-rust</span></tt> class supports building out-of-tree Rust kernel modules. A
+skeleton example is available under <tt class="docutils literal"><span class="pre">meta-skeleton/recipes-kernel/rust-out-of-tree-module</span></tt>.</li>
+<li>Enabling Rust in the kernel is now as simple as adding <tt class="docutils literal">rust</tt> to
+<tt class="docutils literal">KERNEL_FEATURES</tt> in a recipe that inherits <tt class="docutils literal"><span class="pre">kernel-yocto</span></tt>.</li>
+</ul>
+</div>
+<div class="section" id="security-improvements-on-by-default">
+<h2>Security improvements on by default</h2>
+<p>Several security and hardening features that were previously opt-in are now
+<strong>enabled by default</strong> in the nodistro setup:</p>
+<ul class="simple">
+<li><tt class="docutils literal">security_flags.inc</tt> — adds security-related compiler and linker flags.</li>
+<li><tt class="docutils literal"><span class="pre">no-static-libs.inc</span></tt> — disables most static libraries.</li>
+<li><tt class="docutils literal">uninative</tt> — allows reuse of native sstate built on one distro on another,
+also enabled by default now.</li>
+<li>OpenSSL now <strong>disables TLS 1.0/1.1 by default</strong>.</li>
+</ul>
+</div>
+<div class="section" id="new-sbom-and-cve-tooling">
+<h2>New SBOM and CVE tooling</h2>
+<p>The CVE analysis and SBOM generation story got a major overhaul:</p>
+<ul class="simple">
+<li>A new <tt class="docutils literal"><span class="pre">sbom-cve-check</span></tt> class replaces the old <tt class="docutils literal"><span class="pre">cve-check</span></tt> class for
+post-build CVE analysis of images. It uses the new <tt class="docutils literal"><span class="pre">python3-sbom-cve-check</span></tt>
+tool internally.</li>
+<li>A new <tt class="docutils literal"><span class="pre">sbom-cve-check-recipe</span></tt> class allows CVE analysis at the recipe level,
+without building the full software.</li>
+<li><strong>SPDX 2.2 support has been dropped</strong>; the project now supports SPDX 3 only.</li>
+<li>New variables <tt class="docutils literal">SPDX_INCLUDE_KERNEL_CONFIG</tt> and <tt class="docutils literal">SPDX_INCLUDE_PACKAGECONFIG</tt>
+allow exporting richer metadata into SPDX documents.</li>
+</ul>
+</div>
+<div class="section" id="bitbake-and-tooling-improvements">
+<h2>BitBake and tooling improvements</h2>
+<p><tt class="docutils literal"><span class="pre">bitbake-setup</span></tt> received a lot of love in this release:</p>
+<ul class="simple">
+<li>Non-destructive update behavior: local commits and modifications are preserved
+during <tt class="docutils literal"><span class="pre">bitbake-setup</span> update</tt>.</li>
+<li>Shared State is now shared between builds by default (<tt class="docutils literal">SSTATE_DIR</tt> and
+<tt class="docutils literal">BB_HASHSERVE_DB_DIR</tt> set in <tt class="docutils literal">site.conf</tt>).</li>
+<li>VSCode configuration files are now generated by default.</li>
+<li>The <tt class="docutils literal">unpack_update()</tt> function allows updating a Git repository in-place.</li>
+</ul>
+</div>
+<div class="section" id="wic-is-now-an-external-project">
+<h2>WIC is now an external project</h2>
+<p>The WIC image creator tool has been extracted from OpenEmbedded-Core and is now
+maintained as a <a class="reference external" href="https://git.yoctoproject.org/wic/">standalone project</a>. The recipe in OE-Core now builds from
+this external source. A new <tt class="docutils literal">wicenv</tt> image type was also added.</p>
+</div>
+<div class="section" id="devtool-ide-integration">
+<h2>devtool IDE integration</h2>
+<p>The <tt class="docutils literal">devtool <span class="pre">ide-sdk</span></tt> command saw several improvements:</p>
+<ul class="simple">
+<li><tt class="docutils literal">gdbserver</tt> attach mode support.</li>
+<li>GDB pretty-printing for C++ STL types.</li>
+<li>Kernel module development support.</li>
+</ul>
+</div>
+<div class="section" id="what-s-next">
+<h2>What's next</h2>
+<p>As an LTS release, wrynose will receive long-term maintenance. If you are on
+scarthgap (5.0), now is a good time to plan your migration. The migration guide
+is available at the <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html">Yocto Project documentation</a>.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html">posted at 12:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded-linux.html" rel="tag">Embedded Linux</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/yocto.html" class="tags">yocto</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/openembedded.html" class="tags">openembedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/oe-core.html" class="tags">oe-core</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+<style>
+    #cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #333;
+        color: #eee;
+        padding: 0.8em 2em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1em;
+        z-index: 9999;
+        font-size: 0.9em;
+    }
+    #cookie-banner.hidden { display: none; }
+    #cookie-banner button {
+        padding: 0.4em 1.2em;
+        cursor: pointer;
+        border: none;
+        border-radius: 3px;
+        font-size: 1em;
+    }
+    #cookie-accept { background: #5a9; color: #fff; }
+    #cookie-decline { background: #777; color: #fff; }
+</style>
+
+<div id="cookie-banner" class="hidden">
+    <span>This site uses cookies to measure audience. Do you accept analytics cookies?</span>
+    <div>
+        <button id="cookie-accept">Accept</button>
+        <button id="cookie-decline">Decline</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    var consent = localStorage.getItem('cookieConsent');
+
+    function loadGA() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-Q2GHH38HV9'; // NOSONAR
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function() { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-Q2GHH38HV9');
+    }
+
+    if (consent === 'accepted') {
+        loadGA();
+        return;
+    }
+
+    if (consent !== null) return;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var banner = document.getElementById('cookie-banner');
+        banner.classList.remove('hidden');
+
+        document.getElementById('cookie-accept').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            banner.classList.add('hidden');
+            loadGA();
+        });
+
+        document.getElementById('cookie-decline').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'declined');
+            banner.classList.add('hidden');
+        });
+    });
+})();
+</script>
+</body>
+</html>
