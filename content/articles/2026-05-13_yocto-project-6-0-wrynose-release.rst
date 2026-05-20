@@ -1,6 +1,6 @@
-=======================================================
-Yocto Project 6.0 "wrynose" is out — and I contributed!
-=======================================================
+==================================
+Yocto Project 6.0 "wrynose" is out
+==================================
 
 :date: 2026-05-13 12:00
 :tags: yocto, openembedded, embedded, linux, oe-core, article
