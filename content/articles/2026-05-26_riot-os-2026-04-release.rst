@@ -1,0 +1,107 @@
+=======================================
+RIOT-OS 2026.04 "Fire Rizzlease" is out
+=======================================
+
+:date: 2026-05-26 12:00
+:tags: riot, rtos, embedded, iot, article
+:category: Embedded
+:slug: riot-os-2026-04-release
+:authors: tperrot
+:summary: RIOT-OS 2026.04 "Fire Rizzlease" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.
+:lang: en
+:status: published
+
+`RIOT-OS 2026.04`_, codenamed **Fire Rizzlease**, was released on May 6, 2026.
+RIOT is a multi-threading operating system targeting microcontrollers found in the
+Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
+with a focus on energy-efficiency, soft real-time capabilities, and a small memory
+footprint.
+
+This release spans 84 days of development, 125 merged pull requests composed of 229
+commits, and contributions from 27 people. A notable stat: **1,141,523 lines were
+deleted** against only 25,007 inserted, largely thanks to a major vendor code cleanup.
+
+Codeberg mirror
+===============
+
+RIOT is now synced to `Codeberg`_ (#21997). This gives the project a home on a
+non-profit, community-driven forge alongside its GitHub presence, a welcome step
+for an independent open-source project.
+
+Massive EFM32 vendor code removal
+==================================
+
+Over **one million lines of vendor code** have been removed from the EFM32 family,
+replaced by a ``pkg/gecko_sdk`` dependency (#22040). This is the single biggest
+contributor to the impressive deletion count and results in a much leaner and more
+maintainable codebase for Silicon Labs EFM32-based boards.
+
+Raspberry Pi Pico 2 / RP2350 improvements
+==========================================
+
+The RP2350 support received a thorough overhaul (#21753):
+
+- Unified abstractions between the RISC-V and ARM cores of the RP2350.
+- Added the XH3IRQ interrupt controller.
+- Updated UART driver.
+- Added RISC-V support.
+
+The scope of this work was large enough to inspire `a bachelor's thesis`_ at
+HAW Hamburg.
+
+New board and CPU support
+=========================
+
+Three new targets join the supported hardware list:
+
+- **pro-micro-nrf52840** (#22089) — a popular nRF52840-based Pro Micro form-factor board.
+- **slstk3301a** (#22069) — Silicon Labs EFM32 Tiny Gecko starter kit.
+- **STM32H7** (#21978) — high-performance STM32 family, with additional peripheral
+  support for the nucleo-h753zi (#22076).
+
+New device drivers
+==================
+
+- **AMG88xx** (#22104) — infrared array sensor (thermal camera) from Panasonic.
+- **ADS1X1X** (#21694) — family of Texas Instruments I²C ADCs.
+
+Guide site and documentation
+=============================
+
+The `RIOT Guide Site`_ continues to grow as the default entry point for new users,
+progressively replacing Doxygen for prose documentation. This release adds:
+
+- More tutorials.
+- An experimental `Supported Boards`_ section.
+- Unit tests in tutorials (#22042).
+- Updated Astro v6 framework (#22145).
+
+The Doxygen API reference remains available at `api.riot-os.org`_.
+
+Networking improvements
+=======================
+
+Several additions to the GNRC networking stack:
+
+- New ``gnrc_pktshark`` module to pretty-print network traffic (#21284).
+- ``gnrc_ipv6_nib_dyn_lladdr_get()`` API (#22013).
+- ABR (Authoritative Border Router) now run-time configurable (#21081).
+- Generic UDP shell command (#22049).
+
+Notable bug fixes
+=================
+
+43 bugs were fixed in this release, including:
+
+- ESP8266 crashes on reboot and startup (#22014, #22010).
+- Potential buffer overflow in the atwinc15x0 driver (#22041).
+- NanoCoAP message corruption in ``coap_build_reply()`` (#22094).
+- Wrong byte order for gyro and accelerometer reads in the MPU-9x50 driver (#22135).
+- LVGL configuration and SDL issues on native (#22005, #22139).
+
+.. _RIOT-OS 2026.04: https://github.com/RIOT-OS/RIOT/releases/tag/2026.04
+.. _Codeberg: https://codeberg.org/riot/riot
+.. _a bachelor's thesis: https://inet.haw-hamburg.de/thesis/completed/ba_hert_tom.pdf/view
+.. _RIOT Guide Site: https://guide.riot-os.org/
+.. _Supported Boards: https://guide.riot-os.org/boards/
+.. _api.riot-os.org: https://api.riot-os.org/
