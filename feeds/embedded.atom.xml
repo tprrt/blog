@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-20T14:42:06.320247+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-05-20T14:42:06.320247+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-26T15:09:24.641989+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-05-26T15:09:24.641989+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="zephyr-rtos-overview"&gt;
+&lt;h2&gt;Zephyr RTOS Overview&lt;/h2&gt;
+&lt;p&gt;The Zephyr Real-Time Operating System (RTOS) continues to innovate and expand its presence in the embedded system industry. Several recent articles provide valuable insights into its latest developments, community growth, and future potential.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;New Releases and Features&lt;/strong&gt;
+The release of Zephyr RTOS 4.1 marks a significant update, packed with new features and improvements. This release has generated interest among developers and enthusiasts alike.
+- &lt;a class="reference external" href="https://www.youtube.com/watch?v=TOIwI9XrHZM"&gt;Zephyr RTOS 4.1: What's New?&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ecosystem Expansion&lt;/strong&gt;
+The Zephyr ecosystem is growing, with notable companies upgrading their memberships and joining the community. This expansion signifies increased industrial interest and collaboration.
+- &lt;a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html"&gt;Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Market Potential&lt;/strong&gt;
+An analysis of the projected dominance of Zephyr RTOS in the embedded systems market highlights the unique advantages it offers, showcasing its potential to reshape the industry landscape.
+- &lt;a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-5-reasons-why-it-will-dominate-the-embedded-world-transform-industry"&gt;5 Reasons Why Zephyr RTOS Will Rule the World&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Community Engagement and Collaboration&lt;/strong&gt;
+Recent meetups and discussions reflect the active community surrounding Zephyr, fostering collaboration and shared knowledge among developers and organizations utilizing RTOS.
+- &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
+- &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-05-26T15:09:24.641989+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -29,7 +49,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 18, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-20T14:42:06.320247+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-26T15:09:24.641330+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
