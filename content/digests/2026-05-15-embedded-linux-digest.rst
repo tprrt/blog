@@ -1,7 +1,7 @@
 .. SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr>
 .. SPDX-License-Identifier: CC-BY-SA-4.0
 
-Embedded Linux Digest — Week 19, 2026
+Embedded Linux Digest — Week 20, 2026
 =====================================
 
 :date: 2026-05-15 15:23
