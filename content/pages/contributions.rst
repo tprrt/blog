@@ -32,6 +32,7 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `at91bootstrap patches <https://github.com/linux4sam/at91bootstrap/commits?author=tprrt>`_
     * `Bitbake patches <https://git.openembedded.org/bitbake/log/?qt=author&q=thomas.perrot>`_
     * `Buildroot patches <https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&state=*>`_
+    * `Busybox patches <https://github.com/mirror/busybox/commits?author=tprrt>`_
     * `Elixir patches <https://github.com/bootlin/elixir/commits?author=tprrt>`_
     * `freedom-u-sdk patches <https://github.com/sifive/freedom-u-sdk/commits?author=tprrt>`_
     * `Linux patches <https://lore.kernel.org/stable/?qt=author&q=thomas.perrot>`_
