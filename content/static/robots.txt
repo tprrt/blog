@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tprrt.tupi.fr/sitemap.xml
