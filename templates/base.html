@@ -28,4 +28,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-{% endblock %}
+{% block opengraph %}
+<meta property="og:site_name" content="{{ SITENAME }}" />
+<meta property="og:locale" content="{{ DEFAULT_LANG }}" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ SITENAME }}" />
+<meta property="og:description" content="{{ SITESUBTITLE }}" />
+<meta property="og:url" content="{{ SITEURL }}/" />
+{% endblock opengraph %}
+{% block canonical %}{% endblock canonical %}
+{% block jsonld %}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":{{ SITENAME|tojson }},"description":{{ SITESUBTITLE|tojson }},"url":{{ SITEURL|tojson }}}
+</script>
+{% endblock jsonld %}
+{% endblock head %}
