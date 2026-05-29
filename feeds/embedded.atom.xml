@@ -1,5 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-26T15:12:34.703745+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-05-26T15:12:34.703745+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-05-29T12:49:30.808039+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-05-29T12:49:30.807039+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04"&gt;RIOT-OS 2026.04&lt;/a&gt;, codenamed &lt;strong&gt;Fire Rizzlease&lt;/strong&gt; 🫪👍, was released on May 6, 2026.
+RIOT is a multi-threading operating system targeting microcontrollers found in the
+Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
+with a focus on energy-efficiency, soft real-time capabilities, and a small memory
+footprint.&lt;/p&gt;
+&lt;p&gt;This release spans 84 days of development, 125 merged pull requests composed of 229
+commits, and contributions from 27 people. A notable stat: &lt;strong&gt;1,141,523 lines were
+deleted&lt;/strong&gt; against only 25,007 inserted, largely thanks to a major vendor code cleanup.&lt;/p&gt;
+&lt;div class="section" id="codeberg-mirror"&gt;
+&lt;h2&gt;Codeberg mirror&lt;/h2&gt;
+&lt;p&gt;RIOT is now synced to &lt;a class="reference external" href="https://codeberg.org/riot/riot"&gt;Codeberg&lt;/a&gt; (#21997). This gives the project a home on a
+non-profit, community-driven forge alongside its GitHub presence, a welcome step
+for an independent open-source project.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="massive-efm32-vendor-code-removal"&gt;
+&lt;h2&gt;Massive EFM32 vendor code removal&lt;/h2&gt;
+&lt;p&gt;Over &lt;strong&gt;one million lines of vendor code&lt;/strong&gt; have been removed from the EFM32 family,
+replaced by a &lt;tt class="docutils literal"&gt;pkg/gecko_sdk&lt;/tt&gt; dependency (#22040). This is the single biggest
+contributor to the impressive deletion count and results in a much leaner and more
+maintainable codebase for Silicon Labs EFM32-based boards.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="raspberry-pi-pico-2-rp2350-improvements"&gt;
+&lt;h2&gt;Raspberry Pi Pico 2 / RP2350 improvements&lt;/h2&gt;
+&lt;p&gt;The RP2350 support received a thorough overhaul (#21753):&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Unified abstractions between the RISC-V and ARM cores of the RP2350.&lt;/li&gt;
+&lt;li&gt;Added the XH3IRQ interrupt controller.&lt;/li&gt;
+&lt;li&gt;Updated UART driver.&lt;/li&gt;
+&lt;li&gt;Added RISC-V support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The scope of this work was large enough to inspire &lt;a class="reference external" href="https://inet.haw-hamburg.de/thesis/completed/ba_hert_tom.pdf/view"&gt;a bachelor's thesis&lt;/a&gt; at
+HAW Hamburg.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="new-board-and-cpu-support"&gt;
+&lt;h2&gt;New board and CPU support&lt;/h2&gt;
+&lt;p&gt;Three new targets join the supported hardware list:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;pro-micro-nrf52840&lt;/strong&gt; (#22089) — a popular nRF52840-based Pro Micro form-factor board.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;slstk3301a&lt;/strong&gt; (#22069) — Silicon Labs EFM32 Tiny Gecko starter kit.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;STM32H7&lt;/strong&gt; (#21978) — high-performance STM32 family, with additional peripheral
+support for the nucleo-h753zi (#22076).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="new-device-drivers"&gt;
+&lt;h2&gt;New device drivers&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;AMG88xx&lt;/strong&gt; (#22104) — infrared array sensor (thermal camera) from Panasonic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ADS1X1X&lt;/strong&gt; (#21694) — family of Texas Instruments I²C ADCs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="guide-site-and-documentation"&gt;
+&lt;h2&gt;Guide site and documentation&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://guide.riot-os.org/"&gt;RIOT Guide Site&lt;/a&gt; continues to grow as the default entry point for new users,
+progressively replacing Doxygen for prose documentation. This release adds:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;More tutorials.&lt;/li&gt;
+&lt;li&gt;An experimental &lt;a class="reference external" href="https://guide.riot-os.org/boards/"&gt;Supported Boards&lt;/a&gt; section.&lt;/li&gt;
+&lt;li&gt;Unit tests in tutorials (#22042).&lt;/li&gt;
+&lt;li&gt;Updated Astro v6 framework (#22145).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The Doxygen API reference remains available at &lt;a class="reference external" href="https://api.riot-os.org/"&gt;api.riot-os.org&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="networking-improvements"&gt;
+&lt;h2&gt;Networking improvements&lt;/h2&gt;
+&lt;p&gt;Several additions to the GNRC networking stack:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;New &lt;tt class="docutils literal"&gt;gnrc_pktshark&lt;/tt&gt; module to pretty-print network traffic (#21284).&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;gnrc_ipv6_nib_dyn_lladdr_get()&lt;/tt&gt; API (#22013).&lt;/li&gt;
+&lt;li&gt;ABR (Authoritative Border Router) now run-time configurable (#21081).&lt;/li&gt;
+&lt;li&gt;Generic UDP shell command (#22049).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="notable-bug-fixes"&gt;
+&lt;h2&gt;Notable bug fixes&lt;/h2&gt;
+&lt;p&gt;43 bugs were fixed in this release, including:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;ESP8266 crashes on reboot and startup (#22014, #22010).&lt;/li&gt;
+&lt;li&gt;Potential buffer overflow in the atwinc15x0 driver (#22041).&lt;/li&gt;
+&lt;li&gt;NanoCoAP message corruption in &lt;tt class="docutils literal"&gt;coap_build_reply()&lt;/tt&gt; (#22094).&lt;/li&gt;
+&lt;li&gt;Wrong byte order for gyro and accelerometer reads in the MPU-9x50 driver (#22135).&lt;/li&gt;
+&lt;li&gt;LVGL configuration and SDL issues on native (#22005, #22139).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-05-29T12:49:30.808039+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -19,7 +103,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 - &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-05-26T15:12:34.703351+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-05-29T12:49:30.807374+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -49,7 +133,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-26T15:12:34.702850+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-05-29T12:49:30.807374+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;

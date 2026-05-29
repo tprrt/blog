@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Tprrt's Blog | Zephyr RTOS Digest — Week 19, 2026</title>
+    <title>Tprrt's Blog | RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out</title>
     <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
     <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
@@ -44,21 +44,22 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Zephyr RTOS Digest — Week 19, 2026" />
-<meta property="og:description" content="Weekly roundup of Zephyr RTOS news." />
-<meta property="og:url" content="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" />
-<meta property="article:published_time" content="2026-05-08T13:25:00+02:00" />
-<meta property="article:modified_time" content="2026-05-29T12:49:30.807374+02:00" />
-<meta property="article:tag" content="zephyr" />
+<meta property="og:title" content="RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out" />
+<meta property="og:description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system." />
+<meta property="og:url" content="https://tprrt.tupi.fr/riot-os-2026-04-release.html" />
+<meta property="article:published_time" content="2026-05-26T12:00:00+02:00" />
+<meta property="article:modified_time" content="2026-05-29T12:49:30.807039+02:00" />
+<meta property="article:tag" content="riot" />
 <meta property="article:tag" content="rtos" />
 <meta property="article:tag" content="embedded" />
-<meta property="article:tag" content="digest" />
-<link rel="canonical" href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" />
+<meta property="article:tag" content="iot" />
+<meta property="article:tag" content="article" />
+<link rel="canonical" href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Zephyr RTOS Digest \u2014 Week 19, 2026","description":"Weekly roundup of Zephyr RTOS news.","datePublished":"2026-05-08T13:25:00+02:00","dateModified":"2026-05-29T12:49:30.807374+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"RIOT-OS 2026.04 \u0026quot;Fire Rizzlease\u0026quot; is out","description":"RIOT-OS 2026.04 \"Fire Rizzlease\" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.","datePublished":"2026-05-26T12:00:00+02:00","dateModified":"2026-05-29T12:49:30.807039+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/riot-os-2026-04-release.html"}
 </script>
 
-    <meta name="keywords" content="zephyr,rtos,embedded,digest" />
+    <meta name="keywords" content="riot,rtos,embedded,iot,article" />
 </head>
 <body>
     <header>
@@ -78,70 +79,111 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">May 08, 2026</h4>
+        <div id="content">            <h4 class="date">May 26, 2026</h4>
 
             <article class="post">
                 <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 19, 2026&quot;">Zephyr RTOS Digest — Week 19, 2026</a>
+                    <a href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="bookmark" title="Permanent Link to &quot;RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out&quot;">RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out</a>
                 </h2>
 
                 
                 
 
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-overview">
-<h2>Zephyr RTOS Overview</h2>
-<p>The Zephyr Real-Time Operating System (RTOS) is gaining traction in the embedded systems community, providing a lightweight, scalable platform suitable for a range of devices. Recent developments reflect its rapid adoption, community engagement, and ongoing improvements. Below are notable updates organized by sub-themes.</p>
+                <p><a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04">RIOT-OS 2026.04</a>, codenamed <strong>Fire Rizzlease</strong> 🫪👍, was released on May 6, 2026.
+RIOT is a multi-threading operating system targeting microcontrollers found in the
+Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
+with a focus on energy-efficiency, soft real-time capabilities, and a small memory
+footprint.</p>
+<p>This release spans 84 days of development, 125 merged pull requests composed of 229
+commits, and contributions from 27 people. A notable stat: <strong>1,141,523 lines were
+deleted</strong> against only 25,007 inserted, largely thanks to a major vendor code cleanup.</p>
+<div class="section" id="codeberg-mirror">
+<h2>Codeberg mirror</h2>
+<p>RIOT is now synced to <a class="reference external" href="https://codeberg.org/riot/riot">Codeberg</a> (#21997). This gives the project a home on a
+non-profit, community-driven forge alongside its GitHub presence, a welcome step
+for an independent open-source project.</p>
 </div>
-<div class="section" id="zephyr-project-documentation-and-resources">
-<h2>Zephyr Project Documentation and Resources</h2>
-<p>The Zephyr Project continues to enhance its documentation and resources, enabling developers to effectively work with the RTOS. The documentation highlights various features, integration capabilities, and specific hardware support.</p>
+<div class="section" id="massive-efm32-vendor-code-removal">
+<h2>Massive EFM32 vendor code removal</h2>
+<p>Over <strong>one million lines of vendor code</strong> have been removed from the EFM32 family,
+replaced by a <tt class="docutils literal">pkg/gecko_sdk</tt> dependency (#22040). This is the single biggest
+contributor to the impressive deletion count and results in a much leaner and more
+maintainable codebase for Silicon Labs EFM32-based boards.</p>
+</div>
+<div class="section" id="raspberry-pi-pico-2-rp2350-improvements">
+<h2>Raspberry Pi Pico 2 / RP2350 improvements</h2>
+<p>The RP2350 support received a thorough overhaul (#21753):</p>
 <ul class="simple">
-<li><a class="reference external" href="https://docs.zephyrproject.org/latest/index.html">Zephyr Project Documentation</a></li>
-<li><a class="reference external" href="https://docs.nordicsemi.com/bundle/ncs-3.0.0/page/zephyr/releases/index.html">NCS Releases</a></li>
-<li><a class="reference external" href="https://docs.zephyrproject.org/latest/releases/eol_releases.html">End-of-life releases — Zephyr Project Documentation</a></li>
-<li><a class="reference external" href="https://github.com/zephyrproject-rtos/zephyr">GitHub - zephyrproject-rtos/zephyr</a></li>
-<li><a class="reference external" href="https://github.com/zephyrproject-rtos/zephyr/releases">Releases · zephyrproject-rtos/zephyr</a></li>
+<li>Unified abstractions between the RISC-V and ARM cores of the RP2350.</li>
+<li>Added the XH3IRQ interrupt controller.</li>
+<li>Updated UART driver.</li>
+<li>Added RISC-V support.</li>
+</ul>
+<p>The scope of this work was large enough to inspire <a class="reference external" href="https://inet.haw-hamburg.de/thesis/completed/ba_hert_tom.pdf/view">a bachelor's thesis</a> at
+HAW Hamburg.</p>
+</div>
+<div class="section" id="new-board-and-cpu-support">
+<h2>New board and CPU support</h2>
+<p>Three new targets join the supported hardware list:</p>
+<ul class="simple">
+<li><strong>pro-micro-nrf52840</strong> (#22089) — a popular nRF52840-based Pro Micro form-factor board.</li>
+<li><strong>slstk3301a</strong> (#22069) — Silicon Labs EFM32 Tiny Gecko starter kit.</li>
+<li><strong>STM32H7</strong> (#21978) — high-performance STM32 family, with additional peripheral
+support for the nucleo-h753zi (#22076).</li>
 </ul>
 </div>
-<div class="section" id="community-engagement-and-support">
-<h2>Community Engagement and Support</h2>
-<p>The Zephyr community is expanding, with increased corporate membership and educational efforts aimed at supporting developers. Training courses and events foster collaboration and skill development.</p>
+<div class="section" id="new-device-drivers">
+<h2>New device drivers</h2>
 <ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org/category/announcements/">Announcements – Zephyr Project</a></li>
-<li><a class="reference external" href="https://training.linuxfoundation.org/blog/embedded-teams-are-looking-closely-at-zephyr/">Embedded Teams Are Looking Closely at Zephyr</a></li>
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-turns-10-as-global-adoption-surges-and-long-term-embedded-use-expands-302704160.html">Zephyr Turns 10 as Global Adoption Surges and Long-Term Embedded Use Expands</a></li>
-<li><a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-turns-10-years-what-the-adoption-data-tell-us">Zephyr RTOS Adoption Grows Rapidly</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/what-to-expect-at-the-zephyr-project-meetup-may-12-2026-copenhagen-denmark/">What to expect at the Zephyr Project meetup (May 12, 2026): Copenhagen, Denmark</a></li>
+<li><strong>AMG88xx</strong> (#22104) — infrared array sensor (thermal camera) from Panasonic.</li>
+<li><strong>ADS1X1X</strong> (#21694) — family of Texas Instruments I²C ADCs.</li>
 </ul>
 </div>
-<div class="section" id="ecosystem-growth">
-<h2>Ecosystem Growth</h2>
-<p>There's a noticeable growth in the Zephyr ecosystem, with companies upgrading their memberships and new partnerships being announced. This expansion reflects confidence in Zephyr's capabilities and promises more resources for developers.</p>
+<div class="section" id="guide-site-and-documentation">
+<h2>Guide site and documentation</h2>
+<p>The <a class="reference external" href="https://guide.riot-os.org/">RIOT Guide Site</a> continues to grow as the default entry point for new users,
+progressively replacing Doxygen for prose documentation. This release adds:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org/category/top-news/">Top News – Zephyr Project</a></li>
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership</a></li>
+<li>More tutorials.</li>
+<li>An experimental <a class="reference external" href="https://guide.riot-os.org/boards/">Supported Boards</a> section.</li>
+<li>Unit tests in tutorials (#22042).</li>
+<li>Updated Astro v6 framework (#22145).</li>
+</ul>
+<p>The Doxygen API reference remains available at <a class="reference external" href="https://api.riot-os.org/">api.riot-os.org</a>.</p>
+</div>
+<div class="section" id="networking-improvements">
+<h2>Networking improvements</h2>
+<p>Several additions to the GNRC networking stack:</p>
+<ul class="simple">
+<li>New <tt class="docutils literal">gnrc_pktshark</tt> module to pretty-print network traffic (#21284).</li>
+<li><tt class="docutils literal">gnrc_ipv6_nib_dyn_lladdr_get()</tt> API (#22013).</li>
+<li>ABR (Authoritative Border Router) now run-time configurable (#21081).</li>
+<li>Generic UDP shell command (#22049).</li>
 </ul>
 </div>
-<div class="section" id="technological-advancements">
-<h2>Technological Advancements</h2>
-<p>Enhancements in networking capabilities and the integration of various technologies highlight Zephyr's adaptability to modern requirements. These upgrades are critical for developers aiming for cutting-edge solutions.</p>
+<div class="section" id="notable-bug-fixes">
+<h2>Notable bug fixes</h2>
+<p>43 bugs were fixed in this release, including:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos">Zephyr RTOS on Silicon Labs platforms</a></li>
+<li>ESP8266 crashes on reboot and startup (#22014, #22010).</li>
+<li>Potential buffer overflow in the atwinc15x0 driver (#22041).</li>
+<li>NanoCoAP message corruption in <tt class="docutils literal">coap_build_reply()</tt> (#22094).</li>
+<li>Wrong byte order for gyro and accelerometer reads in the MPU-9x50 driver (#22135).</li>
+<li>LVGL configuration and SDL issues on native (#22005, #22139).</li>
 </ul>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html">posted at 13:25</a>
+                    <a href="https://tprrt.tupi.fr/riot-os-2026-04-release.html">posted at 12:00</a>
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
                     &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/riot.html" class="tags">riot</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/iot.html" class="tags">iot</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
                 </div>
             </article>
             <div class="clear"></div>

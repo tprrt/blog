@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Tprrt's Blog | 404 Not Found</title>
+    <title>Tprrt's Blog | articles tagged "iot"</title>
     <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
     <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <header>
         <nav>
             <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/iot.html">iot</a></li>
                 <li><a href="https://tprrt.tupi.fr/">Home</a></li>
                 <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
                 <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
@@ -67,11 +68,113 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">
-            <div class="page">
-                <h1>404 Not Found</h1>
+        <div id="content">            <h4 class="date">May 26, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="bookmark" title="Permanent Link to &quot;RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out&quot;">RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out</a>
+                </h2>
+
                 
-            </div>
+                
+
+                <p><a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04">RIOT-OS 2026.04</a>, codenamed <strong>Fire Rizzlease</strong> 🫪👍, was released on May 6, 2026.
+RIOT is a multi-threading operating system targeting microcontrollers found in the
+Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
+with a focus on energy-efficiency, soft real-time capabilities, and a small memory
+footprint.</p>
+<p>This release spans 84 days of development, 125 merged pull requests composed of 229
+commits, and contributions from 27 people. A notable stat: <strong>1,141,523 lines were
+deleted</strong> against only 25,007 inserted, largely thanks to a major vendor code cleanup.</p>
+<div class="section" id="codeberg-mirror">
+<h2>Codeberg mirror</h2>
+<p>RIOT is now synced to <a class="reference external" href="https://codeberg.org/riot/riot">Codeberg</a> (#21997). This gives the project a home on a
+non-profit, community-driven forge alongside its GitHub presence, a welcome step
+for an independent open-source project.</p>
+</div>
+<div class="section" id="massive-efm32-vendor-code-removal">
+<h2>Massive EFM32 vendor code removal</h2>
+<p>Over <strong>one million lines of vendor code</strong> have been removed from the EFM32 family,
+replaced by a <tt class="docutils literal">pkg/gecko_sdk</tt> dependency (#22040). This is the single biggest
+contributor to the impressive deletion count and results in a much leaner and more
+maintainable codebase for Silicon Labs EFM32-based boards.</p>
+</div>
+<div class="section" id="raspberry-pi-pico-2-rp2350-improvements">
+<h2>Raspberry Pi Pico 2 / RP2350 improvements</h2>
+<p>The RP2350 support received a thorough overhaul (#21753):</p>
+<ul class="simple">
+<li>Unified abstractions between the RISC-V and ARM cores of the RP2350.</li>
+<li>Added the XH3IRQ interrupt controller.</li>
+<li>Updated UART driver.</li>
+<li>Added RISC-V support.</li>
+</ul>
+<p>The scope of this work was large enough to inspire <a class="reference external" href="https://inet.haw-hamburg.de/thesis/completed/ba_hert_tom.pdf/view">a bachelor's thesis</a> at
+HAW Hamburg.</p>
+</div>
+<div class="section" id="new-board-and-cpu-support">
+<h2>New board and CPU support</h2>
+<p>Three new targets join the supported hardware list:</p>
+<ul class="simple">
+<li><strong>pro-micro-nrf52840</strong> (#22089) — a popular nRF52840-based Pro Micro form-factor board.</li>
+<li><strong>slstk3301a</strong> (#22069) — Silicon Labs EFM32 Tiny Gecko starter kit.</li>
+<li><strong>STM32H7</strong> (#21978) — high-performance STM32 family, with additional peripheral
+support for the nucleo-h753zi (#22076).</li>
+</ul>
+</div>
+<div class="section" id="new-device-drivers">
+<h2>New device drivers</h2>
+<ul class="simple">
+<li><strong>AMG88xx</strong> (#22104) — infrared array sensor (thermal camera) from Panasonic.</li>
+<li><strong>ADS1X1X</strong> (#21694) — family of Texas Instruments I²C ADCs.</li>
+</ul>
+</div>
+<div class="section" id="guide-site-and-documentation">
+<h2>Guide site and documentation</h2>
+<p>The <a class="reference external" href="https://guide.riot-os.org/">RIOT Guide Site</a> continues to grow as the default entry point for new users,
+progressively replacing Doxygen for prose documentation. This release adds:</p>
+<ul class="simple">
+<li>More tutorials.</li>
+<li>An experimental <a class="reference external" href="https://guide.riot-os.org/boards/">Supported Boards</a> section.</li>
+<li>Unit tests in tutorials (#22042).</li>
+<li>Updated Astro v6 framework (#22145).</li>
+</ul>
+<p>The Doxygen API reference remains available at <a class="reference external" href="https://api.riot-os.org/">api.riot-os.org</a>.</p>
+</div>
+<div class="section" id="networking-improvements">
+<h2>Networking improvements</h2>
+<p>Several additions to the GNRC networking stack:</p>
+<ul class="simple">
+<li>New <tt class="docutils literal">gnrc_pktshark</tt> module to pretty-print network traffic (#21284).</li>
+<li><tt class="docutils literal">gnrc_ipv6_nib_dyn_lladdr_get()</tt> API (#22013).</li>
+<li>ABR (Authoritative Border Router) now run-time configurable (#21081).</li>
+<li>Generic UDP shell command (#22049).</li>
+</ul>
+</div>
+<div class="section" id="notable-bug-fixes">
+<h2>Notable bug fixes</h2>
+<p>43 bugs were fixed in this release, including:</p>
+<ul class="simple">
+<li>ESP8266 crashes on reboot and startup (#22014, #22010).</li>
+<li>Potential buffer overflow in the atwinc15x0 driver (#22041).</li>
+<li>NanoCoAP message corruption in <tt class="docutils literal">coap_build_reply()</tt> (#22094).</li>
+<li>Wrong byte order for gyro and accelerometer reads in the MPU-9x50 driver (#22135).</li>
+<li>LVGL configuration and SDL issues on native (#22005, #22139).</li>
+</ul>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/riot-os-2026-04-release.html">posted at 12:00</a>
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/riot.html" class="tags">riot</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/iot.html" class="tags selected">iot</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>
 
             <div class="clear"></div>
             <footer>
