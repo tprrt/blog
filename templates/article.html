@@ -1,6 +1,14 @@
 {% extends "!theme/article.html" %}
 
-{% block meta_description %}{% if not article.description %}<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />{% else %}{{ super() }}{% endif %}{% endblock %}
+{# Note: if article.description is set, the theme's block head also emits a description tag.
+   Since no articles currently use :description:, this is not an issue in practice. #}
+{% block meta_description %}
+{% if article.description %}
+<meta name="description" content="{{ article.description }}" />
+{% else %}
+<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />
+{% endif %}
+{% endblock meta_description %}
 {% block opengraph %}
 <meta property="og:site_name" content="{{ SITENAME }}" />
 <meta property="og:locale" content="{{ DEFAULT_LANG }}" />
