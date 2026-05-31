@@ -4,7 +4,7 @@ Yocto Project 6.0 "wrynose" is out
 
 :date: 2026-05-13 12:00
 :tags: yocto, openembedded, embedded, linux, oe-core, article
-:category: Embedded Linux
+:category: Linux
 :slug: yocto-project-6-0-wrynose-release
 :authors: tperrot
 :summary: Yocto Project 6.0 "wrynose", the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.
