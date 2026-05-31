@@ -13,8 +13,6 @@ DEFAULT_LANG = 'en'
 DEFAULT_DATE = 'fs'
 DEFAULT_DATE_FORMAT = '%d %b %Y'
 
-GOOGLE_ANALYTICS = ""
-GOOGLE_ADSENSE = ""
 GOATCOUNTER_CODE = ""
 
 GITHUB_URL = "https://github.com/tprrt"
