@@ -2,6 +2,7 @@ AUTHOR = 'Thomas Perrot'
 SITENAME = "Tprrt's Blog"
 SITESUBTITLE = "Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness"
 SITEDESCRIPTION = SITESUBTITLE
+OG_DEFAULT_IMAGE = 'static/linux-512.webp'
 SITEURL = ''
 
 PATH = 'content'

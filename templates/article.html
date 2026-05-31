@@ -8,7 +8,7 @@
 {% endblock head %}
 
 {% block opengraph %}
-{% set social_image = (SITEURL ~ '/' ~ article.og_image.lstrip('/')) if article.og_image else (SITEURL ~ '/static/linux-512.webp') %}
+{% set social_image = (SITEURL ~ '/' ~ article.og_image.lstrip('/')) if article.og_image else (SITEURL ~ '/' ~ OG_DEFAULT_IMAGE) %}
 <meta property="og:site_name" content="{{ SITENAME }}" />
 <meta property="og:locale" content="{{ DEFAULT_LANG }}" />
 <meta property="og:type" content="article" />
