@@ -24,5 +24,4 @@ AUTHOR_FEED_ATOM = 'feeds/{slug}.atom.xml'
 
 # Following items are often useful when publishing
 
-GOOGLE_ANALYTICS = "G-Q2GHH38HV9"
-GOOGLE_ADSENSE = "ca-pub-8632147971669760"
+GOATCOUNTER_CODE = "tperrot"
