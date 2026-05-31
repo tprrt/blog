@@ -54,6 +54,8 @@ AUTHORS_URL        = 'authors'
 AUTHORS_SAVE_AS    = 'authors/index.html'
 CATEGORIES_URL     = 'categories'
 CATEGORIES_SAVE_AS = 'categories/index.html'
+ABOUT_URL     = 'about.html'
+ABOUT_SAVE_AS = 'about.html'
 CONTACT_URL     = 'contact'
 CONTACT_SAVE_AS = 'contact/index.html'
 CONTRIBUTIONS_URL     = 'contributions'
@@ -71,6 +73,7 @@ MENU_INTERNAL_PAGES = (
     ('Digests', DIGESTS_URL, DIGESTS_SAVE_AS),
     ('Categories', CATEGORIES_URL, CATEGORIES_SAVE_AS),
     ('Contributions', CONTRIBUTIONS_URL, CONTRIBUTIONS_SAVE_AS),
+    ('About', ABOUT_URL, ABOUT_SAVE_AS),
     ('Contact', CONTACT_URL, CONTACT_SAVE_AS),
 )
 
