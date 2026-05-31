@@ -3,7 +3,7 @@
 {% block head %}
 {{ super() }}
 {% if not article.description %}
-<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />
+<meta name="description" content="{{ article.summary|striptags|replace('&amp;', '&')|replace('&lt;', '<')|replace('&gt;', '>')|replace('&quot;', '"')|truncate(160) }}" />
 {% endif %}
 {% endblock head %}
 
