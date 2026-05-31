@@ -43,10 +43,31 @@ This blog is a place where I write about topics I find interesting:
 Long-form articles appear under `Articles`_. The weekly `Digests`_ are short
 link roundups covering the same topics.
 
+Social
+======
+
+* `Bluesky`_
+* `Discord`_
+* `Dockerhub`_
+* `Github`_
+* `Gitlab`_
+* `Hackaday`_
+* `Hackster`_
+* `Instagram`_
+* `Instructables`_
+* `Linktree`_
+* `Mastodon`_
+* `Printables`_
+* `Spotify`_
+* `Thingiverse`_
+* `Threads`_
+* `Twitter`_
+
 Contact
 =======
 
-See the `Contact`_ page for ways to reach me.
+Reach me by `Email`_ (GPG key available `here <GnuPG_>`_), on `Matrix`_ as
+*@tperrot:matrix.org*, or on `IRC`_ (`Libera`_ network) as *tprrt*.
 
 .. _Yocto Project: https://www.yoctoproject.org
 .. _OpenEmbedded: https://www.openembedded.org
@@ -55,6 +76,26 @@ See the `Contact`_ page for ways to reach me.
 .. _Contributions: /contributions
 .. _Articles: /articles
 .. _Digests: /digests
-.. _Contact: /contact
 .. _Curriculum vitae: https://github.com/tprrt/curriculum/raw/gh-pages/resume.pdf
 .. _LinkedIn: https://www.linkedin.com/in/tprrt
+.. _Bluesky: https://bsky.app/profile/tprrt.bsky.social
+.. _Discord: https://discordapp.com/users/tprrt
+.. _Dockerhub: https://hub.docker.com/u/tprrt
+.. _Email: mailto:thomas.perrot@tupi.fr
+.. _Github: https://github.com/tprrt
+.. _Gitlab: https://gitlab.com/tprrt
+.. _GnuPG: https://keys.openpgp.org/vks/v1/by-fingerprint/088FDE87B7F1F018B520666B53A3D309F9177FB2
+.. _Hackaday: https://hackaday.io/pages/412114
+.. _Hackster: https://www.hackster.io/tprrt
+.. _Instagram: https://www.instagram.com/thomas.prrt
+.. _Instructables: https://www.instructables.com/member/tprrt
+.. _IRC: https://fr.wikipedia.org/wiki/Internet_Relay_Chat
+.. _Libera: https://libera.chat
+.. _Linktree: https://linktr.ee/tprrt
+.. _Mastodon: https://mastodon.social/@tprrt
+.. _Matrix: https://matrix.org
+.. _Printables: https://www.printables.com/social/394648-tprrt/about
+.. _Spotify: https://open.spotify.com/user/214b7jk6zrtpen27r7qomqydy
+.. _Thingiverse: https://www.thingiverse.com/tprrt
+.. _Threads: https://www.threads.net/@thomas.prrt
+.. _Twitter: https://twitter.com/tprrt31
