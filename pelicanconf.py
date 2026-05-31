@@ -86,6 +86,7 @@ PLUGIN_PATHS = [
 
 PLUGINS = [
     'assets',
+    'readtime',
     'sitemap',
 ]
 
