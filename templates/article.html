@@ -1,8 +1,7 @@
 {% extends "!theme/article.html" %}
 
+{% block meta_description %}{% if not article.description %}<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />{% else %}{{ super() }}{% endif %}{% endblock %}
 {% block opengraph %}
-{% if not article.description %}<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />
-{% endif %}
 <meta property="og:site_name" content="{{ SITENAME }}" />
 <meta property="og:locale" content="{{ DEFAULT_LANG }}" />
 <meta property="og:type" content="article" />
