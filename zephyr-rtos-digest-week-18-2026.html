@@ -9,34 +9,20 @@
     <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
     <link href="https://tprrt.tupi.fr/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
     <link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories Atom Feed" />
-    <link href="https://tprrt.tupi.fr/feeds/embedded.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/embedded.rss.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
     <meta name="generator" content="Pelican" />
     <meta name="description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
     <meta name="author" content="Thomas Perrot" />
-
-<style>
-    footer .license-info {
-        margin-top: 0.5em;
-        font-size: 0.9em;
-    }
-</style>
-<script>
-// Remove stale GA-era cookie consent key left in returning visitors' browsers
-localStorage.removeItem('cookieConsent');
-// Add license information to footer
-document.addEventListener('DOMContentLoaded', function() {
-    var footer = document.querySelector('footer p');
-    if (footer) {
-        var licenseInfo = document.createElement('p');
-        licenseInfo.className = 'license-info';
-        licenseInfo.innerHTML = 'Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>';
-        footer.parentNode.appendChild(licenseInfo);
-    }
-});
-</script>
+    <style>
+        footer .license-info { margin-top: 0.5em; font-size: 0.9em; }
+    </style>
+    <script>
+    // Remove stale GA-era cookie consent key left in returning visitors' browsers
+    localStorage.removeItem('cookieConsent');
+    </script>
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
@@ -44,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta property="og:description" content="Weekly roundup of Zephyr RTOS news." />
 <meta property="og:url" content="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" />
 <meta property="article:published_time" content="2026-05-08T13:25:00+02:00" />
-<meta property="article:modified_time" content="2026-05-31T09:05:26.204388+02:00" />
+<meta property="article:modified_time" content="2026-05-31T10:34:10.736254+02:00" />
 <meta property="article:tag" content="zephyr" />
 <meta property="article:tag" content="rtos" />
 <meta property="article:tag" content="embedded" />
@@ -56,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Zephyr RTOS Digest \u2014 Week 19, 2026","description":"Weekly roundup of Zephyr RTOS news.","datePublished":"2026-05-08T13:25:00+02:00","dateModified":"2026-05-31T09:05:26.204388+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Zephyr RTOS Digest \u2014 Week 19, 2026","description":"Weekly roundup of Zephyr RTOS news.","datePublished":"2026-05-08T13:25:00+02:00","dateModified":"2026-05-31T10:34:10.736254+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html"}
 </script>
 
     <meta name="keywords" content="zephyr,rtos,embedded,digest" />
@@ -72,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
                 <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
                 <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/about.html">About</a></li>
                 <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
             </ul>
         </nav>
@@ -88,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 19, 2026&quot;">Zephyr RTOS Digest — Week 19, 2026</a>
                 </h2>
 
-                
-                
+
 
                 <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
@@ -139,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html">posted at 13:25</a>
+                    &nbsp;&middot;&nbsp;2 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
@@ -157,6 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
                 &middot;
                 <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+                </p>
+                <p class="license-info">Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></p>
             </footer>
         </div>
         <div class="clear"></div>

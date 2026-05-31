@@ -9,34 +9,20 @@
     <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
     <link href="https://tprrt.tupi.fr/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
     <link href="https://tprrt.tupi.fr/feeds/riot-os.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories Atom Feed" />
-    <link href="https://tprrt.tupi.fr/feeds/riot-os.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/riot-os.rss.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
     <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
     <meta name="generator" content="Pelican" />
     <meta name="description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
     <meta name="author" content="Thomas Perrot" />
-
-<style>
-    footer .license-info {
-        margin-top: 0.5em;
-        font-size: 0.9em;
-    }
-</style>
-<script>
-// Remove stale GA-era cookie consent key left in returning visitors' browsers
-localStorage.removeItem('cookieConsent');
-// Add license information to footer
-document.addEventListener('DOMContentLoaded', function() {
-    var footer = document.querySelector('footer p');
-    if (footer) {
-        var licenseInfo = document.createElement('p');
-        licenseInfo.className = 'license-info';
-        licenseInfo.innerHTML = 'Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>';
-        footer.parentNode.appendChild(licenseInfo);
-    }
-});
-</script>
+    <style>
+        footer .license-info { margin-top: 0.5em; font-size: 0.9em; }
+    </style>
+    <script>
+    // Remove stale GA-era cookie consent key left in returning visitors' browsers
+    localStorage.removeItem('cookieConsent');
+    </script>
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
@@ -56,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Build RIOT-OS with Podman","description":"This article is a tip that explains how it is possible to build a RIOT-OS application with Podman.","datePublished":"2020-09-27T13:01:00+02:00","dateModified":"2025-06-11T14:53:00+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/build-riot-os-with-podman.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Build RIOT-OS with Podman","description":"This article is a tip that explains how it is possible to build a RIOT-OS application with Podman.","datePublished":"2020-09-27T13:01:00+02:00","dateModified":"2025-06-11T14:53:00+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/build-riot-os-with-podman.html"}
 </script>
 
     <meta name="keywords" content="container,podman,riot-os,article" />
@@ -72,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
                 <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
                 <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/about.html">About</a></li>
                 <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
             </ul>
         </nav>
@@ -88,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" rel="bookmark" title="Permanent Link to &quot;Build RIOT-OS with Podman&quot;">Build RIOT-OS with Podman</a>
                 </h2>
 
-                
-                
+
 
                 <div class="section" id="summary">
 <h2>Summary</h2>
@@ -201,6 +187,7 @@ HEAD<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/build-riot-os-with-podman.html">posted at 13:01</a>
+                    &nbsp;&middot;&nbsp;4 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/riot-os.html" rel="tag">riot-os</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/container.html" class="tags">container</a>
@@ -219,6 +206,8 @@ HEAD<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span
                 <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
                 &middot;
                 <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+                </p>
+                <p class="license-info">Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></p>
             </footer>
         </div>
         <div class="clear"></div>
