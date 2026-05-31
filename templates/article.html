@@ -1,6 +1,7 @@
 {% extends "!theme/article.html" %}
 
 {% block opengraph %}
+<meta name="description" content="{{ article.summary|striptags|truncate(160) }}" />
 <meta property="og:site_name" content="{{ SITENAME }}" />
 <meta property="og:locale" content="{{ DEFAULT_LANG }}" />
 <meta property="og:type" content="article" />
