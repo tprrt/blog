@@ -23,6 +23,19 @@
 {% for tag in article.tags %}
 <meta property="article:tag" content="{{ tag }}" />
 {% endfor %}
+{% if article.og_image %}
+<meta property="og:image" content="{{ SITEURL }}/{{ article.og_image }}" />
+{% else %}
+<meta property="og:image" content="{{ SITEURL }}/static/linux-512.webp" />
+{% endif %}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ article.title }}" />
+<meta name="twitter:description" content="{{ article.summary|striptags|truncate(200) }}" />
+{% if article.og_image %}
+<meta name="twitter:image" content="{{ SITEURL }}/{{ article.og_image }}" />
+{% else %}
+<meta name="twitter:image" content="{{ SITEURL }}/static/linux-512.webp" />
+{% endif %}
 {% endblock opengraph %}
 
 {% block canonical %}
