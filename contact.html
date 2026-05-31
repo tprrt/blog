@@ -22,6 +22,8 @@
     }
 </style>
 <script>
+// Remove stale GA-era cookie consent key left in returning visitors' browsers
+localStorage.removeItem('cookieConsent');
 // Add license information to footer
 document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('footer p');
@@ -102,7 +104,7 @@ Otherwise, on the <a class="reference external" href="https://libera.chat">Liber
 </div>
 <div class="section" id="donate">
 <h2>Donate</h2>
-<p>I accept charitable donations via <a class="reference external" href="https://paypal.me/tprrt">PayPal</a> or <cite>Ko-fi_</cite>.</p>
+<p>I accept charitable donations via <a class="reference external" href="https://paypal.me/tprrt">PayPal</a> or <a class="reference external" href="https://ko-fi.com/tprrt">Ko-fi</a>.</p>
 </div>
 
             </div>
@@ -122,6 +124,6 @@ Otherwise, on the <a class="reference external" href="https://libera.chat">Liber
         <div class="clear"></div>
     </div>
 <script data-goatcounter="https://tperrot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
 </body>
 </html>

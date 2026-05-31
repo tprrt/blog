@@ -24,6 +24,8 @@
     }
 </style>
 <script>
+// Remove stale GA-era cookie consent key left in returning visitors' browsers
+localStorage.removeItem('cookieConsent');
 // Add license information to footer
 document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('footer p');
@@ -491,6 +493,6 @@ For example, the following code can be used to initialize a BME280 sensor using 
         <div class="clear"></div>
     </div>
 <script data-goatcounter="https://tperrot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
 </body>
 </html>

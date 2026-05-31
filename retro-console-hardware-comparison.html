@@ -24,6 +24,8 @@
     }
 </style>
 <script>
+// Remove stale GA-era cookie consent key left in returning visitors' browsers
+localStorage.removeItem('cookieConsent');
 // Add license information to footer
 document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('footer p');
@@ -35,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-<meta name="description" content="A technical comparison of classic gaming consoles, covering CPU specifications, graphics capabilities, audio systems, and special features across multiple..." />
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
@@ -61,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <meta name="keywords" content="hardware,retro,console,comparison,technical,article" />
+
+<meta name="description" content="A technical comparison of classic gaming consoles, covering CPU specifications, graphics capabilities, audio systems, and special features across multiple..." />
 </head>
 <body>
     <header>
@@ -814,6 +817,6 @@ these constraints produced some of gaming's most iconic titles.</p>
         <div class="clear"></div>
     </div>
 <script data-goatcounter="https://tperrot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
 </body>
 </html>

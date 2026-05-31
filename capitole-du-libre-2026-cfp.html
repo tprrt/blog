@@ -24,6 +24,8 @@
     }
 </style>
 <script>
+// Remove stale GA-era cookie consent key left in returning visitors' browsers
+localStorage.removeItem('cookieConsent');
 // Add license information to footer
 document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('footer p');
@@ -35,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-<meta name="description" content="The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance —..." />
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta property="og:description" content="The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance — submissions close on July 20, 2026." />
 <meta property="og:url" content="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" />
 <meta property="article:published_time" content="2026-05-26T12:00:00+02:00" />
-<meta property="article:modified_time" content="2026-05-31T07:53:57.357774+02:00" />
+<meta property="article:modified_time" content="2026-05-31T08:45:47.894238+02:00" />
 <meta property="article:tag" content="capitole du libre" />
 <meta property="article:tag" content="cfp" />
 <meta property="article:tag" content="free software" />
@@ -58,10 +59,12 @@ document.addEventListener('DOMContentLoaded', function() {
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Capitole du Libre 2026: the CFP is open","description":"The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance \u2014 submissions close on July 20, 2026.","datePublished":"2026-05-26T12:00:00+02:00","dateModified":"2026-05-31T07:53:57.357774+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Capitole du Libre 2026: the CFP is open","description":"The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance \u2014 submissions close on July 20, 2026.","datePublished":"2026-05-26T12:00:00+02:00","dateModified":"2026-05-31T08:45:47.894238+02:00","author":{"@type":"Person","name":"tperrot"},"url":"https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html"}
 </script>
 
     <meta name="keywords" content="capitole du libre,cfp,free software,open source,conference,toulouse,article" />
+
+<meta name="description" content="The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance —..." />
 </head>
 <body>
     <header>
@@ -162,6 +165,6 @@ proposals.</p>
         <div class="clear"></div>
     </div>
 <script data-goatcounter="https://tperrot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
 </body>
 </html>

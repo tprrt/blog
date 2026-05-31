@@ -24,6 +24,8 @@
     }
 </style>
 <script>
+// Remove stale GA-era cookie consent key left in returning visitors' browsers
+localStorage.removeItem('cookieConsent');
 // Add license information to footer
 document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('footer p');
@@ -35,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-<meta name="description" content="Why I chose to open a new blog and a quick description of the subjects that will be covered." />
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
@@ -57,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <meta name="keywords" content="blog,article" />
+
+<meta name="description" content="Why I chose to open a new blog and a quick description of the subjects that will be covered." />
 </head>
 <body>
     <header>
@@ -116,6 +119,6 @@ but also about open firmware and rtos, as well as related topics like virtualiza
         <div class="clear"></div>
     </div>
 <script data-goatcounter="https://tperrot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
 </body>
 </html>
