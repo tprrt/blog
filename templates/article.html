@@ -34,7 +34,8 @@
 {% endblock canonical %}
 
 {% block jsonld %}
+{% set social_image = (SITEURL ~ '/' ~ article.og_image.lstrip('/')) if article.og_image else (SITEURL ~ '/' ~ OG_DEFAULT_IMAGE) %}
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":{{ article.title|tojson }},"description":{{ article.summary|striptags|truncate(200)|tojson }},"datePublished":{{ article.date.isoformat()|tojson }}{% if article.modified %},"dateModified":{{ article.modified.isoformat()|tojson }}{% endif %},"author":{"@type":"Person","name":{{ article.author|string|tojson }}},"url":{{ (SITEURL ~ "/" ~ article.url)|tojson }}}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":{{ article.title|tojson }},"description":{{ article.summary|striptags|truncate(200)|tojson }},"datePublished":{{ article.date.isoformat()|tojson }}{% if article.modified %},"dateModified":{{ article.modified.isoformat()|tojson }}{% endif %},"author":{"@type":"Person","name":{{ article.author|string|tojson }}},"image":{{ social_image|tojson }},"url":{{ (SITEURL ~ "/" ~ article.url)|tojson }}}
 </script>
 {% endblock jsonld %}
