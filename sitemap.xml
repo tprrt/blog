@@ -5,42 +5,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://tprrt.tupi.fr/</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/authors</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/categories</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tags</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/articles</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/digests</loc>
-<lastmod>2026-06-06T18:46:22-00:00</lastmod>
+<lastmod>2026-06-15T20:10:07-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -67,183 +67,225 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html</loc>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/riot-os-2026-04-release.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html</loc>
-<lastmod>2026-06-06T18:46:15+02:00</lastmod>
+<lastmod>2026-06-15T20:09:53+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -313,21 +355,21 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://tprrt.tupi.fr/category/embedded.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/category/fitness.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/category/free-software.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -341,21 +383,21 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://tprrt.tupi.fr/category/gaming.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/category/hardware.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/category/linux.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -382,176 +424,176 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/tag/zephyr.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://tprrt.tupi.fr/tag/rtos.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://tprrt.tupi.fr/tag/embedded.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://tprrt.tupi.fr/tag/digest.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
 <loc>https://tprrt.tupi.fr/tag/crossfit.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/hyrox.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/powerlifting.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/tag/open-source.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<loc>https://tprrt.tupi.fr/tag/digest.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/tag/hardware.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<loc>https://tprrt.tupi.fr/tag/zephyr.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://tprrt.tupi.fr/tag/oshw.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<loc>https://tprrt.tupi.fr/tag/rtos.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/tag/embedded.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/retrogaming.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/linux.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/gaming.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/tag/open-source.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/tag/hardware.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://tprrt.tupi.fr/tag/oshw.html</loc>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/capitole-du-libre.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/cfp.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/free-software.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/conference.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/toulouse.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/article.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/riot.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/iot.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/yocto.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/openembedded.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/oe-core.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://tprrt.tupi.fr/tag/embedded-linux.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -712,7 +754,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://tprrt.tupi.fr/author/tperrot.html</loc>
-<lastmod>2026-06-06T18:46:15+00:09</lastmod>
+<lastmod>2026-06-15T20:09:53+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
