@@ -112,6 +112,21 @@ document/RAG support, <a class="reference external" href="https://github.com/sea
 sending queries to a third party, and Open Terminal gives the agent a sandboxed
 shell. <a class="reference external" href="https://caddyserver.com">Caddy</a> is the only container exposed to the host network, and it
 enforces a Bearer token on every API route.</p>
+<p><a class="reference external" href="https://github.com/open-webui/open-webui">Open WebUI</a> is the browser-facing piece: besides the chat interface, it
+keeps its own user accounts and conversation history, and lets you upload
+documents for retrieval-augmented generation without standing up a separate
+vector store just for that.</p>
+<p><a class="reference external" href="https://github.com/searxng/searxng">SearXNG</a> is a self-hosted metasearch engine — it aggregates results from
+other search engines and returns them without forwarding the query to any
+single one of them, which is what lets the agent's web-search tool stay
+consistent with the rest of the stack's no-third-party-by-default stance.</p>
+<p><a class="reference external" href="https://caddyserver.com">Caddy</a> is the reverse proxy and, as noted above, the only place auth is
+enforced — it is also the only container that would need to know about TLS,
+so adding HTTPS later (if this ever leaves the LAN) is a Caddyfile change,
+not a new container.</p>
+<p>Open Terminal gives a sandboxed shell on the pod, reachable from the
+browser — useful for checking logs or restarting a service without opening
+a separate SSH session.</p>
 <p>The whole thing targets two use cases: chatting through Open WebUI from a
 browser, and routing <a class="reference external" href="https://opencode.ai">OpenCode</a>'s agentic coding sessions through Ollama's
 OpenAI-compatible API — the same workflow you would normally point at Claude
@@ -256,7 +271,7 @@ leaving it running unattended.</p>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html">posted at 21:00</a>
-                    &nbsp;&middot;&nbsp;6 min read
+                    &nbsp;&middot;&nbsp;7 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/self-hosting.html" rel="tag">Self-Hosting</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/self-hosting.html" class="tags">self-hosting</a>
