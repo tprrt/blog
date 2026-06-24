@@ -80,6 +80,14 @@
 			console.warn('goatcounter: ' + msg)
 	}
 
+	// Random string for cache-busting; not security-sensitive, so use a CSPRNG
+	// where available rather than Math.random().
+	var rnd = function() {
+		if (window.crypto && window.crypto.getRandomValues)
+			return window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36).substr(0, 5)
+		return Date.now().toString(36).substr(-5)
+	}
+
 	// Get the endpoint to send requests to.
 	var get_endpoint = function() {
 		var s = document.querySelector('script[data-goatcounter]')
@@ -127,7 +135,7 @@
 		var data = window.goatcounter.get_data(vars || {})
 		if (data.p === null)  // null from user callback.
 			return
-		data.rnd = Math.random().toString(36).substr(2, 5)  // Browsers don't always listen to Cache-Control.
+		data.rnd = rnd()  // Browsers don't always listen to Cache-Control.
 
 		var endpoint = get_endpoint()
 		if (!endpoint)
