@@ -56,7 +56,447 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Dec 31, 2025</h4>
+        <div id="content">            <h4 class="date">Jun 24, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html" rel="bookmark" title="Permanent Link to &quot;Squeezing Cycles: Optimizing a Software 3D Renderer for the Game Boy&quot;">Squeezing Cycles: Optimizing a Software 3D Renderer for the Game Boy</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> is a small cross-platform ECS game engine I've been
+building, with backends ranging from desktop OpenGL/Vulkan down to bare
+software rendering on 8/16-bit consoles. The Game Boy Advance backend
+renders actual textured/shaded 3D meshes — cubes, cones, spheres — through
+a CPU-only software rasterizer, on a 16.78MHz ARM7TDMI with <strong>no FPU and
+no hardware polygon fill</strong>. Every float operation is a soft-float library
+call, every divide is a library call, and every pixel is a CPU
+read-modify-write into VRAM.</p>
+<div class="figure align-center">
+<img alt="examples/simple_cube running in mGBA — a single shaded, rotating cube" src="https://tprrt.tupi.fr/static/images/gba-performance/simple_cube.png" />
+<p class="caption"><tt class="docutils literal">examples/simple_cube</tt>, captured straight from mGBA — the demo this
+article's <tt class="docutils literal">simple_cube</tt> numbers are measured on.</p>
+</div>
+<p>This article is about what it actually takes to make that fast — not in
+theory, but measured. Every number below comes from
+<tt class="docutils literal">scripts/debug/gba/cycle_probe.py</tt>, a small script that sets a
+breakpoint on the engine's vblank-wait function inside headless <a class="reference external" href="https://mgba.io">mGBA</a>
+and reads the emulator's cycle counter on every hit. mGBA's CPU emulation
+is deterministic: the same ROM run with the same inputs produces
+bit-identical cycle counts every time, which means an optimization claim
+isn't &quot;it looked smoother&quot; — it's &quot;frame N now costs X fewer cycles, every
+single run.&quot; I discard the first ~100 frames as warm-up (caches, branch
+predictor-equivalent effects, lazy first-frame setup) and average the
+steady-state window after that.</p>
+<p>That discipline matters more than any individual trick below, because
+twice during this work an optimization that was obviously, mathematically
+correct measured as a <strong>regression</strong>. More on that at the end.</p>
+</div>
+<div class="section" id="the-hardware-constraint-that-drives-everything">
+<h2>The hardware constraint that drives everything</h2>
+<p>The GBA's display is locked to the LCD's scanout rate. A frame takes
+exactly 280896 cycles of the system clock to <em>display</em>, whether or not
+your CPU work fits inside it — if you go over, you just drop to displaying
+every other frame (or worse), the displayed frame rate quantizing to
+<tt class="docutils literal">59.73 / n</tt> for whatever integer multiple of that budget your frame
+actually costs. There's no &quot;GPU&quot; to defer to and no way to partially
+miss the deadline gracefully. The entire optimization exercise is: get
+the CPU-side frame cost under (or as close as possible to) 280896 cycles.</p>
+<p>Every technique below exists because of two specific limits:</p>
+<ol class="arabic simple">
+<li><strong>No FPU.</strong> Any <tt class="docutils literal">float</tt>/<tt class="docutils literal">double</tt> arithmetic — multiply, divide,
+<tt class="docutils literal">sqrtf()</tt>, <tt class="docutils literal">sinf()</tt>/<tt class="docutils literal">cosf()</tt>/<tt class="docutils literal">tanf()</tt> — compiles to a call into
+ARM's soft-float runtime. That's not &quot;slower than native float,&quot; it's
+&quot;a function call plus a software algorithm&quot; for every single operation.</li>
+<li><strong>No hardware rasterizer.</strong> Mode 4's bitmap layers are just VRAM you
+write to with the CPU. Every triangle the software renderer fills is
+pixels the ARM7TDMI itself has to compute and store, one at a time.</li>
+</ol>
+</div>
+<div class="section" id="technique-1-fixed-point-math-instead-of-float">
+<h2>Technique 1: fixed-point math instead of float</h2>
+<p>The most foundational change is also the simplest to state: the hot path
+(per-vertex transform, per-pixel rasterization) uses Q12 fixed-point
+integers instead of float, via a small <tt class="docutils literal">fix_t</tt> type
+(<tt class="docutils literal">src/backends/renderer/common/sw3d_fixed.h</tt>):</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">fix_t</span><span class="p">;</span>
+
+<span class="cp">#define FIX_SHIFT 12</span>
+<span class="cp">#define FIX_ONE   (1 &lt;&lt; FIX_SHIFT)   </span><span class="cm">/* 4096 == 1.0 */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="nf">fix_mul</span><span class="p">(</span><span class="n">fix_t</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">fix_t</span><span class="p">)(((</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">FIX_SHIFT</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p><tt class="docutils literal">fix_mul</tt>'s <tt class="docutils literal">int64_t</tt> intermediate looks like it should be expensive,
+but on ARM it lowers to a single hardware <tt class="docutils literal">SMULL</tt> (signed multiply,
+64-bit result) instruction — no library call, no precision tricks, just
+the right type for the CPU's native multiply. Compare that to a
+<tt class="docutils literal">float * float</tt>, which on this target is a soft-float call doing
+mantissa/exponent bookkeeping in software.</p>
+<p>Division is the one place fixed-point still hurts, because there's no
+hardware divider on the ARM7TDMI either way — fixed-point divide still
+costs a library call (<tt class="docutils literal">__aeabi_idivmod</tt> et al.), just an integer one
+instead of a float one. The perspective-divide hot path exploits a
+narrower fact about <em>that specific</em> division to cut its cost further:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* fix_div()&#39;s general implementation widens to a 64-bit intermediate to</span>
+<span class="cm"> * stay correct for arbitrary numerators, but the perspective divide&#39;s</span>
+<span class="cm"> * numerator is always FIX_ONE, so FIX_ONE &lt;&lt; FIX_SHIFT never exceeds</span>
+<span class="cm"> * 32 bits. */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="nf">fix_reciprocal</span><span class="p">(</span><span class="n">fix_t</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">fix_t</span><span class="p">)(((</span><span class="kt">int32_t</span><span class="p">)</span><span class="n">FIX_ONE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">FIX_SHIFT</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>That one change — replacing the general 64-bit <tt class="docutils literal">fix_div()</tt> with a
+32-bit-only reciprocal for the one call site where the numerator is known
+to always be <tt class="docutils literal">FIX_ONE</tt> — measured a ~50,000 cycle/frame saving on
+<tt class="docutils literal">examples/spinning_shapes</tt>, just from giving the divide routine a
+narrower, cheaper problem to solve.</p>
+</div>
+<div class="section" id="technique-2-a-lut-instead-of-sinf-cosf">
+<h2>Technique 2: a LUT instead of sinf()/cosf()</h2>
+<p><tt class="docutils literal">framer_transform_get_matrix()</tt> (the shared, cross-platform transform
+code) builds rotation matrices via cglm's <tt class="docutils literal"><span class="pre">glm_rotate_{x,y,z}()</span></tt>, which
+call <tt class="docutils literal">cosf()</tt>/<tt class="docutils literal">sinf()</tt>. On desktop that's a couple of FPU
+instructions; on the GBA it's a soft-float libm round trip, once per
+axis, per object, per frame.</p>
+<div class="figure align-center">
+<img alt="examples/spinning_shapes running in mGBA — a cube, octahedron, and cone rotating on all three axes" src="https://tprrt.tupi.fr/static/images/gba-performance/spinning_shapes.png" />
+<p class="caption"><tt class="docutils literal">examples/spinning_shapes</tt>, captured from mGBA — three objects
+rotating on all three axes every frame, the demo behind every
+<tt class="docutils literal">spinning_shapes</tt> number in this article.</p>
+</div>
+<p>The GBA backend instead carries its own 256-entry sine table
+(<tt class="docutils literal">sw3d_raster.c</tt>), reading cosine from the same table at a quarter-turn
+offset, with linear interpolation between samples:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="n">gba_sin_lut</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">gba_fast_sincosf</span><span class="p">(</span><span class="n">fix_t</span><span class="w"> </span><span class="n">angle_turns_256</span><span class="p">,</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">fix_t</span><span class="w"> </span><span class="o">*</span><span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">angle_turns_256</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">cidx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="p">;</span><span class="w"> </span><span class="cm">/* cos(x) == sin(x + tau/4) */</span>
+
+<span class="w">    </span><span class="o">*</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gba_sin_lut</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+<span class="w">    </span><span class="o">*</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gba_sin_lut</span><span class="p">[</span><span class="n">cidx</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+<p>256 entries means ~1.4° between samples — far finer than visible on a
+240x160 screen, so the linear interpolation error never shows up as
+visible jitter. Swapping this in for the float sin/cos chain, measured
+A/B (<tt class="docutils literal">git stash</tt> + identical build/measure commands) on
+<tt class="docutils literal">spinning_shapes</tt> (which rotates 3 objects on all 3 axes every frame):
+<strong>1,294,320 → 1,234,341 cycles/frame, a ~4.6% reduction</strong>, from removing
+one class of soft-float call entirely.</p>
+<p>A follow-up went further: rather than building the rotation matrix the
+way cglm does — up to three separate generic 4x4 matrix multiplies, one
+per nonzero Euler axis, each a 64-multiply-add matmul even though most
+entries of a pure-axis rotation matrix are 0 or 1 — the combined
+<tt class="docutils literal">Rz·Ry·Rx</tt> product's 9 nonzero 3x3 entries are expanded by hand from the
+three angles' sin/cos (still sourced from the LUT above) and folded into
+the output with a single <tt class="docutils literal">glm_mat4_mul</tt> instead of up to three:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* out = Rz * Ry * Rx, 9 nonzero entries expanded by hand instead of</span>
+<span class="cm"> * three generic 4x4 matmuls. */</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">sy</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cz</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cy</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cz</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cz</span><span class="p">;</span>
+<span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cy</span><span class="p">;</span>
+</pre></div>
+<p>This was verified against the original three-matmul path via NumPy
+differential testing across all 8 zero/nonzero axis combinations plus
+thousands of random angle triples (max absolute error ~1e-16) before it
+ever touched the renderer. Measured gain: only <strong>1,309,080 → 1,306,224
+cycles/frame, ~0.22%</strong> — much smaller than the raw operation count
+suggests, because the compiler's optimizer already folds away most of the
+original chain's zero/one multiplies once each <tt class="docutils literal">Rz</tt>/<tt class="docutils literal">Ry</tt>/<tt class="docutils literal">Rx</tt> factor
+starts from an identity-seeded matrix. The lesson here isn't &quot;this
+technique didn't matter&quot; — it's that hand-expanding math only pays for
+itself once you've checked what the compiler was already doing for you.
+A second, branch-free variant that skipped the matrix multiply
+altogether (translation column copy + per-column scale) was also tried
+and measured <em>worse</em> in every iteration than this simpler one-matmul
+version — discarded in favor of what actually measures faster.</p>
+</div>
+<div class="section" id="technique-3-quake-iii-s-fast-inverse-square-root">
+<h2>Technique 3: Quake III's fast inverse square root</h2>
+<p>Triangle shading needs each surviving triangle's world-space normal,
+normalized — once per shaded triangle, per frame, in the single hottest
+loop of the renderer. cglm's <tt class="docutils literal">glm_vec3_normalize()</tt> calls <tt class="docutils literal">sqrtf()</tt>
+and then divides by it: two soft-float library calls per triangle.</p>
+<p>The fix is the famous bit-hack:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">sw3d_fast_inv_sqrt</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">number</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">;</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">conv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">conv</span><span class="p">.</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x5f3759df</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">conv</span><span class="p">.</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">conv</span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">1.5f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">conv</span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">conv</span><span class="p">.</span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="cm">/* one Newton-Raphson step */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">conv</span><span class="p">.</span><span class="n">f</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>One magic-constant bit-shift gets a rough inverse-square-root estimate
+straight from the float's IEEE bit pattern (no sqrt call at all), and one
+Newton-Raphson correction step sharpens it to be visually indistinguishable
+from the real thing for lighting purposes. Replacing both the sqrt <em>and</em>
+the divide with this one function, used at every site in the GBA backend
+that previously called <tt class="docutils literal">glm_vec3_normalize()</tt> (face-normal lighting in
+the renderer, and the rasterizer's own triangle-normal centroid
+computation), removes two soft-float calls per triangle for one cheap
+integer/float hybrid op.</p>
+</div>
+<div class="section" id="technique-4-an-ecs-dispatch-early-out">
+<h2>Technique 4: an ECS dispatch early-out</h2>
+<p>Not every win is renderer-specific. <tt class="docutils literal">framer_world_progress()</tt>, the ECS
+scheduler's per-frame loop, walked every registered system's full entity
+range every frame — including systems whose query needs a component type
+that <strong>no entity in the scene has ever had</strong>. <tt class="docutils literal">simple_cube</tt> registers
+collider/velocity/rigidbody systems unconditionally on every platform
+(component import is unconditional, regardless of whether the scene
+actually uses them), so most of those systems were scanning entities every
+frame only to match zero of them, every single time.</p>
+<p>The fix tracks a sticky OR of every component bit ever set across the
+world's lifetime, and skips a system's scan entirely — O(1), no entity
+walk at all — whenever its query's required mask includes a bit outside
+that set, which can provably never match:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* s_any_mask: sticky OR of every component bit ever set across the</span>
+<span class="cm"> * world&#39;s lifetime. A query whose mask requires a bit outside this set</span>
+<span class="cm"> * can never match any entity — skip the per-entity scan entirely. */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">mask</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">world</span><span class="o">-&gt;</span><span class="n">s_any_mask</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">q</span><span class="o">-&gt;</span><span class="n">mask</span><span class="p">)</span>
+<span class="w">    </span><span class="k">continue</span><span class="p">;</span>
+</pre></div>
+<p>This is the single largest win found across the whole project:
+<tt class="docutils literal">simple_cube</tt>: <strong>308650 → 288629 cycles/frame</strong>; <tt class="docutils literal">spinning_shapes</tt>:
+<strong>757806 → 744701 cycles/frame</strong> (both steady-state averages over frames
+101-150). A scheduler-level fix, not a renderer trick, but it followed
+from the exact same discipline: measure where the cycles actually go,
+don't assume.</p>
+</div>
+<div class="section" id="technique-5-making-divides-bresenham-shaped">
+<h2>Technique 5: making divides Bresenham-shaped</h2>
+<p>The scanline rasterizer (<tt class="docutils literal">sw3d_fill_triangle()</tt>/<tt class="docutils literal">sw3d_fill_quad()</tt>)
+originally tested every pixel inside each triangle's bounding box against
+all three edge functions to decide if it was inside. The replacement
+computes each row's <tt class="docutils literal">[lo, hi]</tt> x-span directly per edge, incrementally,
+which is exactly Bresenham's line algorithm applied to &quot;x as a function of
+y&quot; along a triangle edge:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* Incrementally tracks bound(y) = floor((b0 + (y - y0) * d) / a) for a</span>
+<span class="cm"> * fixed positive `a`, one row at a time, with zero divisions after</span>
+<span class="cm"> * init. The GBA&#39;s ARM7TDMI has no hardware divider, so trading one</span>
+<span class="cm"> * division per edge (at init) for what used to be a same-sign test on</span>
+<span class="cm"> * every bounding-box pixel is the whole point. */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">row_bound</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">rem</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<p>This turns &quot;one division-equivalent test per candidate pixel&quot; into &quot;one
+division per triangle edge, plus an integer add per row&quot; — a meaningful
+shape change on hardware with no hardware divider at all.</p>
+<p>It also produced one of the more unusual micro-optimizations in the
+codebase. The one division this scheme still needs per edge
+(<tt class="docutils literal">floordiv_pos()</tt>) is built on <tt class="docutils literal">a / b</tt> and <tt class="docutils literal">a % b</tt> in C, which GCC
+is <em>supposed</em> to fuse into a single <tt class="docutils literal">__aeabi_idivmod</tt> call when both are
+needed. Disassembly showed that fusion happening on one branch
+(<tt class="docutils literal">a &gt; 0</tt>) but not the other (<tt class="docutils literal">a &lt; 0</tt>, which negates both operands
+first) — an extra, redundant <tt class="docutils literal">__aeabi_idiv</tt> call alongside the
+<tt class="docutils literal">__aeabi_idivmod</tt> for the <em>same</em> division, confirmed to be a GCC
+codegen quirk specific to that branch (restructuring the C source
+produced byte-identical codegen either way, so it wasn't fixable from the
+C side). The actual fix is to call the library function directly and
+unpack its packed 64-bit <tt class="docutils literal">r0:r1</tt> quotient/remainder result by hand,
+removing the compiler's latitude to make the wrong call-fusion choice at
+all:</p>
+<div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">__aeabi_idivmod</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">numerator</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">denominator</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">floordiv_pos</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">qr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">__aeabi_idivmod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">qr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)(</span><span class="n">qr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="n">q</span><span class="o">--</span><span class="p">;</span><span class="w"> </span><span class="cm">/* C truncates toward zero; floor() needs a -1 correction */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Saved roughly 25,000-30,000 cycles/frame on <tt class="docutils literal">spinning_shapes</tt> — for
+removing one redundant library call the compiler was inserting on its
+own, on one branch only, for no reason a compiler flag could fix.</p>
+</div>
+<div class="section" id="technique-6-let-the-hardware-scale-a-smaller-image">
+<h2>Technique 6: let the hardware scale a smaller image</h2>
+<p>The GBA has no hardware polygon fill, full stop — every pixel the
+rasterizer covers is a CPU read-modify-write into VRAM, which is the hard
+floor under every other optimization in this list: at some point you've
+removed every avoidable division and float op, and you're still bound by
+&quot;how many pixels does the CPU have to touch.&quot;</p>
+<p>The way around that floor isn't a CPU optimization at all: Mode 4's BG2
+background layer supports affine transforms even though it's a flat
+bitmap — the same trick behind GBA titles that faked SNES Mode-7-style
+scaling. The renderer draws only a 120x80 corner of the framebuffer (a
+quarter the pixels of the real 240x160 screen) and lets BG2's affine
+matrix stretch that corner across the full screen at scanout time, for
+free, in hardware:</p>
+<div class="highlight"><pre><span></span><span class="cp">#if GBA_RENDER_SCALE == 1</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">gba_clear_buffer</span><span class="p">(</span><span class="n">vu16</span><span class="w"> </span><span class="o">*</span><span class="n">base</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* full-res clear */</span><span class="w"> </span><span class="p">}</span>
+<span class="cp">#else</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">gba_clear_buffer</span><span class="p">(</span><span class="n">vu16</span><span class="w"> </span><span class="o">*</span><span class="n">base</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* only clear the GBA_RENDER_WIDTH x GBA_RENDER_HEIGHT corner that&#39;s</span>
+<span class="cm">     * actually sampled by BG2&#39;s affine matrix — the rest of the page is</span>
+<span class="cm">     * never displayed, so clearing it is wasted work. */</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+</pre></div>
+<p>On <tt class="docutils literal">spinning_shapes</tt> this dropped steady-state cost from ~1.55M to
+~1.28M cycles/frame — roughly <strong>10.8fps → 13.1fps, a ~17% reduction</strong> —
+at the cost of visibly blockier 2x-nearest-neighbor-scaled edges. It's
+opt-in (<tt class="docutils literal"><span class="pre">-Dgba_half_res</span></tt>) rather than default, because unlike every
+other technique here it's a genuine, visible quality trade-off rather
+than a free win — worth calling out, since this whole article is
+otherwise about <em>zero</em>-visual-cost changes.</p>
+</div>
+<div class="section" id="the-measurement-discipline-that-makes-any-of-this-credible">
+<h2>The measurement discipline that makes any of this credible</h2>
+<p>None of the numbers above are estimates. <tt class="docutils literal">scripts/debug/gba/cycle_probe.py</tt>
+drives headless mGBA, sets a breakpoint on the engine's vblank-wait call
+(the one point every frame reliably passes through exactly once), and
+reads the emulator's own cycle counter on every hit. Because mGBA's CPU
+core is a deterministic interpreter/JIT — not a real, jittery piece of
+silicon — the same ROM, same breakpoint, same number of warm-up frames
+discarded, produces <strong>bit-identical cycle counts on every run</strong>. That
+turns &quot;did this help?&quot; from a vibes question into a yes/no one: rebuild,
+re-run the probe, diff the number.</p>
+<p>That discipline is also what caught the two times this project tried an
+&quot;obviously correct&quot; optimization that wasn't.</p>
+</div>
+<div class="section" id="war-story-1-caching-screen-space-half-extents-that-never-change">
+<h2>War story 1: caching screen-space half-extents that never change</h2>
+<p>The camera's screen-space half-width/half-height, once converted to
+fixed-point, don't change frame to frame unless the camera's projection
+changes — so hoisting that fixed-point conversion out of the per-vertex
+projection loop and caching it looked like a pure, free win: same
+values, computed once instead of once per vertex.</p>
+<p>It measured as a regression.</p>
+<p>The likely cause, confirmed by inspecting the generated assembly rather
+than guessing: this project builds with link-time optimization
+(LTO) and <tt class="docutils literal"><span class="pre">-Doptimization=3</span></tt> across the board, and LTO's inlining
+heuristics are sensitive to function and loop <em>size</em> in ways that aren't
+intuitive from the C source. Adding a cache check (even a cheap one) to
+an already-hot, already-inlined loop changed the cost/benefit math the
+inliner used elsewhere in the same translation unit, and the net effect
+of <em>removing unrelated, more valuable inlining</em> outweighed the
+arithmetic actually saved. The &quot;obviously correct&quot; loop-invariant hoist
+was correct about the math and wrong about the measured outcome.</p>
+</div>
+<div class="section" id="war-story-2-skipping-integration-work-for-a-zero-velocity">
+<h2>War story 2: skipping integration work for a zero velocity</h2>
+<p>The same pattern showed up again, independently, in
+<tt class="docutils literal">velocity_integration_system()</tt>. Most entities in <tt class="docutils literal">simple_cube</tt> have
+a <tt class="docutils literal">Velocity</tt> component that's exactly zero every frame — adding a
+zero-vector early-out before the <tt class="docutils literal">glm_vec3_scale</tt>/<tt class="docutils literal">glm_vec3_add</tt> calls
+is mathematically a no-op (scaling and adding a zero vector changes
+nothing), so it looked like free cycles for every entity that wasn't
+actually moving:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* tempting, and wrong on this build */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">glm_vec3_isvalid</span><span class="p">(</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">linear</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">glm_vec3_norm2</span><span class="p">(</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">linear</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0f</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">    </span><span class="n">glm_vec3_norm2</span><span class="p">(</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">angular</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">)</span>
+<span class="w">        </span><span class="k">continue</span><span class="p">;</span>
+</pre></div>
+<p>Measured: <strong>+112 cycles/frame on simple_cube, +312 on spinning_shapes.</strong>
+A regression, on a change with no behavior difference whatsoever. Same
+root cause as the screen-extent cache: the early-out added code size and
+a branch to a hot loop, LTO's inlining decisions shifted in response, and
+whatever inlining was lost elsewhere cost more than the skip saved. It
+was reverted in the same session it was tried, per the same rule that
+caught it: measure before keeping, no exceptions for changes that &quot;can't
+possibly&quot; make things worse.</p>
+<p>The takeaway isn't &quot;don't trust loop-invariant hoisting&quot; or &quot;don't trust
+early-outs&quot; — both are completely standard, usually-correct techniques.
+It's that once a build is leaning on LTO and aggressive optimization
+levels to do a lot of the heavy lifting, the compiler's own decisions
+become part of the system you're optimizing, and they don't always move
+in the direction your mental model of the code predicts. The only way to
+know is the same <tt class="docutils literal">cycle_probe.py</tt> round-trip used for every win in this
+article: change one thing, measure, keep it only if the number actually
+goes down.</p>
+</div>
+<div class="section" id="where-this-leaves-things">
+<h2>Where this leaves things</h2>
+<p>After all of the above, <tt class="docutils literal">examples/simple_cube</tt> sits at 288074
+cycles/frame — 16777216 / 288074, the same ratio <tt class="docutils literal">cycle_probe.py</tt>
+itself reports for every measurement in this article — works out to
+<strong>~58.24fps</strong>, against a true-60fps budget of 280896 cycles (~59.73fps).
+That's about 2.5% over budget, down from a starting point of roughly
+7-8% over before this round of work. <tt class="docutils literal">spinning_shapes</tt> — three fully
+shaded objects rotating on all three axes every frame, a heavier scene
+by design — sits at 741378 cycles/frame, <strong>~22.63fps</strong>. Both are ceilings
+for these specific demo scenes on real, cycle-accurate emulation, not
+estimates: add more triangles or lights to either scene and the
+frame cost (and fps) moves accordingly. Closing the rest of that gap on
+<tt class="docutils literal">simple_cube</tt> would mean moving into riskier
+territory: caching ECS query results across frames (not just the
+existence-of-any-entity check from Technique 4), or pre-converting mesh
+vertex data to fixed-point ahead of time instead of per-vertex at raster
+time — the latter complicated by the fact that the same mesh struct is
+also populated through framer-engine's public, float-only custom-mesh
+API, so caching it would mean either changing that API or building a
+runtime cache-on-first-use scheme. Both are real options, just bigger
+ones than &quot;swap a divide for a multiply&quot; — a good place to stop for now
+and pick back up deliberately, rather than rush into more soft-float
+removal for diminishing, harder-to-verify returns.</p>
+</div>
+<div class="section" id="what-s-next">
+<h2>What's next</h2>
+<p>The GBA backend was the first proof that framer-engine's &quot;real ECS, real
+3D, software-rendered, no FPU&quot; approach actually holds up on constrained
+hardware. The next targets are mainly a step up in capability rather than
+a step down: 32-bit-era consoles like the PlayStation 1, and handhelds
+with genuine 3D hardware acceleration — PSP, Nintendo DS, and 3DS. That
+side of the plan is mostly for fun: getting framer-engine to a point
+where it's genuinely pleasant to build small demos and little indie games
+on real retro hardware, GBA included.</p>
+<p>But at least one of those targets — most likely the PSP, the one with the
+most conventional FPU-plus-GPU setup of the group — is also there for a
+different reason. Every technique in this article exists <em>because</em> the
+GBA has no FPU and no hardware rasterizer; on a platform that has both,
+none of those specific tricks apply, and the interesting question flips
+from &quot;how do I avoid the hardware's weaknesses&quot; to &quot;how far can the
+engine and the hardware actually go together, pushed deliberately to
+their limits, with the GPU and FPU doing what they're meant to do.&quot;
+That's a different kind of optimization work — closer to traditional
+real-time-3D budgeting (draw calls, vertex throughput, fill rate) than
+to soft-float avoidance — and it needs the same measurement discipline as
+everything above, just pointed at a different bottleneck. Whether the
+specific tricks in this article carry over at all won't be clear until
+that work actually starts; future articles will cover whatever turns out
+to be that generation's equivalent surprise.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">posted at 22:12</a>
+                    &nbsp;&middot;&nbsp;16 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/performance.html" class="tags">performance</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/optimization.html" class="tags">optimization</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags selected">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/fixed-point.html" class="tags">fixed-point</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>            <h4 class="date">Dec 31, 2025</h4>
 
             <article class="post">
                 <h2 class="title">
