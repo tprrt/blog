@@ -56,7 +56,307 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Jun 24, 2026</h4>
+        <div id="content">            <h4 class="date">Jun 25, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="bookmark" title="Permanent Link to &quot;No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance&quot;">No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">previous article</a> on this blog was about
+squeezing cycles out of framer-engine's GBA renderer. This one is about
+something that has to be settled <em>before</em> any of that renderer work is
+possible at all: how do you run an Entity Component System — the
+architecture pattern the whole engine is built around — on a console with
+32KB of fast RAM, 256KB of slow RAM, no operating system, and no
+<tt class="docutils literal">malloc()</tt> you can lean on?</p>
+<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>'s answer is a second, much smaller ECS implementation
+living behind the same interface as the desktop one. Every game-logic
+line — component definitions, systems, queries — is identical between a
+PC build and a GBA build. Only one file differs: which <tt class="docutils literal">world.c</tt> gets
+linked in.</p>
+</div>
+<div class="section" id="two-ecs-backends-one-interface">
+<h2>Two ECS backends, one interface</h2>
+<p>framer-engine's default ECS backend is <a class="reference external" href="https://github.com/SanderMertens/flecs">Flecs</a>, a full-featured ECS used
+for desktop and handheld targets with a real OS underneath (PSP, 3DS,
+Switch, PC). Flecs is excellent at what it does — archetypes, queries,
+observers, relationships — but all of that bookkeeping assumes a working
+heap it can grow and shrink as entities and component types come and go.
+That's simply not available on a target like the GBA: 32KB of IWRAM,
+256KB of EWRAM, both fixed-size and fully accounted for from the moment
+the ROM boots, with no MMU and no OS to page anything in. There's no heap
+to assume.</p>
+<p>Rolling a second full-featured ECS to fit that budget wasn't the
+answer either — that's a lot of complexity to maintain for a problem
+that doesn't need it. What GBA-class scenes actually look like is a
+handful of objects (<cite>examples/simple_cube</cite> uses one mesh and a camera;
+<cite>examples/spinning_shapes</cite> uses three), not thousands, and the
+component types are known and fixed at compile time, not user-extensible
+at runtime. That's a much smaller problem than &quot;general-purpose ECS,&quot;
+and <tt class="docutils literal">src/ecs/static/world.c</tt> — about 550 lines of plain C — is sized to
+match it instead of to match Flecs:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* Entities */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">s_alive</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="p">];</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">s_comp_mask</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="p">];</span>
+
+<span class="cm">/* Component data store: row = component slot, column = entity slot.</span>
+<span class="cm"> * Each entity slot is FRAMER_STATIC_MAX_COMPONENT_SIZE bytes wide. */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">s_store</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_COMPONENTS</span><span class="p">]</span>
+<span class="w">                       </span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">];</span>
+</pre></div>
+<p>Every one of those arrays is a fixed-size global, sized by compile-time
+constants. There is no <tt class="docutils literal">framer_entity_create()</tt> call anywhere in this
+file that can fail by running out of memory in some unpredictable way —
+it can only fail by running out of <em>array slots</em>, a number known before
+the program even starts.</p>
+<p>Both backends sit behind the exact same <tt class="docutils literal">include/framer/ecs.h</tt> —
+<tt class="docutils literal">framer_world_t</tt>, <tt class="docutils literal">framer_component_register()</tt>, <tt class="docutils literal">framer_query_create()</tt>,
+<tt class="docutils literal">framer_system_register()</tt>, the <tt class="docutils literal">FRAMER_GET</tt>/<tt class="docutils literal">FRAMER_SET</tt>/<tt class="docutils literal">FRAMER_FIELD</tt>
+macros. A component defined with <tt class="docutils literal">FRAMER_COMPONENT_DEFINE(Velocity)</tt> and
+a system registered with <tt class="docutils literal">framer_system_register()</tt> compiles and runs
+unchanged on either backend; which one a build gets is a single Meson
+option, <tt class="docutils literal"><span class="pre">-Decs=flecs</span></tt> or <tt class="docutils literal"><span class="pre">-Decs=static</span></tt>, and GBA's cross file pins it
+to <tt class="docutils literal">static</tt> (Flecs needs an OS, and bare-metal GBA doesn't have one) —
+the build refuses to configure any other way for that target.</p>
+</div>
+<div class="section" id="entities-are-array-slots-nothing-more">
+<h2>Entities are array slots, nothing more</h2>
+<p>An entity in this backend isn't an object — it's a 1-based index into
+those parallel arrays. <tt class="docutils literal">framer_entity_create()</tt> finds the lowest dead
+slot and claims it, first-fit:</p>
+<div class="highlight"><pre><span></span><span class="n">framer_entity_t</span><span class="w"> </span><span class="nf">framer_entity_create</span><span class="p">(</span><span class="n">framer_world_t</span><span class="w"> </span><span class="o">*</span><span class="n">world</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">s_alive</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">s_alive</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">            </span><span class="n">s_comp_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">s_entity_high</span><span class="p">)</span>
+<span class="w">                </span><span class="n">s_entity_high</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">EID</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="cm">/* pool exhausted */</span>
+<span class="p">}</span>
+</pre></div>
+<p>That's the entire allocator. No free list to maintain, no fragmentation
+to worry about — there's nothing to fragment when every slot is the same
+fixed size and lives at a compile-time-known address. The price for that
+simplicity is explicit and deliberate: destroying entity 5 and creating a
+new one immediately afterward hands back the same ID, 5, for a
+completely different logical entity. There's no generation counter to
+tell the two apart. For the scene sizes and lifetimes this backend
+targets — a handful of objects that mostly live for the whole level, not
+a churn of thousands spawning and despawning every frame — that's an
+acceptable trade, not an oversight; it's directly covered by a unit test
+(<tt class="docutils literal">test_entity_slot_recycled_first_fit</tt>) precisely so it stays a known,
+intentional property instead of a surprise.</p>
+</div>
+<div class="section" id="components-a-bitmask-and-a-flat-array">
+<h2>Components: a bitmask and a flat array</h2>
+<p>Each entity slot carries one <tt class="docutils literal">uint64_t</tt> bitmask, one bit per registered
+component type. <tt class="docutils literal">framer_component_set()</tt> is a <tt class="docutils literal">memcpy</tt> into a
+fixed-stride row of the flat <tt class="docutils literal">s_store</tt> array, plus a bit set:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">framer_component_set</span><span class="p">(</span><span class="n">framer_world_t</span><span class="w"> </span><span class="o">*</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">framer_entity_t</span><span class="w"> </span><span class="n">e</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">framer_id_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ei</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EIDX</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cidx</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">    </span><span class="cm">/* ...bounds and liveness checks elided... */</span>
+<span class="w">    </span><span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_store</span><span class="p">[</span><span class="n">ci</span><span class="p">][</span><span class="n">ei</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">],</span><span class="w"> </span><span class="n">data</span><span class="p">,</span>
+<span class="w">           </span><span class="n">s_comp</span><span class="p">[</span><span class="n">ci</span><span class="p">].</span><span class="n">size</span><span class="p">);</span>
+<span class="w">    </span><span class="n">s_comp_mask</span><span class="p">[</span><span class="n">ei</span><span class="p">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ci</span><span class="p">);</span>
+<span class="w">    </span><span class="n">s_any_mask</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ci</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>A query is just a precomputed mask built from the component ids it asks
+for; matching an entity against it is one <tt class="docutils literal">AND</tt> and one comparison
+(<tt class="docutils literal">(s_comp_mask[ei] &amp; mask) == mask</tt>). The <tt class="docutils literal">uint64_t</tt> bitmask is also
+the hard ceiling on how many distinct component <em>types</em> can exist in one
+world — 64 — which is generous for a retro scene's needs but means the
+type system itself enforces &quot;don't try to build something Flecs-shaped
+on top of this.&quot;</p>
+</div>
+<div class="section" id="war-story-a-silent-null-deref-vs-a-loud-abort">
+<h2>War story: a silent NULL deref vs. a loud abort()</h2>
+<p>The single most important property of this backend isn't the data
+layout — it's what happens when a limit is hit. Early on,
+<tt class="docutils literal">framer_component_register()</tt> returned 0 when a component was too big
+or the registry was full, the same &quot;just signal failure&quot; convention used
+everywhere else in this API. That sounds reasonable until you trace what
+a 0 component id actually does downstream: <tt class="docutils literal">framer_query_create()</tt>
+silently skips it when building a query's mask, and the system that
+registered that query goes on to call <tt class="docutils literal">FRAMER_FIELD()</tt> for a field that
+was quietly dropped — which dereferences NULL on the system's very next
+matching entity. That's exactly what happened on a real GBA build: a
+<tt class="docutils literal">Text</tt> component at 288 bytes against a 64-byte cap, and 17 registered
+component types against a cap of 12. The crash that surfaced wasn't &quot;your
+component is too big,&quot; it was a NULL-pointer SIGSEGV deep inside a render
+system, two layers removed from the actual mistake.</p>
+<p>The fix removes the silent path entirely:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;framer_component_register: </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s"> is %lu bytes, &quot;</span>
+<span class="w">        </span><span class="s">&quot;exceeding FRAMER_STATIC_MAX_COMPONENT_SIZE (%d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">name</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;?&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="p">)</span><span class="n">size</span><span class="p">,</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<p><tt class="docutils literal">abort()</tt> rather than an <tt class="docutils literal">assert()</tt> or a GCC/Clang-specific builtin,
+because this backend also has to compile under cc65 and SDCC for
+8-bit targets — plain C89 <tt class="docutils literal">abort()</tt> is the one failure primitive
+guaranteed to exist everywhere this code runs. The test suite verifies
+the <em>contract</em>, not just the arithmetic: <tt class="docutils literal">test_ecs_static_limits.c</tt>
+forks a child process, registers one component past the limit inside it,
+and asserts the child died of <tt class="docutils literal">SIGABRT</tt> rather than returning normally
+— proving the fail-loud path actually fires, not just that the size
+check's math is correct.</p>
+<p>The broader lesson generalizes past this one bug: on a backend built
+entirely out of fixed-size arrays, every hard limit is a wall, not a
+suggestion. The only choice that matters is whether you hit that wall
+with a clear error message at the exact call site that caused it, or
+with a corrupted query and a crash three function calls away. This
+backend picked loud, on purpose, everywhere a hard cap exists.</p>
+</div>
+<div class="section" id="sizing-the-pools-and-a-second-silent-failure-bug">
+<h2>Sizing the pools, and a second silent-failure bug</h2>
+<p>Each target's <tt class="docutils literal">meson.build</tt> picks <tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt>,
+<tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt>, and <tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENT_SIZE</tt>
+to fit what that platform actually needs — there's no universal default
+that's right for every target, because the engine registers its full set
+of core components (<tt class="docutils literal">Transform</tt>, <tt class="docutils literal">Velocity</tt>, <tt class="docutils literal">Sprite</tt>, <tt class="docutils literal">Light</tt>,
+<tt class="docutils literal">Text</tt>, <tt class="docutils literal">Camera</tt>, and so on — 19 today) unconditionally, regardless
+of whether a given example actually uses all of them:</p>
+<div class="highlight"><pre><span></span># Embedded (system == &#39;none&#39;):
+-DFRAMER_STATIC_MAX_COMPONENTS=19
+-DFRAMER_STATIC_MAX_ENTITIES=96
+-DFRAMER_STATIC_MAX_COMPONENT_SIZE=64
+</pre></div>
+<p>That <tt class="docutils literal">MAX_ENTITIES=96</tt> number has its own bug story behind it. Each
+<em>registered component type</em> — not each entity actually created — reserves
+one sentinel slot out of the same entity pool, so the entities actually
+available to a scene is <tt class="docutils literal">MAX_ENTITIES</tt> minus however many component
+types exist. At <tt class="docutils literal">MAX_ENTITIES=64</tt> and 19 components, that left 45 usable
+slots — comfortably enough for <cite>examples/simple_cube</cite>, but one short of
+<cite>examples/input_tester</cite>'s 48 (47 on-screen panel entities plus one
+camera). The failure mode was, again, silent: <tt class="docutils literal">framer_entity_create()</tt>
+returning 0 once the pool filled, and the caller that wanted one more
+entity for a gamepad-axis label simply never got it — the text just never
+appeared on screen, with nothing in the logs to say why. Raising the cap
+to 96 (77 free after the 19 sentinels) fixed it with headroom to spare.
+On the GBA build that growth costs about 544 bytes of IWRAM (three
+per-entity arrays scale with the cap), which was checked against the
+build's actual free IWRAM margin before landing — on a 32KB budget,
+guessing isn't good enough, you measure.</p>
+<p>That measurement habit is the same one from the performance article:
+<tt class="docutils literal"><span class="pre">arm-none-eabi-size</span> <span class="pre">-A</span></tt> on a current GBA build shows exactly where this
+backend's memory actually goes. The flat component store
+(19 × 96 × 64 bytes ≈ 114KB) is placed in EWRAM's <tt class="docutils literal">.sbss</tt> section — too
+big for IWRAM, and zero-initialized for free by the startup code without
+costing any ROM space:</p>
+<div class="highlight"><pre><span></span><span class="cp">#ifdef GBA</span>
+<span class="cp">#define _FRAMER_STORE_ATTR __attribute__((section(&quot;.sbss&quot;)))</span>
+<span class="cp">#else</span>
+<span class="cp">#define _FRAMER_STORE_ATTR</span>
+<span class="cp">#endif</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">_FRAMER_STORE_ATTR</span>
+<span class="w">    </span><span class="n">s_store</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_COMPONENTS</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">];</span>
+</pre></div>
+<p>Everything else — the alive flags, the masks, the per-frame iterator's
+entity list — is small enough to live in IWRAM, the GBA's fast 32KB
+scratch memory, where the CPU actually wants its hot working data. On
+the current <tt class="docutils literal">examples/simple_cube</tt> build that's roughly 19.5KB of
+IWRAM used out of 32KB, leaving real headroom for the next component or
+two — a number worth checking again every time that count grows, the
+same way the 96-entity fix had to be checked against it.</p>
+</div>
+<div class="section" id="the-scan-loop-briefly">
+<h2>The scan loop, briefly</h2>
+<p><tt class="docutils literal">framer_world_progress()</tt> walks every registered system, in phase
+order, and for each one scans entity slots up to the high-water mark
+(<tt class="docutils literal">s_entity_high</tt>, one past the highest slot any entity or component
+sentinel has ever occupied) looking for bitmask matches. That scan, and
+the sticky <tt class="docutils literal">s_any_mask</tt> check that skips it entirely for systems whose
+component type no entity has ever had, was the single biggest win in
+the previous article's performance work — covered there in full, since
+it's a perf story more than a design story. The design point that
+matters here is simpler: this is a linear scan over a flat array, not a
+sparse-set or archetype-table lookup. That's the right trade at GBA
+scene sizes (tens of entities), and the wrong one at thousands — which is
+exactly the line where you'd reach for Flecs instead.</p>
+</div>
+<div class="section" id="what-this-design-explicitly-gives-up">
+<h2>What this design explicitly gives up</h2>
+<p>None of the above is free, and being upfront about the trade-offs is the
+point of having two backends instead of pretending one ECS fits every
+target:</p>
+<ul class="simple">
+<li><strong>No entity generations.</strong> As covered above, IDs are recycled
+immediately and look identical to the entity that previously held
+them.</li>
+<li><strong>No archetypes, no sparse sets.</strong> Matching is a linear scan with a
+bitmask test, not a cache-optimized contiguous iteration over exactly
+the matching entities. Fine at dozens of entities; the wrong tool past
+that.</li>
+<li><strong>64 component types, total, forever, for the whole world.</strong> Not per
+query — for every component type that exists anywhere in the engine,
+shared across every system. The engine's current 19 leaves room to
+grow, but a &quot;just add a component&quot; change always has a final cost
+attached: someone, somewhere, has to recheck that ceiling.</li>
+<li><strong>No relationships, no hierarchies, no observers.</strong> Flecs has all of
+these; this backend has entities, components, and queries, deliberately
+nothing more.</li>
+</ul>
+<p>Every one of these is a real capability Flecs has and this backend
+doesn't. They're also exactly the features that cost the heap, the
+dynamic bookkeeping, and the unpredictable-at-compile-time memory use
+that a bare-metal ROM target can't afford. The two-tier split exists so
+that trade only has to be made once, explicitly, per target — not
+silently, by whichever ECS happened to compile.</p>
+</div>
+<div class="section" id="where-this-goes-next">
+<h2>Where this goes next</h2>
+<p>The same problem — &quot;no OS, no heap, fixed memory map, known component
+set&quot; — is true of every retro target on framer-engine's roadmap, not just
+the GBA. The 32-bit-era consoles mentioned in the previous article's
+closing section, starting with the PlayStation 1, sit in an interesting
+middle ground: dramatically more RAM and a real GPU compared to the GBA,
+but still no OS and still nothing resembling a desktop heap. The
+expectation going in is that they'll want this same static backend, just
+with much larger pool constants — not Flecs, and not a third ECS
+implementation. Whether that expectation survives contact with an actual
+PS1 build, the way the &quot;obviously correct&quot; tricks in the performance
+article sometimes didn't survive contact with measurement, is exactly
+the kind of thing a future article on this blog will have to report
+honestly either way.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">posted at 23:30</a>
+                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/ecs.html" class="tags">ecs</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/c.html" class="tags">c</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>            <h4 class="date">Jun 24, 2026</h4>
 
             <article class="post">
                 <h2 class="title">
@@ -496,314 +796,6 @@ to be that generation's equivalent surprise.</p>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/fixed-point.html" class="tags">fixed-point</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
                 </div>
-            </article>            <h4 class="date">Jun 22, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 26, 2026&quot;">Zephyr RTOS Digest — Week 26, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-ecosystem-expansion">
-<h2>Zephyr RTOS Ecosystem Expansion</h2>
-<p>The Zephyr RTOS continues to grow its ecosystem with exciting new partnerships and memberships that bolster its development capabilities. The announcement of new Platinum and Silver members signifies a strong commitment to enhancing the platform.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint</a></li>
-</ul>
-</div>
-<div class="section" id="zephyr-rtos-dominance-in-embedded-systems">
-<h2>Zephyr RTOS Dominance in Embedded Systems</h2>
-<p>Zephyr RTOS is positioning itself as a leading choice for embedded systems, with various advantages that highlight its potential to dominate the market. This topic discusses the reasons behind its rising popularity and the features that make it a compelling choice for developers.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-5-reasons-why-it-will-dominate-the-embedded-world-transform-industry">5 Reasons Why Zephyr RTOS Will Rule the World</a></li>
-</ul>
-</div>
-<div class="section" id="community-and-upcoming-events">
-<h2>Community and Upcoming Events</h2>
-<p>The Zephyr Project community is actively engaged, with meetups and podcasts exploring recent advancements and future directions. These gatherings offer developers a platform to connect and discuss innovations related to Zephyr.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://zephyrproject.org/what-to-expect-at-the-zephyr-project-meetup-june-25-2026-in-austin-texas/">What to Expect at the Zephyr Project Meetup (June 25, 2026) in Austin, Texas</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/fido2-comes-to-zephyr-zephyr-podcast-040/">FIDO2 Comes to Zephyr — Zephyr Podcast #040</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/zephyrs-10-year-milestone-and-the-road-ahead/">Zephyr’s 10-Year Milestone and the Road Ahead</a></li>
-</ul>
-</div>
-<div class="section" id="core-references-and-guides">
-<h2>Core References and Guides</h2>
-<p>The official Zephyr Project website continues to be an essential resource for developers looking to build secure and connected devices using the RTOS. It offers comprehensive documentation and getting started guides.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org">Zephyr Project</a></li>
-</ul>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html">posted at 09:52</a>
-                    &nbsp;&middot;&nbsp;1 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">Jun 22, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 26, 2026&quot;">Embedded Linux Digest — Week 26, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>In this digest, we explore the latest developments and news in the embedded Linux sphere, covering updates on tooling, kernel enhancements, and practical usage scenarios.</p>
-<div class="section" id="news-updates">
-<h3>News Updates</h3>
-<p>The embedded Linux community continuously evolves, with various players contributing to updates and innovations. Here are some notable sources of news:</p>
-<ul class="simple">
-<li>For comprehensive coverage of embedded Linux advancements, check out <a class="reference external" href="https://linuxgizmos.com">LinuxGizmos.com</a>.</li>
-<li>Bootlin recently shared updates about <strong>meta-kiss</strong>, a simple Yocto layer, aimed at easing complexity for developers <a class="reference external" href="https://bootlin.com/blog/category/news">https://bootlin.com/blog/category/news</a>.</li>
-<li><strong>LXer</strong> discussed a mix of Linux news, highlighting coverage from other sources like LWN.net and LinuxQuestions.org <a class="reference external" href="https://lxer.com">https://lxer.com</a>.</li>
-</ul>
-</div>
-<div class="section" id="performance-optimizations">
-<h3>Performance Optimizations</h3>
-<p>Performance improvements in Linux systems are crucial for enhancing user experience, particularly in embedded scenarios. A recent technical issue was resolved by Google's Gemini:</p>
-<ul class="simple">
-<li>Google’s Gemini and Antigravity tools helped resolve a lengthy boot time issue on modern ASUS laptops, cutting down the kernel boot time significantly <a class="reference external" href="https://www.phoronix.com/news/Gemini-ASUS-Laptop-Boot-Time">https://www.phoronix.com/news/Gemini-ASUS-Laptop-Boot-Time</a>.</li>
-</ul>
-</div>
-<div class="section" id="kernel-improvements">
-<h3>Kernel Improvements</h3>
-<p>The Linux kernel is seeing continuous advancements in testing and compatibility support, which are essential for ensuring robustness in embedded systems.</p>
-<ul class="simple">
-<li>The <strong>KUnit</strong> framework now supports JUnit output, enabling better interoperability with existing testing tools and enhancing the testing experience for Linux kernel developers <a class="reference external" href="https://www.phoronix.com/news/Linux-KUnit-JUnit">https://www.phoronix.com/news/Linux-KUnit-JUnit</a>.</li>
-<li>Additionally, developments in Linux 7.2 include preparations for NVIDIA's &quot;Blackwell-Next,&quot; though overall changes in the VFIO subsystem appear minimal for end users at this stage <a class="reference external" href="https://www.phoronix.com/news/NVIDIA-Blackwell-Next-VFIO">https://www.phoronix.com/news/NVIDIA-Blackwell-Next-VFIO</a>.</li>
-</ul>
-</div>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html">posted at 09:49</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">Jun 15, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 25, 2026&quot;">Zephyr RTOS Digest — Week 25, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos">
-<h2>Zephyr RTOS</h2>
-<p>The Zephyr RTOS ecosystem continues to grow and innovate with new releases, partnerships, and resources for developers. This digest highlights the latest articles focusing on recent features, ecosystem expansions, educational opportunities, and community engagements.</p>
-<div class="section" id="new-features-and-releases">
-<h3>New Features and Releases</h3>
-<p>Zephyr RTOS 4.1 has introduced a range of enhancements, making it more competitive in the embedded systems landscape. The release and its implications for developers are well covered in the following articles:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.youtube.com/watch?v=TOIwI9XrHZM">Zephyr RTOS 4.1: What's New?</a> — An overview of the new features introduced in the latest update.</li>
-<li><a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-5-reasons-why-it-will-dominate-the-embedded-world-transform-industry">5 Reasons Why Zephyr RTOS Will Rule the World</a> — A compelling argument for Zephyr's potential dominance in the embedded systems market.</li>
-<li><a class="reference external" href="https://zephyrproject.org/antmicro-supports-aethero-next-gen-space-computers-nxn-and-nxa-with-zephyr-controlled-obc-built-around-nvidia-jetson-orin-and-thor-edge-ai-platforms/">Antmicro supports Aethero next-gen space computers NxN and NxA with Zephyr-controlled OBC built around NVIDIA Jetson Orin and Thor edge AI platforms</a> — Details on how Zephyr is being utilized in advanced computing applications.</li>
-</ul>
-</div>
-<div class="section" id="ecosystem-expansions">
-<h3>Ecosystem Expansions</h3>
-<p>The Zephyr ecosystem is rapidly expanding with significant partnerships and new member announcements. This section highlights the latest developments in community and partnership growth for Zephyr RTOS:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint</a> — Announcement of new platinum and silver members, enhancing collaboration within the community.</li>
-</ul>
-</div>
-<div class="section" id="training-and-community-engagement">
-<h3>Training and Community Engagement</h3>
-<p>Educational initiatives and community interactions are key aspects of the Zephyr Project, aimed at empowering developers and users. The following articles provide insights into upcoming training sessions and community events:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://blog.golioth.io/free-zephyr-training-on-july-15th-2026/">Free Zephyr Training on July 15th, 2026</a> — An invitation to participate in a free training session designed for developers to enhance their skills in Zephyr.</li>
-<li><a class="reference external" href="https://zephyrproject.org/the-native-sim-phony-zephyr-podcast-039/">The Native Sim-phony — Zephyr Podcast #039</a> — A podcast episode discussing Zephyr-related project experiences and technical insights.</li>
-<li><a class="reference external" href="https://zephyrproject.org/what-to-expect-at-the-zephyr-project-meetup-june-16-2026-wroclaw-poland/">What to Expect at the Zephyr Project Meetup (June 16, 2026) – Wrocław, Poland</a> — An overview of the upcoming Zephyr Project meetup, highlighting opportunities for networking and collaboration.</li>
-</ul>
-</div>
-<div class="section" id="innovative-hardware-integration">
-<h3>Innovative Hardware Integration</h3>
-<p>Innovative hardware developments continue to enhance the capabilities of Zephyr RTOS, particularly in microcontroller applications. The following article addresses new hardware that supports Zephyr:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.cnx-software.com/2026/06/15/gateworks-catalina-gw9200-nxp-i-mx-95-sbc-features-flexible-socket-adapter-sockets-for-m-2-or-mpcie-modules/">Gateworks Catalina GW9200 NXP i.MX 95 SBC features Flexible Socket Adapter sockets for M.2 or mPCIe modules</a> — Details on a new single-board computer that supports flexible hardware configurations, which can be pivotal for Zephyr-based applications.</li>
-</ul>
-<p>This digest encapsulates the vibrant developments within the Zephyr RTOS community and highlights resources for both potential and seasoned developers within the ecosystem.</p>
-</div>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html">posted at 07:44</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">Jun 15, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 25, 2026&quot;">Embedded Linux Digest — Week 25, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>This week, the embedded Linux landscape has seen a mix of hardware developments, software updates, and community discussions, showcasing innovation and ongoing challenges in the field.</p>
-<div class="section" id="hardware-developments">
-<h3>Hardware Developments</h3>
-<p>Notable advancements in hardware, particularly in single-board computers, highlight the ongoing evolution in embedded systems.</p>
-<ul class="simple">
-<li><strong>Dragon Q8B SBC combines Snapdragon 8cx Gen 3 with dual 2.5GbE</strong>: Radxa has introduced the Dragon Q8B, a compact single-board computer built around the Qualcomm Snapdragon 8cx Gen 3. Read more at <a class="reference external" href="https://linuxgizmos.com">LinuxGizmos.com: embedded Linux news &amp; devices</a>.</li>
-</ul>
-</div>
-<div class="section" id="software-updates-and-improvements">
-<h3>Software Updates and Improvements</h3>
-<p>The embedded Linux community continues to refine and expand its software offerings, with important updates and enhancements discussed this week.</p>
-<ul class="simple">
-<li><strong>meta-kiss: updates to our simple Yocto layer</strong>: Bootlin shares insights on simplifying Yocto through updates to the meta-kiss project, making embedded development more accessible. Find details at <a class="reference external" href="https://bootlin.com/blog/category/news">News – Bootlin</a>.</li>
-<li><strong>The 7.1 kernel has been released</strong>: Linus Torvalds has officially released the 7.1 kernel, marking another significant milestone for the Linux community. Learn more at <a class="reference external" href="https://lwn.net/Articles/1077758/">The 7.1 kernel has been released</a>.</li>
-<li><strong>Revised AVX-512 xor_gen() Implementation For Linux RAID Yielding More Performance Gains</strong>: A new implementation for the Linux kernel function aimed at improving performance in RAID configurations has been reported by Phoronix. Check out the article at <a class="reference external" href="https://www.phoronix.com/news/AVX-512-Xor-Gen-More-Perf">Revised AVX-512 xor_gen() Implementation For Linux RAID Yielding More Performance Gains</a>.</li>
-<li><strong>pkgcli As PackageKit's Modern, Nicer Command Line Interface</strong>: Matthias Klumpp introduces pkgcli, a modern command-line interface for PackageKit, enhancing package management in Linux. Read the full post at <a class="reference external" href="https://www.phoronix.com/news/PackageKit-pkgcli">pkgcli As PackageKit's Modern, Nicer Command Line Interface</a>.</li>
-</ul>
-</div>
-<div class="section" id="community-insights">
-<h3>Community Insights</h3>
-<p>The embedded Linux community is actively sharing resources and discussing the future of embedded systems, showcasing the collaborative spirit that drives innovation in this field.</p>
-<ul class="simple">
-<li><strong>Source for news about embedded?</strong>: A Reddit thread gathers enthusiasts’ recommendations for the best websites and resources for embedded Linux news, highlighting the community's need for reliable information. Join the conversation at <a class="reference external" href="https://www.reddit.com/r/embedded/comments/18wlyra/source_for_news_about_embedded">Source for news about embedded? : r/embedded</a>.</li>
-<li><strong>Arch Linux AUR Hit By Another Wave Of Now More Sophisticated Malware Attack</strong>: In a concerning development, Arch Linux faces a resurgence of sophisticated malware attacks affecting the AUR, stressing the importance of security in Linux distributions. Get the full story at <a class="reference external" href="https://www.phoronix.com/news/Arch-Linux-AUR-More-Malware">Arch Linux AUR Hit By Another Wave Of Now More Sophisticated Malware Attack</a>.</li>
-</ul>
-</div>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html">posted at 07:41</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">Jun 06, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 23, 2026&quot;">Zephyr RTOS Digest — Week 23, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-updates">
-<h2>Zephyr RTOS Updates</h2>
-<p>The Zephyr RTOS community continues to grow and evolve, evidenced by new memberships and collaborative initiatives that enhance the platform's capabilities and ecosystem. This section highlights significant developments and insights regarding Zephyr RTOS's expansion and its relevance in the embedded systems landscape.</p>
-<ul class="simple">
-<li><strong>Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint</strong>: Zephyr Project seeks to strengthen its ecosystem through new high-profile membership upgrades and additions. Read more in the article: <a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem</a>.</li>
-<li><strong>Why Zephyr RTOS Is Suddenly Everywhere in Embedded Conversations</strong>: This article discusses the rising prominence of Zephyr in embedded systems, attributing it to modern demands for connected, secure, and updatable devices. Read the full insights here: <a class="reference external" href="https://performa-code.com/blog/why-zephyr-rtos-is-suddenly-everywhere-in-embedded-conversations">Why Zephyr RTOS Is Suddenly Everywhere</a>.</li>
-<li><strong>The Year of the Zephyr Router — Zephyr Podcast #038</strong>: The latest podcast dives into upcoming trends and features that highlight Zephyr's adaptability, potentially making it a leading platform for router technology. Check it out: <a class="reference external" href="https://zephyrproject.org/the-year-of-the-zephyr-router-zephyr-podcast-038/">The Year of the Zephyr Router</a>.</li>
-<li><strong>Zephyr Insights: Pay as you Config</strong>: A recent post from the Zephyr Project discusses new configuration strategies aimed at enhancing user experience and operational efficiency. Read more: <a class="reference external" href="https://zephyrproject.org/zephyr-insights-pay-as-you-config/">Zephyr Insights: Pay as you Config</a>.</li>
-<li><strong>What to Expect at the Zephyr Project Meetup (June 11, 2026)</strong>: A preview of an upcoming event highlighting contributions and collaborations within the Zephyr community. Find out the details: <a class="reference external" href="https://zephyrproject.org/what-to-expect-at-the-zephyr-project-meetup-june-11-2026-london-uk/">What to Expect at the Zephyr Project Meetup</a>.</li>
-</ul>
-</div>
-<div class="section" id="innovative-applications-and-integrations">
-<h2>Innovative Applications and Integrations</h2>
-<p>As the Zephyr RTOS continues to cement its position in the embedded systems domain, several innovative applications and integrations are being explored. This section outlines how Zephyr is being combined with new technologies to push the boundaries of what's possible in embedded development.</p>
-<ul class="simple">
-<li><strong>Docker for Microcontrollers? AkiraOS combines Zephyr RTOS with WebAssembly (WASM) applications</strong>: This article explores how AkiraOS merges Zephyr with WebAssembly, paving the way for enhanced microcontroller functionality. Curious about the integration? Read the full article: <a class="reference external" href="https://www.cnx-software.com/2026/06/06/docker-for-microcontrollers-akiraos-combines-zephyr-rtos-with-webassembly-wasm-applications/">Docker for Microcontrollers?</a>.</li>
-</ul>
-</div>
-<div class="section" id="historical-context-and-evolution">
-<h2>Historical Context and Evolution</h2>
-<p>Understanding the historical context of Zephyr RTOS provides valuable insight into its current utility and design philosophy. This section summarizes the journey of Zephyr from its inception to its status as a prominent RTOS choice today.</p>
-<ul class="simple">
-<li><strong>A Brief History of Zephyr RTOS</strong>: This article chronicles the evolution of Zephyr RTOS, highlighting its origins in earlier commercial systems and its development into an open-source powerhouse. For a deep dive into its history, click here: <a class="reference external" href="https://shawnhymel.com/2791/a-brief-history-of-zephyr-rtos">A Brief History of Zephyr RTOS</a>.</li>
-</ul>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html">posted at 17:14</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">Jun 06, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 23, 2026&quot;">Embedded Linux Digest — Week 23, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>The realm of embedded Linux continues to evolve, with numerous advancements and solutions catering to specific needs in embedded systems development. Here's a roundup of the latest articles in this area.</p>
-<p><strong>SBCs and Solutions</strong>
-- <strong>LinuxGizmos.com: embedded Linux news &amp; devices</strong>: Notable for introducing the Dragon Q8B, a compact single-board computer powered by the Qualcomm Snapdragon 8cx Gen 3. [Read more here](<a class="reference external" href="https://linuxgizmos.com">https://linuxgizmos.com</a>).
-- <strong>Embedded Linux Distribution &amp; Solutions | SUSE</strong>: Highlights SUSE’s embedded Linux distribution, offering a secure suite of open-source products for creating small-footprint devices. [Read more here](<a class="reference external" href="https://www.suse.com/solutions/embedded">https://www.suse.com/solutions/embedded</a>).
-- <strong>Enterprise management with Ubuntu</strong>: Emphasizes how thousands of businesses utilize Ubuntu for managing appliances efficiently, showcasing its global support capabilities. [Read more here](<a class="reference external" href="https://ubuntu.com/embedded">https://ubuntu.com/embedded</a>).</p>
-<p><strong>Security and System Updates</strong>
-- <strong>Linux DRM Ioctl Developed By AMD Being Disabled Following Ongoing Security Issue</strong>: Discusses recent developments in the 7.1 kernel, where the DRM pull request faced challenges due to security concerns. [Read more here](<a class="reference external" href="https://www.phoronix.com/news/Linux-7.1-DRM-Change-Handle">https://www.phoronix.com/news/Linux-7.1-DRM-Change-Handle</a>).
-- <strong>Security updates for Friday</strong>: Covers various security updates for multiple distributions including AlmaLinux and Debian, addressing vulnerabilities and enhancing system integrity. [Read more here](<a class="reference external" href="https://lwn.net/Articles/1076605">https://lwn.net/Articles/1076605</a>).</p>
-<p><strong>Development Trends</strong>
-- <strong>Moving beyond fork() + exec()</strong>: Analyzes the evolution of process management in Unix-like systems, moving past traditional calls to improve efficiency in embedded contexts. [Read more here](<a class="reference external" href="https://lwn.net/Articles/1076018/">https://lwn.net/Articles/1076018/</a>).
-- <strong>Ruby's Bundler adds a cooldown feature</strong>: Highlights new functionality in Bundler, reflecting broader trends in package management that can influence embedded systems development. [Read more here](<a class="reference external" href="https://lwn.net/Articles/1076526/">https://lwn.net/Articles/1076526/</a>).</p>
-<p><strong>User Interface Updates</strong>
-- <strong>GNOME File Previewer Finally Switches TO GTK4, Adds Dark Mode</strong>: Describes enhancements to the GNOME Sushi file preview tool, showcasing the shift to GTK4 and user experience improvements. [Read more here](<a class="reference external" href="https://www.phoronix.com/news/GNOME-File-Previewer-GTK4">https://www.phoronix.com/news/GNOME-File-Previewer-GTK4</a>).
-- <strong>KDE Plasma 6.8 Will Make Sure You Don't Miss Your Low Battery Notifications While Gaming</strong>: Discusses upcoming features in KDE aimed at enhancing user experience for embedded devices, particularly during critical tasks like gaming. [Read more here](<a class="reference external" href="https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S">https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S</a>).</p>
-<p>These articles reflect the vibrant landscape of embedded Linux, highlighting the ongoing innovations and challenges that developers and users face.</p>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html">posted at 16:58</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
             </article>            <h4 class="date">May 26, 2026</h4>
 
             <article class="post">
@@ -909,202 +901,6 @@ progressively replacing Doxygen for prose documentation. This release adds:</p>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/iot.html" class="tags">iot</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
-                </div>
-            </article>            <h4 class="date">May 24, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 21, 2026&quot;">Zephyr RTOS Digest — Week 21, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-overview">
-<h2>Zephyr RTOS Overview</h2>
-<p>The Zephyr Real-Time Operating System (RTOS) continues to innovate and expand its presence in the embedded system industry. Several recent articles provide valuable insights into its latest developments, community growth, and future potential.</p>
-<p><strong>New Releases and Features</strong>
-The release of Zephyr RTOS 4.1 marks a significant update, packed with new features and improvements. This release has generated interest among developers and enthusiasts alike.
-- <a class="reference external" href="https://www.youtube.com/watch?v=TOIwI9XrHZM">Zephyr RTOS 4.1: What's New?</a></p>
-<p><strong>Ecosystem Expansion</strong>
-The Zephyr ecosystem is growing, with notable companies upgrading their memberships and joining the community. This expansion signifies increased industrial interest and collaboration.
-- <a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint</a></p>
-<p><strong>Market Potential</strong>
-An analysis of the projected dominance of Zephyr RTOS in the embedded systems market highlights the unique advantages it offers, showcasing its potential to reshape the industry landscape.
-- <a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-5-reasons-why-it-will-dominate-the-embedded-world-transform-industry">5 Reasons Why Zephyr RTOS Will Rule the World</a></p>
-<p><strong>Community Engagement and Collaboration</strong>
-Recent meetups and discussions reflect the active community surrounding Zephyr, fostering collaboration and shared knowledge among developers and organizations utilizing RTOS.
-- <a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/">Recap – Zephyr Project meetup (March 26, 2026): Rennes, France</a>
-- <a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/">How Organizations Choose and Deploy RTOS</a></p>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html">posted at 17:24</a>
-                    &nbsp;&middot;&nbsp;1 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">May 24, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 21, 2026&quot;">Embedded Linux Digest — Week 21, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>The world of Embedded Linux is evolving with new hardware and software releases aimed at optimizing performance and integration within IoT devices and embedded systems. Here are some noteworthy developments:</p>
-<div class="section" id="embedded-hardware-releases">
-<h3>Embedded Hardware Releases</h3>
-<ul class="simple">
-<li>The IDO Claw campaign on Kickstarter features a compact ARM-based system from Wireless-Tag, designed for local OpenClaw deployments. More about this innovative platform can be found in the article on <a class="reference external" href="https://linuxgizmos.com">LinuxGizmos.com: embedded Linux news &amp; devices</a>.</li>
-</ul>
-</div>
-<div class="section" id="embedded-software-updates">
-<h3>Embedded Software Updates</h3>
-<ul class="simple">
-<li>Canonical has launched Ubuntu Core 26, tailored for IoT devices and embedded systems. This release emphasizes precise Linux builds and improved OTA updates, making it a significant upgrade. Read more in the article on <a class="reference external" href="https://www.cnx-software.com">CNX Software - Embedded Systems News</a>.</li>
-<li>Toradex has released new BSP Layers and Reference Images for Yocto Project 7.3.0, alongside the Torizon OS 7.3.0. These releases aim to enhance the development experience within the embedded Linux ecosystem, as detailed in <a class="reference external" href="https://www.toradex.com/news">Embedded Computing News</a>.</li>
-</ul>
-</div>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html">posted at 17:15</a>
-                    &nbsp;&middot;&nbsp;1 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">May 15, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 20, 2026&quot;">Zephyr RTOS Digest — Week 20, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-developments">
-<h2>Zephyr RTOS Developments</h2>
-<p>In recent news, the Zephyr Project continues to foster growth and community engagement, showcasing its significance in the open-source RTOS ecosystem. New collaborations and events are helping Zephyr solidify its presence in the field of IoT and embedded systems.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org/announcements/">Press Releases – Zephyr Project</a></li>
-<li><a class="reference external" href="https://www.zephyrproject.org/category/announcements/">Announcements – Zephyr Project</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/zephyr-project-at-open-source-summit-mumbai-india-2026/">Zephyr Project at Open Source Summit: Mumbai, India 2026</a></li>
-</ul>
-</div>
-<div class="section" id="zephyr-rtos-applications">
-<h2>Zephyr RTOS Applications</h2>
-<p>The versatility of Zephyr RTOS is highlighted in its applications for edge IoT products and numerous ongoing projects in the embedded systems market. This positioning reflects its growing adoption and the innovative solutions it fosters among developers.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://mender.io/blog/zephyr-rtos-accelerating-edge-iot-products">Zephyr RTOS: Accelerating edge IoT products</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/zephyr-insights-code-footprint/">Zephyr Insights: Code Footprint</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/smart-amps-and-smarter-docs-zephyr-podcast-034/">Smart Amps and Smarter Docs — Zephyr Podcast #034</a></li>
-</ul>
-</div>
-<div class="section" id="hardware-integration">
-<h2>Hardware Integration</h2>
-<p>In addition to software announcements, there are intriguing hardware developments that reflect Zephyr's ability to integrate with various platforms and devices. Notable releases showcase the evolution of smart devices and development kits leveraging the Zephyr ecosystem.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.cnx-software.com/2026/05/15/penox-wristbuds-a-smartwatch-with-integrated-tws-earbuds/">PENOX WristBuds – A Bluetooth 6.0 smartwatch with integrated TWS earbuds (Crowdfunding)</a></li>
-<li><a class="reference external" href="https://www.cnx-software.com/2026/05/15/m5stack-papercolor-esp32-s3-devkit-features-4-inch-e-ink-spectra-6-color-display/">M5Stack PaperColor ESP32-S3 devkit features 4-inch E Ink Spectra 6 color display</a></li>
-<li><a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/">Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)</a></li>
-</ul>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html">posted at 16:13</a>
-                    &nbsp;&middot;&nbsp;1 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">May 15, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 20, 2026&quot;">Embedded Linux Digest — Week 20, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>The world of Embedded Linux is constantly evolving, with advancements in security, kernel updates, and application development leading the way. The articles this week delve into various facets of this intriguing domain, from managing updates to enhancements in real-time performance.</p>
-</div>
-<div class="section" id="security-and-updates">
-<h2>Security and Updates</h2>
-<p>Security is a paramount concern in embedded systems, and this week's articles compiled relevant discussions on maintaining system integrity and update strategies.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://rauc.io/">Safe and Secure OTA Updates for Embedded Linux | RAUC</a> - An introduction to RAUC, an update client designed to manage reliable OTA updates on embedded devices.</li>
-<li><a class="reference external" href="https://www.reddit.com/r/embedded/comments/1p7cehz/update_strategy_for_linux_kernel_rootfs_and/">Update strategy for linux kernel, rootfs and firmware - Reddit</a> - Discussion on designing an effective update strategy for hardware components.</li>
-<li><a class="reference external" href="https://lwn.net/Articles/1073060/">Seven new stable kernels with patches for CVE-2026-46333</a> - Announcement of stable kernel updates addressing significant vulnerabilities.</li>
-</ul>
-</div>
-<div class="section" id="kernel-developments">
-<h2>Kernel Developments</h2>
-<p>Kernel improvements continue to shape the Embedded Linux landscape, with many articles shedding light on new features, stability, and changes.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.phoronix.com/news/Linux-7.0.8-Released">Linux 7.0.8 Released &amp; LTS Kernels Updated For ssh-keysign-pwn</a> - Report on the latest Linux kernel releases addressing serious security vulnerabilities.</li>
-<li><a class="reference external" href="https://www.phoronix.com/news/Linux-ssh-keysign-pwn">Linux's Latest Vulnerability Allows Reading Root-Owned Files By Unprivileged Users</a> - Examination of vulnerabilities impacting kernel security.</li>
-<li><a class="reference external" href="https://www.phoronix.com/news/Dasharo-Firmware-MZ33-AR1">Coreboot + AMD openSIL Powered Firmware Published For The Gigabyte MZ33-AR1</a> - Release details regarding new firmware leveraging core technologies for better system performance.</li>
-</ul>
-</div>
-<div class="section" id="embedded-solutions-and-applications">
-<h2>Embedded Solutions and Applications</h2>
-<p>Innovations and resources for embedded systems are highlighted, showcasing tools, platforms, and technologies that aim to enhance performance in various applications.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/embedded-linux-for-i-mx-applications-processors:IMXLINUX">Embedded Linux for i.MX Applications Processors | NXP Semiconductors</a> - Overview of the support for embedded Linux on NXP's i.MX processors.</li>
-<li><a class="reference external" href="https://www.lctautomation.com/blog/top-embedded-linux-solutions-for-2026/">Top Embedded Linux Solutions for 2026 What to Look For?</a> - Insightful predictions on upcoming trends and solutions in Embedded Linux.</li>
-<li><a class="reference external" href="https://github.com/fkromer/awesome-embedded-linux">GitHub - fkromer/awesome-embedded-linux: A curated list of awesome Embedded Linux resources</a> - A valuable collection of Embedded Linux resources for developers and engineers.</li>
-</ul>
-</div>
-<div class="section" id="emerging-technologies-and-community-insights">
-<h2>Emerging Technologies and Community Insights</h2>
-<p>The community continues to share insights and discussions around future trends and technologies impacting the Embedded Linux experience.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.youtube.com/watch?v=-VubFbNVvF0">Next Gen Embedded Linux: Overview - YouTube</a> - A video exploring the future directions of Embedded Linux developments.</li>
-<li><a class="reference external" href="https://kernelnewbies.org/LinuxChanges">LinuxChanges - Linux Kernel Newbies</a> - Highlights of recent changes to the Linux kernel, exhibiting innovation and progress.</li>
-<li><a class="reference external" href="https://linuxgizmos.com/">LinuxGizmos.com: embedded Linux news &amp; devices</a> - Regular updates and news focused on embedded Linux devices and technology.</li>
-</ul>
-<p>This week's articles present a rich tapestry of information for anyone interested in or working with Embedded Linux, emphasizing the importance of security, kernel updates, and innovative solutions.</p>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html">posted at 15:23</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
                 </div>
             </article>            <h4 class="date">May 13, 2026</h4>
 
@@ -1223,134 +1019,6 @@ is available at the <a class="reference external" href="https://docs.yoctoprojec
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/oe-core.html" class="tags">oe-core</a>
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
-                </div>
-            </article>            <h4 class="date">May 08, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 19, 2026&quot;">Zephyr RTOS Digest — Week 19, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="zephyr-rtos-overview">
-<h2>Zephyr RTOS Overview</h2>
-<p>The Zephyr Real-Time Operating System (RTOS) is gaining traction in the embedded systems community, providing a lightweight, scalable platform suitable for a range of devices. Recent developments reflect its rapid adoption, community engagement, and ongoing improvements. Below are notable updates organized by sub-themes.</p>
-</div>
-<div class="section" id="zephyr-project-documentation-and-resources">
-<h2>Zephyr Project Documentation and Resources</h2>
-<p>The Zephyr Project continues to enhance its documentation and resources, enabling developers to effectively work with the RTOS. The documentation highlights various features, integration capabilities, and specific hardware support.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://docs.zephyrproject.org/latest/index.html">Zephyr Project Documentation</a></li>
-<li><a class="reference external" href="https://docs.nordicsemi.com/bundle/ncs-3.0.0/page/zephyr/releases/index.html">NCS Releases</a></li>
-<li><a class="reference external" href="https://docs.zephyrproject.org/latest/releases/eol_releases.html">End-of-life releases — Zephyr Project Documentation</a></li>
-<li><a class="reference external" href="https://github.com/zephyrproject-rtos/zephyr">GitHub - zephyrproject-rtos/zephyr</a></li>
-<li><a class="reference external" href="https://github.com/zephyrproject-rtos/zephyr/releases">Releases · zephyrproject-rtos/zephyr</a></li>
-</ul>
-</div>
-<div class="section" id="community-engagement-and-support">
-<h2>Community Engagement and Support</h2>
-<p>The Zephyr community is expanding, with increased corporate membership and educational efforts aimed at supporting developers. Training courses and events foster collaboration and skill development.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org/category/announcements/">Announcements – Zephyr Project</a></li>
-<li><a class="reference external" href="https://training.linuxfoundation.org/blog/embedded-teams-are-looking-closely-at-zephyr/">Embedded Teams Are Looking Closely at Zephyr</a></li>
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-turns-10-as-global-adoption-surges-and-long-term-embedded-use-expands-302704160.html">Zephyr Turns 10 as Global Adoption Surges and Long-Term Embedded Use Expands</a></li>
-<li><a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-turns-10-years-what-the-adoption-data-tell-us">Zephyr RTOS Adoption Grows Rapidly</a></li>
-<li><a class="reference external" href="https://zephyrproject.org/what-to-expect-at-the-zephyr-project-meetup-may-12-2026-copenhagen-denmark/">What to expect at the Zephyr Project meetup (May 12, 2026): Copenhagen, Denmark</a></li>
-</ul>
-</div>
-<div class="section" id="ecosystem-growth">
-<h2>Ecosystem Growth</h2>
-<p>There's a noticeable growth in the Zephyr ecosystem, with companies upgrading their memberships and new partnerships being announced. This expansion reflects confidence in Zephyr's capabilities and promises more resources for developers.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.zephyrproject.org/category/top-news/">Top News – Zephyr Project</a></li>
-<li><a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html">Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership</a></li>
-</ul>
-</div>
-<div class="section" id="technological-advancements">
-<h2>Technological Advancements</h2>
-<p>Enhancements in networking capabilities and the integration of various technologies highlight Zephyr's adaptability to modern requirements. These upgrades are critical for developers aiming for cutting-edge solutions.</p>
-<ul class="simple">
-<li><a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos">Zephyr RTOS on Silicon Labs platforms</a></li>
-</ul>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html">posted at 13:25</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
-                </div>
-            </article>            <h4 class="date">May 08, 2026</h4>
-
-            <article class="post">
-                <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="bookmark" title="Permanent Link to &quot;Embedded Linux Digest — Week 19, 2026&quot;">Embedded Linux Digest — Week 19, 2026</a>
-                </h2>
-
-
-
-                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<div class="section" id="embedded-linux">
-<h2>Embedded Linux</h2>
-<p>The world of embedded Linux continues to grow rapidly, encompassing a variety of topics from development to applications in modern technology. This week's articles delve into recent advancements, tools, and discussions happening within the embedded Linux community across various sectors.</p>
-</div>
-<div class="section" id="embedded-development-tools">
-<h2>Embedded Development Tools</h2>
-<p>This sub-theme focuses on tools and frameworks that are essential for developing embedded Linux applications, showcasing new resources and updates aimed at streamlining the development process.</p>
-<ul class="simple">
-<li>Explore the curated list of resources in <a class="reference external" href="https://github.com/fkromer/awesome-embedded-linux">awesome Embedded Linux resources</a>.</li>
-<li>Gain insights into the development environments with <a class="reference external" href="https://www.timesys.com/learn/podcasts/">Getting Started with Embedded Linux Podcast</a>.</li>
-<li>Check out <a class="reference external" href="https://www.suse.com/solutions/embedded/">Embedded Linux Distribution &amp; Solutions by SUSE</a> to address challenges in IoT and edge devices.</li>
-</ul>
-</div>
-<div class="section" id="embedded-linux-applications">
-<h2>Embedded Linux Applications</h2>
-<p>Embedded Linux is increasingly being integrated into various hardware applications. This section highlights discussions surrounding its applicability in contemporary hardware and systems.</p>
-<ul class="simple">
-<li>Discover the evolution of embedded Linux as it adapts to <a class="reference external" href="https://cranesvarsity.com/future-of-embedded-linux-in-ai-powered-edge-devices/">AI-Powered Edge Devices</a>.</li>
-<li>Read about the <a class="reference external" href="https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/embedded-linux-for-i-mx-applications-processors:IMXLINUX">Embedded Linux for i.MX Applications Processors by NXP</a> and its features.</li>
-<li>Learn how embedded Linux influences <a class="reference external" href="https://blog.peridio.com/embedded-linux-evolved-accelerated-product-development-in-the-era-of-industrial-ai-1">product development in the era of Industrial AI</a>.</li>
-</ul>
-</div>
-<div class="section" id="security-in-embedded-systems">
-<h2>Security in Embedded Systems</h2>
-<p>The security aspect of embedded Linux is critical, especially with its widespread use in various devices. This section covers vulnerabilities and security measures relevant to the embedded Linux ecosystem.</p>
-<ul class="simple">
-<li>Stay updated on the <a class="reference external" href="https://www.phoronix.com/news/Dirty-Frag-Linux">Dirty Frag Vulnerability</a> that affects multiple distributions without patches yet.</li>
-<li>Review the implications of security updates and potential risks as outlined in <a class="reference external" href="https://www.eetimes.com/tag/embedded-linux/">Embedded Linux News and Analysis</a>.</li>
-<li>Check recent enhancements in <a class="reference external" href="https://www.emcraft.com/news">security patches and updates for embedded systems</a>.</li>
-</ul>
-</div>
-<div class="section" id="events-and-community-engagement">
-<h2>Events and Community Engagement</h2>
-<p>Engagement with the open-source community is vital for the continued growth of embedded Linux. This theme emphasizes upcoming events and collaborations that foster innovation.</p>
-<ul class="simple">
-<li>Register now for the <a class="reference external" href="https://www.linuxfoundation.org/blog/tag/embedded">Open Source Summit in Minneapolis</a> happening May 18–20.</li>
-<li>Explore recent developments and community announcements featured in <a class="reference external" href="https://bootlin.com/blog/category/news/">Bootlin's Embedded Systems News</a>.</li>
-<li>Catch up on community discussions within the <a class="reference external" href="https://mender.io/blog/the-future-of-the-embedded-linux-ecosystem">Linux Plumbers Conference 2023</a> focusing on the embedded Linux ecosystem.</li>
-</ul>
-</div>
-
-                <div class="clear"></div>
-
-                <div class="info">
-                    <a href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html">posted at 12:58</a>
-                    &nbsp;&middot;&nbsp;2 min read
-                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/linux.html" rel="tag">Linux</a>
-                    &nbsp;&middot;
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded-linux.html" class="tags">embedded Linux</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags selected">embedded</a>
-                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
                 </div>
             </article>            <h4 class="date">Aug 06, 2024</h4>
 

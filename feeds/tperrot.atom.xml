@@ -1,5 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - tperrot</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/tperrot.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-06-26T08:38:42.352418+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Squeezing Cycles: Optimizing a Software 3D Renderer for the GBA</title><link href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html" rel="alternate"/><published>2026-06-24T22:12:00+02:00</published><updated>2026-06-24T22:12:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-24:/gba-performance-optimization-framer-engine.html</id><summary type="html">&lt;p class="first last"&gt;Real techniques, real cycle counts, and a couple of &amp;quot;obviously
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - tperrot</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/tperrot.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-06-29T20:30:05.008073+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance</title><link href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="alternate"/><published>2026-06-25T23:30:00+02:00</published><updated>2026-06-25T23:30:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-25:/static-ecs-no-heap-retro-platforms.html</id><summary type="html">&lt;p class="first last"&gt;How framer-engine's Entity Component System works on hardware
+that has no operating system, no virtual memory, and no malloc(),
+plus two real bugs the design caught before they shipped.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html"&gt;previous article&lt;/a&gt; on this blog was about
+squeezing cycles out of framer-engine's GBA renderer. This one is about
+something that has to be settled &lt;em&gt;before&lt;/em&gt; any of that renderer work is
+possible at all: how do you run an Entity Component System — the
+architecture pattern the whole engine is built around — on a console with
+32KB of fast RAM, 256KB of slow RAM, no operating system, and no
+&lt;tt class="docutils literal"&gt;malloc()&lt;/tt&gt; you can lean on?&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://github.com/tprrt/framer-engine"&gt;framer-engine&lt;/a&gt;'s answer is a second, much smaller ECS implementation
+living behind the same interface as the desktop one. Every game-logic
+line — component definitions, systems, queries — is identical between a
+PC build and a GBA build. Only one file differs: which &lt;tt class="docutils literal"&gt;world.c&lt;/tt&gt; gets
+linked in.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="two-ecs-backends-one-interface"&gt;
+&lt;h2&gt;Two ECS backends, one interface&lt;/h2&gt;
+&lt;p&gt;framer-engine's default ECS backend is &lt;a class="reference external" href="https://github.com/SanderMertens/flecs"&gt;Flecs&lt;/a&gt;, a full-featured ECS used
+for desktop and handheld targets with a real OS underneath (PSP, 3DS,
+Switch, PC). Flecs is excellent at what it does — archetypes, queries,
+observers, relationships — but all of that bookkeeping assumes a working
+heap it can grow and shrink as entities and component types come and go.
+That's simply not available on a target like the GBA: 32KB of IWRAM,
+256KB of EWRAM, both fixed-size and fully accounted for from the moment
+the ROM boots, with no MMU and no OS to page anything in. There's no heap
+to assume.&lt;/p&gt;
+&lt;p&gt;Rolling a second full-featured ECS to fit that budget wasn't the
+answer either — that's a lot of complexity to maintain for a problem
+that doesn't need it. What GBA-class scenes actually look like is a
+handful of objects (&lt;cite&gt;examples/simple_cube&lt;/cite&gt; uses one mesh and a camera;
+&lt;cite&gt;examples/spinning_shapes&lt;/cite&gt; uses three), not thousands, and the
+component types are known and fixed at compile time, not user-extensible
+at runtime. That's a much smaller problem than &amp;quot;general-purpose ECS,&amp;quot;
+and &lt;tt class="docutils literal"&gt;src/ecs/static/world.c&lt;/tt&gt; — about 550 lines of plain C — is sized to
+match it instead of to match Flecs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* Entities */&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_alive&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;uint64_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_comp_mask&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+&lt;span class="cm"&gt;/* Component data store: row = component slot, column = entity slot.&lt;/span&gt;
+&lt;span class="cm"&gt; * Each entity slot is FRAMER_STATIC_MAX_COMPONENT_SIZE bytes wide. */&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_store&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENTS&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="w"&gt;                        &lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Every one of those arrays is a fixed-size global, sized by compile-time
+constants. There is no &lt;tt class="docutils literal"&gt;framer_entity_create()&lt;/tt&gt; call anywhere in this
+file that can fail by running out of memory in some unpredictable way —
+it can only fail by running out of &lt;em&gt;array slots&lt;/em&gt;, a number known before
+the program even starts.&lt;/p&gt;
+&lt;p&gt;Both backends sit behind the exact same &lt;tt class="docutils literal"&gt;include/framer/ecs.h&lt;/tt&gt; —
+&lt;tt class="docutils literal"&gt;framer_world_t&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;framer_component_register()&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;framer_query_create()&lt;/tt&gt;,
+&lt;tt class="docutils literal"&gt;framer_system_register()&lt;/tt&gt;, the &lt;tt class="docutils literal"&gt;FRAMER_GET&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;FRAMER_SET&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;FRAMER_FIELD&lt;/tt&gt;
+macros. A component defined with &lt;tt class="docutils literal"&gt;FRAMER_COMPONENT_DEFINE(Velocity)&lt;/tt&gt; and
+a system registered with &lt;tt class="docutils literal"&gt;framer_system_register()&lt;/tt&gt; compiles and runs
+unchanged on either backend; which one a build gets is a single Meson
+option, &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-Decs=flecs&lt;/span&gt;&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-Decs=static&lt;/span&gt;&lt;/tt&gt;, and GBA's cross file pins it
+to &lt;tt class="docutils literal"&gt;static&lt;/tt&gt; (Flecs needs an OS, and bare-metal GBA doesn't have one) —
+the build refuses to configure any other way for that target.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="entities-are-array-slots-nothing-more"&gt;
+&lt;h2&gt;Entities are array slots, nothing more&lt;/h2&gt;
+&lt;p&gt;An entity in this backend isn't an object — it's a 1-based index into
+those parallel arrays. &lt;tt class="docutils literal"&gt;framer_entity_create()&lt;/tt&gt; finds the lowest dead
+slot and claims it, first-fit:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;framer_entity_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;framer_entity_create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;framer_world_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;s_alive&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;s_alive&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;s_comp_mask&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_entity_high&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="n"&gt;s_entity_high&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EID&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* pool exhausted */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That's the entire allocator. No free list to maintain, no fragmentation
+to worry about — there's nothing to fragment when every slot is the same
+fixed size and lives at a compile-time-known address. The price for that
+simplicity is explicit and deliberate: destroying entity 5 and creating a
+new one immediately afterward hands back the same ID, 5, for a
+completely different logical entity. There's no generation counter to
+tell the two apart. For the scene sizes and lifetimes this backend
+targets — a handful of objects that mostly live for the whole level, not
+a churn of thousands spawning and despawning every frame — that's an
+acceptable trade, not an oversight; it's directly covered by a unit test
+(&lt;tt class="docutils literal"&gt;test_entity_slot_recycled_first_fit&lt;/tt&gt;) precisely so it stays a known,
+intentional property instead of a surprise.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="components-a-bitmask-and-a-flat-array"&gt;
+&lt;h2&gt;Components: a bitmask and a flat array&lt;/h2&gt;
+&lt;p&gt;Each entity slot carries one &lt;tt class="docutils literal"&gt;uint64_t&lt;/tt&gt; bitmask, one bit per registered
+component type. &lt;tt class="docutils literal"&gt;framer_component_set()&lt;/tt&gt; is a &lt;tt class="docutils literal"&gt;memcpy&lt;/tt&gt; into a
+fixed-stride row of the flat &lt;tt class="docutils literal"&gt;s_store&lt;/tt&gt; array, plus a bit set:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;framer_component_set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;framer_world_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;framer_entity_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;                          &lt;/span&gt;&lt;span class="n"&gt;framer_id_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ei&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EIDX&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ci&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cidx&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="cm"&gt;/* ...bounds and liveness checks elided... */&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;memcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s_store&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ci&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;ei&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="n"&gt;s_comp&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ci&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;s_comp_mask&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ei&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;|=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="kt"&gt;uint64_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="mi"&gt;1u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ci&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;s_any_mask&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;|=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="kt"&gt;uint64_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="mi"&gt;1u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ci&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A query is just a precomputed mask built from the component ids it asks
+for; matching an entity against it is one &lt;tt class="docutils literal"&gt;AND&lt;/tt&gt; and one comparison
+(&lt;tt class="docutils literal"&gt;(s_comp_mask[ei] &amp;amp; mask) == mask&lt;/tt&gt;). The &lt;tt class="docutils literal"&gt;uint64_t&lt;/tt&gt; bitmask is also
+the hard ceiling on how many distinct component &lt;em&gt;types&lt;/em&gt; can exist in one
+world — 64 — which is generous for a retro scene's needs but means the
+type system itself enforces &amp;quot;don't try to build something Flecs-shaped
+on top of this.&amp;quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="war-story-a-silent-null-deref-vs-a-loud-abort"&gt;
+&lt;h2&gt;War story: a silent NULL deref vs. a loud abort()&lt;/h2&gt;
+&lt;p&gt;The single most important property of this backend isn't the data
+layout — it's what happens when a limit is hit. Early on,
+&lt;tt class="docutils literal"&gt;framer_component_register()&lt;/tt&gt; returned 0 when a component was too big
+or the registry was full, the same &amp;quot;just signal failure&amp;quot; convention used
+everywhere else in this API. That sounds reasonable until you trace what
+a 0 component id actually does downstream: &lt;tt class="docutils literal"&gt;framer_query_create()&lt;/tt&gt;
+silently skips it when building a query's mask, and the system that
+registered that query goes on to call &lt;tt class="docutils literal"&gt;FRAMER_FIELD()&lt;/tt&gt; for a field that
+was quietly dropped — which dereferences NULL on the system's very next
+matching entity. That's exactly what happened on a real GBA build: a
+&lt;tt class="docutils literal"&gt;Text&lt;/tt&gt; component at 288 bytes against a 64-byte cap, and 17 registered
+component types against a cap of 12. The crash that surfaced wasn't &amp;quot;your
+component is too big,&amp;quot; it was a NULL-pointer SIGSEGV deep inside a render
+system, two layers removed from the actual mistake.&lt;/p&gt;
+&lt;p&gt;The fix removes the silent path entirely:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;fprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stderr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;framer_component_register: &lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt; is %lu bytes, &amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;exceeding FRAMER_STATIC_MAX_COMPONENT_SIZE (%d)&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;?&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;unsigned&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;abort&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;abort()&lt;/tt&gt; rather than an &lt;tt class="docutils literal"&gt;assert()&lt;/tt&gt; or a GCC/Clang-specific builtin,
+because this backend also has to compile under cc65 and SDCC for
+8-bit targets — plain C89 &lt;tt class="docutils literal"&gt;abort()&lt;/tt&gt; is the one failure primitive
+guaranteed to exist everywhere this code runs. The test suite verifies
+the &lt;em&gt;contract&lt;/em&gt;, not just the arithmetic: &lt;tt class="docutils literal"&gt;test_ecs_static_limits.c&lt;/tt&gt;
+forks a child process, registers one component past the limit inside it,
+and asserts the child died of &lt;tt class="docutils literal"&gt;SIGABRT&lt;/tt&gt; rather than returning normally
+— proving the fail-loud path actually fires, not just that the size
+check's math is correct.&lt;/p&gt;
+&lt;p&gt;The broader lesson generalizes past this one bug: on a backend built
+entirely out of fixed-size arrays, every hard limit is a wall, not a
+suggestion. The only choice that matters is whether you hit that wall
+with a clear error message at the exact call site that caused it, or
+with a corrupted query and a crash three function calls away. This
+backend picked loud, on purpose, everywhere a hard cap exists.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="sizing-the-pools-and-a-second-silent-failure-bug"&gt;
+&lt;h2&gt;Sizing the pools, and a second silent-failure bug&lt;/h2&gt;
+&lt;p&gt;Each target's &lt;tt class="docutils literal"&gt;meson.build&lt;/tt&gt; picks &lt;tt class="docutils literal"&gt;FRAMER_STATIC_MAX_COMPONENTS&lt;/tt&gt;,
+&lt;tt class="docutils literal"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/tt&gt;
+to fit what that platform actually needs — there's no universal default
+that's right for every target, because the engine registers its full set
+of core components (&lt;tt class="docutils literal"&gt;Transform&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Velocity&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Sprite&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Light&lt;/tt&gt;,
+&lt;tt class="docutils literal"&gt;Text&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;Camera&lt;/tt&gt;, and so on — 19 today) unconditionally, regardless
+of whether a given example actually uses all of them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Embedded (system == &amp;#39;none&amp;#39;):
+-DFRAMER_STATIC_MAX_COMPONENTS=19
+-DFRAMER_STATIC_MAX_ENTITIES=96
+-DFRAMER_STATIC_MAX_COMPONENT_SIZE=64
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That &lt;tt class="docutils literal"&gt;MAX_ENTITIES=96&lt;/tt&gt; number has its own bug story behind it. Each
+&lt;em&gt;registered component type&lt;/em&gt; — not each entity actually created — reserves
+one sentinel slot out of the same entity pool, so the entities actually
+available to a scene is &lt;tt class="docutils literal"&gt;MAX_ENTITIES&lt;/tt&gt; minus however many component
+types exist. At &lt;tt class="docutils literal"&gt;MAX_ENTITIES=64&lt;/tt&gt; and 19 components, that left 45 usable
+slots — comfortably enough for &lt;cite&gt;examples/simple_cube&lt;/cite&gt;, but one short of
+&lt;cite&gt;examples/input_tester&lt;/cite&gt;'s 48 (47 on-screen panel entities plus one
+camera). The failure mode was, again, silent: &lt;tt class="docutils literal"&gt;framer_entity_create()&lt;/tt&gt;
+returning 0 once the pool filled, and the caller that wanted one more
+entity for a gamepad-axis label simply never got it — the text just never
+appeared on screen, with nothing in the logs to say why. Raising the cap
+to 96 (77 free after the 19 sentinels) fixed it with headroom to spare.
+On the GBA build that growth costs about 544 bytes of IWRAM (three
+per-entity arrays scale with the cap), which was checked against the
+build's actual free IWRAM margin before landing — on a 32KB budget,
+guessing isn't good enough, you measure.&lt;/p&gt;
+&lt;p&gt;That measurement habit is the same one from the performance article:
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;arm-none-eabi-size&lt;/span&gt; &lt;span class="pre"&gt;-A&lt;/span&gt;&lt;/tt&gt; on a current GBA build shows exactly where this
+backend's memory actually goes. The flat component store
+(19 × 96 × 64 bytes ≈ 114KB) is placed in EWRAM's &lt;tt class="docutils literal"&gt;.sbss&lt;/tt&gt; section — too
+big for IWRAM, and zero-initialized for free by the startup code without
+costing any ROM space:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifdef GBA&lt;/span&gt;
+&lt;span class="cp"&gt;#define _FRAMER_STORE_ATTR __attribute__((section(&amp;quot;.sbss&amp;quot;)))&lt;/span&gt;
+&lt;span class="cp"&gt;#else&lt;/span&gt;
+&lt;span class="cp"&gt;#define _FRAMER_STORE_ATTR&lt;/span&gt;
+&lt;span class="cp"&gt;#endif&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;_FRAMER_STORE_ATTR&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;s_store&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENTS&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_ENTITIES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FRAMER_STATIC_MAX_COMPONENT_SIZE&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Everything else — the alive flags, the masks, the per-frame iterator's
+entity list — is small enough to live in IWRAM, the GBA's fast 32KB
+scratch memory, where the CPU actually wants its hot working data. On
+the current &lt;tt class="docutils literal"&gt;examples/simple_cube&lt;/tt&gt; build that's roughly 19.5KB of
+IWRAM used out of 32KB, leaving real headroom for the next component or
+two — a number worth checking again every time that count grows, the
+same way the 96-entity fix had to be checked against it.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-scan-loop-briefly"&gt;
+&lt;h2&gt;The scan loop, briefly&lt;/h2&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;framer_world_progress()&lt;/tt&gt; walks every registered system, in phase
+order, and for each one scans entity slots up to the high-water mark
+(&lt;tt class="docutils literal"&gt;s_entity_high&lt;/tt&gt;, one past the highest slot any entity or component
+sentinel has ever occupied) looking for bitmask matches. That scan, and
+the sticky &lt;tt class="docutils literal"&gt;s_any_mask&lt;/tt&gt; check that skips it entirely for systems whose
+component type no entity has ever had, was the single biggest win in
+the previous article's performance work — covered there in full, since
+it's a perf story more than a design story. The design point that
+matters here is simpler: this is a linear scan over a flat array, not a
+sparse-set or archetype-table lookup. That's the right trade at GBA
+scene sizes (tens of entities), and the wrong one at thousands — which is
+exactly the line where you'd reach for Flecs instead.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-this-design-explicitly-gives-up"&gt;
+&lt;h2&gt;What this design explicitly gives up&lt;/h2&gt;
+&lt;p&gt;None of the above is free, and being upfront about the trade-offs is the
+point of having two backends instead of pretending one ECS fits every
+target:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;No entity generations.&lt;/strong&gt; As covered above, IDs are recycled
+immediately and look identical to the entity that previously held
+them.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No archetypes, no sparse sets.&lt;/strong&gt; Matching is a linear scan with a
+bitmask test, not a cache-optimized contiguous iteration over exactly
+the matching entities. Fine at dozens of entities; the wrong tool past
+that.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;64 component types, total, forever, for the whole world.&lt;/strong&gt; Not per
+query — for every component type that exists anywhere in the engine,
+shared across every system. The engine's current 19 leaves room to
+grow, but a &amp;quot;just add a component&amp;quot; change always has a final cost
+attached: someone, somewhere, has to recheck that ceiling.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No relationships, no hierarchies, no observers.&lt;/strong&gt; Flecs has all of
+these; this backend has entities, components, and queries, deliberately
+nothing more.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Every one of these is a real capability Flecs has and this backend
+doesn't. They're also exactly the features that cost the heap, the
+dynamic bookkeeping, and the unpredictable-at-compile-time memory use
+that a bare-metal ROM target can't afford. The two-tier split exists so
+that trade only has to be made once, explicitly, per target — not
+silently, by whichever ECS happened to compile.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="where-this-goes-next"&gt;
+&lt;h2&gt;Where this goes next&lt;/h2&gt;
+&lt;p&gt;The same problem — &amp;quot;no OS, no heap, fixed memory map, known component
+set&amp;quot; — is true of every retro target on framer-engine's roadmap, not just
+the GBA. The 32-bit-era consoles mentioned in the previous article's
+closing section, starting with the PlayStation 1, sit in an interesting
+middle ground: dramatically more RAM and a real GPU compared to the GBA,
+but still no OS and still nothing resembling a desktop heap. The
+expectation going in is that they'll want this same static backend, just
+with much larger pool constants — not Flecs, and not a third ECS
+implementation. Whether that expectation survives contact with an actual
+PS1 build, the way the &amp;quot;obviously correct&amp;quot; tricks in the performance
+article sometimes didn't survive contact with measurement, is exactly
+the kind of thing a future article on this blog will have to report
+honestly either way.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="gamedev"/><category term="gba"/><category term="ecs"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Squeezing Cycles: Optimizing a Software 3D Renderer for the GBA</title><link href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html" rel="alternate"/><published>2026-06-24T22:12:00+02:00</published><updated>2026-06-24T22:12:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-24:/gba-performance-optimization-framer-engine.html</id><summary type="html">&lt;p class="first last"&gt;Real techniques, real cycle counts, and a couple of &amp;quot;obviously
 correct&amp;quot; optimizations that backfired, from porting a software 3D
 renderer to the Game Boy Advance's FPU-less ARM7TDMI in framer-engine.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
@@ -620,7 +898,7 @@ boundary, one exposed port, one systemd unit, one script that adapts to
 whatever box it lands on. That boring part is also what makes me comfortable
 leaving it running unattended.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Self-Hosting"/><category term="self-hosting"/><category term="llm"/><category term="ollama"/><category term="podman"/><category term="kubernetes"/><category term="ansible"/><category term="opencode"/><category term="privacy"/><category term="article"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Self-Hosting"/><category term="self-hosting"/><category term="llm"/><category term="ollama"/><category term="podman"/><category term="kubernetes"/><category term="ansible"/><category term="opencode"/><category term="privacy"/><category term="article"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="hyrox-and-crossfit"&gt;
@@ -658,7 +936,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;NOBULL has launched the Outwork Flex, a promising addition to their footwear lineup aimed at enhancing performance: &lt;a class="reference external" href="https://morningchalkup.com/2026/06/17/nobull-introduces-the-outwork-flex-the-newest-addition-to-the-outwork-line/"&gt;NOBULL Introduces the Outwork Flex, the Newest Addition to the Outwork Line&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-expansion"&gt;
@@ -691,7 +969,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org"&gt;Zephyr Project&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -724,7 +1002,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -764,7 +1042,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;In conclusion, the Linux gaming sector is thriving with a plethora of new games, significant technological advancements, and a supportive community focused on improving user experiences across platforms.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-trends"&gt;
@@ -792,7 +1070,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;Top Ten Projects My Dad Would Like&lt;/strong&gt;: This article offers a light-hearted look at popular projects that could engage community members with hands-on open-source DIY fun. &lt;a class="reference external" href="https://makezine.com/article/home/top-ten-projects-my-dad-would-like/"&gt;Top Ten Projects My Dad Would Like&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:49:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/embedded-linux-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:49:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/embedded-linux-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -823,7 +1101,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="competitive-fitness-trends"&gt;
@@ -853,7 +1131,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://morningchalkup.com/2026/06/10/the-ultimate-fathers-day-gift-guide-for-the-crossfit-or-hyrox-dad/"&gt;The Ultimate Father’s Day Gift Guide for the CrossFit or HYROX Dad&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos"&gt;
@@ -893,7 +1171,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;This digest encapsulates the vibrant developments within the Zephyr RTOS community and highlights resources for both potential and seasoned developers within the ecosystem.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retro-gaming-news"&gt;
@@ -924,7 +1202,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/06/we-have-the-means-to-fight-this-case-to-the-end-gamings-most-infamous-trademark-troll-is-back"&gt;”We Have The Means To Fight This Case To The End” - Gaming's Most Infamous Trademark Troll Is Back&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -958,7 +1236,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;As Linux gaming continues to grow, being informed about the latest updates, potential threats, and performance improvements is vital for developers and gamers alike.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-initiatives"&gt;
@@ -996,7 +1274,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/14/reviving-teletext-for-ham-radio-hamsunday-ieeespectrum/"&gt;Reviving Teletext for Ham Radio #HamSunday &amp;#64;IEEESpectrum&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:41:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/embedded-linux-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:41:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/embedded-linux-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -1028,7 +1306,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates"&gt;
@@ -1056,7 +1334,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;A Brief History of Zephyr RTOS&lt;/strong&gt;: This article chronicles the evolution of Zephyr RTOS, highlighting its origins in earlier commercial systems and its development into an open-source powerhouse. For a deep dive into its history, click here: &lt;a class="reference external" href="https://shawnhymel.com/2791/a-brief-history-of-zephyr-rtos"&gt;A Brief History of Zephyr RTOS&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:13:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:13:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-hyrox-and-powerlifting"&gt;
@@ -1090,7 +1368,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;This week’s articles reveal a promising future for competitive fitness as CrossFit, HYROX, and strength training practices continue to evolve and influence the industry.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-engagement"&gt;
@@ -1114,7 +1392,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com"&gt;Linux Hardware Reviews &amp;amp; Performance Benchmarks, Open-Source News - Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-06-26T08:38:42.352418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -1146,7 +1424,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;In summary, the retrogaming landscape remains vibrant, enriched by new releases and nostalgic reflections on the classics that shaped the industry.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/embedded-linux-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/embedded-linux-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -1167,7 +1445,7 @@ leaving it running unattended.&lt;/p&gt;
 - &lt;strong&gt;KDE Plasma 6.8 Will Make Sure You Don't Miss Your Low Battery Notifications While Gaming&lt;/strong&gt;: Discusses upcoming features in KDE aimed at enhancing user experience for embedded devices, particularly during critical tasks like gaming. [Read more here](&lt;a class="reference external" href="https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S"&gt;https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;These articles reflect the vibrant landscape of embedded Linux, highlighting the ongoing innovations and challenges that developers and users face.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-06-29T20:30:05.008073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -1215,7 +1493,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Capitole du Libre 2026: the CFP is open</title><link href="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-06-26T08:38:42.350418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/capitole-du-libre-2026-cfp.html</id><summary type="html">&lt;p class="first last"&gt;The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance — submissions close on July 20, 2026.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Capitole du Libre 2026: the CFP is open</title><link href="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-06-29T20:30:05.006073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/capitole-du-libre-2026-cfp.html</id><summary type="html">&lt;p class="first last"&gt;The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance — submissions close on July 20, 2026.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://capitoledulibre.org"&gt;Capitole du Libre&lt;/a&gt; is one of France's largest community-driven Free Software and
 Open Source events. It is held every year in Toulouse, and I have had the pleasure
 of speaking there in &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20181117/measured_boot.pdf"&gt;2018&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20191116/building_linux.pdf"&gt;2019&lt;/a&gt;, and &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf"&gt;2022&lt;/a&gt;. The &lt;strong&gt;2026 edition&lt;/strong&gt; takes place
@@ -1256,7 +1534,7 @@ are not eligible for reimbursement.&lt;/p&gt;
 proposals.&lt;/p&gt;
 &lt;p&gt;Submit your proposal: &lt;a class="reference external" href="https://cfp.capitoledulibre.org/cdl-2026/cfp"&gt;cfp.capitoledulibre.org/cdl-2026/cfp&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Free Software"/><category term="capitole du libre"/><category term="cfp"/><category term="free software"/><category term="open source"/><category term="conference"/><category term="toulouse"/><category term="article"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-06-26T08:38:42.350418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
+</content><category term="Free Software"/><category term="capitole du libre"/><category term="cfp"/><category term="free software"/><category term="open source"/><category term="conference"/><category term="toulouse"/><category term="article"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-06-29T20:30:05.006073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04"&gt;RIOT-OS 2026.04&lt;/a&gt;, codenamed &lt;strong&gt;Fire Rizzlease&lt;/strong&gt;, was released on May 6, 2026.
 RIOT is a multi-threading operating system targeting microcontrollers found in the
 Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
@@ -1340,7 +1618,7 @@ progressively replacing Doxygen for prose documentation. This release adds:&lt;/
 &lt;li&gt;LVGL configuration and SDL issues on native (#22005, #22139).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -1360,7 +1638,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 - &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:22:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:22:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-hyrox-and-powerlifting"&gt;
@@ -1402,7 +1680,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-news-digest"&gt;
@@ -1437,7 +1715,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;p&gt;This week's articles reflect the ongoing passion and innovation within the retrogaming community, ensuring that the games we love continue to thrive and evolve.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -1469,7 +1747,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;p&gt;As the open-source hardware movement continues to evolve, these articles serve as a testament to its vibrant community, innovative spirit, and the myriad possibilities that open-source design unlocks for makers worldwide.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming-performance"&gt;
@@ -1507,7 +1785,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/OpenCL-3.1.1-Released"&gt;OpenCL 3.1.1 Released To Address A Possible Performance Regression&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:15:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/embedded-linux-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:15:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/embedded-linux-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -1527,7 +1805,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -1557,7 +1835,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:09:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:09:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="competitive-fitness"&gt;
@@ -1595,7 +1873,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/"&gt;Competitive Fitness and Functional Sport Online Magazine&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -1652,7 +1930,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;The articles this week illustrate the dynamic and multifaceted world of open-source hardware, engaging the community and fostering innovation across various applications and discussions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -1705,7 +1983,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;Linux gaming continues to evolve with promising trends, new distributions, software enhancements, and an expanding library, making 2026 a pivotal year for enthusiasts and new users alike.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:23:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/embedded-linux-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:23:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/embedded-linux-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -1749,7 +2027,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;This week's articles present a rich tapestry of information for anyone interested in or working with Embedded Linux, emphasizing the importance of security, kernel updates, and innovative solutions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Yocto Project 6.0 "wrynose" is out</title><link href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="alternate"/><published>2026-05-13T12:00:00+02:00</published><updated>2026-06-26T08:38:42.350418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-13:/yocto-project-6-0-wrynose-release.html</id><summary type="html">&lt;p class="first last"&gt;Yocto Project 6.0 &amp;quot;wrynose&amp;quot;, the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Yocto Project 6.0 "wrynose" is out</title><link href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="alternate"/><published>2026-05-13T12:00:00+02:00</published><updated>2026-06-29T20:30:05.006073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-13:/yocto-project-6-0-wrynose-release.html</id><summary type="html">&lt;p class="first last"&gt;Yocto Project 6.0 &amp;quot;wrynose&amp;quot;, the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;The &lt;a class="reference external" href="https://www.yoctoproject.org/software-overview/downloads/"&gt;Yocto Project 6.0&lt;/a&gt;, codenamed &lt;strong&gt;wrynose&lt;/strong&gt;, was released on May 13, 2026. This
 is the new &lt;strong&gt;Long-Term Support (LTS)&lt;/strong&gt; release, succeeding 5.0 &amp;quot;scarthgap&amp;quot;. I am
 happy to have my name in the contributors list for this release, and I wanted to
@@ -1844,7 +2122,7 @@ this external source. A new &lt;tt class="docutils literal"&gt;wicenv&lt;/tt&gt;
 scarthgap (5.0), now is a good time to plan your migration. The migration guide
 is available at the &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html"&gt;Yocto Project documentation&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="yocto"/><category term="openembedded"/><category term="embedded"/><category term="linux"/><category term="oe-core"/><category term="article"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-06-26T08:38:42.351339+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="yocto"/><category term="openembedded"/><category term="embedded"/><category term="linux"/><category term="oe-core"/><category term="article"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-06-29T20:30:05.006823+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -1892,7 +2170,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/AMD-K5-CPUs"&gt;AMD K5 CPUs The Latest To Be Retired With Linux's Aging Hardware Support | Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-06-26T08:38:42.351339+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-06-29T20:30:05.006823+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -1935,7 +2213,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://hackaday.io/"&gt;Hackaday.io — The world's largest collaborative hardware development community&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-06-26T08:38:42.351418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -1979,7 +2257,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos"&gt;Zephyr RTOS on Silicon Labs platforms&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-06-26T08:38:42.350418+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-06-29T20:30:05.006073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-and-hyrox"&gt;
@@ -2014,7 +2292,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;/ul&gt;
 &lt;p&gt;This digest captures the latest developments in CrossFit, HYROX, and powerlifting, illustrating a vibrant landscape focused on competitive fitness and community engagement.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-06-26T08:38:42.351339+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-06-29T20:30:05.006823+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -2057,7 +2335,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;Catch up on community discussions within the &lt;a class="reference external" href="https://mender.io/blog/the-future-of-the-embedded-linux-ecosystem"&gt;Linux Plumbers Conference 2023&lt;/a&gt; focusing on the embedded Linux ecosystem.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-06-26T08:38:42.351339+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-06-29T20:30:05.007073+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-digest"&gt;
