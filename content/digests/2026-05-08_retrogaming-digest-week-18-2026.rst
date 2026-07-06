@@ -32,8 +32,8 @@ New Releases and Reviews
 
 Alongside hardware announcements, several articles focus on new game releases and adaptations that tap into retro nostalgia.
 
-- **Super Mario 64 on GBA**: The original Super Mario 64 is now playable on the Game Boy Advance. Catch the details in `Original Super Mario 64 Is Now Playable On GBA <https://retrododo.com/tag/news/>`_.
-- **RGC-BASIC V2.0**: A development update on RGC-BASIC showcases its evolution into a potential game engine. Read more in `Announcing RGC-BASIC V2.0 <https://retrogamecoders.com/news/>`_.
+- **Super Mario 64 on GBA**: The original Super Mario 64 is now playable on the Game Boy Advance. Catch the details in `Original Super Mario 64 Is Now Playable On GBA <https://retrododo.com/the-original-super-mario-64-is-now-playable-on-gba/>`_.
+- **RGC-BASIC V2.0**: A development update on RGC-BASIC showcases its evolution into a potential game engine. Read more in `Announcing RGC-BASIC V2.0 <https://retrogamecoders.com/announcing-rgc-basic-v2/>`_.
 
 Sales and Market Trends
 ------------------------
