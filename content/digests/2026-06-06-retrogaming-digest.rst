@@ -33,7 +33,7 @@ Celebrating Classic Titles
 As the gaming community reminisces about the past, several platforms have begun to explore and document the history behind iconic games and their creators. 
 
 - Wizardry’s co-creator shared insights about the transformative impact of the RPG in `a video commemorating its 45th anniversary <https://www.timeextension.com/news/2026/06/i-needed-an-interpreter-she-ended-up-being-the-love-of-my-life-wizardrys-co-creator-explains-how-the-epic-rpg-changed-his-life>`_.
-- Retro Dodo featured a discussion on the best Pokémon games as voted by `10,000 retro gamers <https://retrododo.com>`_.
+- Retro Dodo featured a discussion on the best Pokémon games as voted by `10,000 retro gamers <https://retrododo.com/10-000-retro-gamers-voted-and-chose-the-best-pokemon-game-of-all-time/>`_.
 
 Re-releases and Retro Events
 ----------------------------
