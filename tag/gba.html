@@ -728,6 +728,59 @@ know is the same <tt class="docutils literal">cycle_probe.py</tt> round-trip use
 article: change one thing, measure, keep it only if the number actually
 goes down.</p>
 </div>
+<div class="section" id="war-story-3-quantizing-colors-in-the-wrong-number-system">
+<h2>War story 3: quantizing colors in the wrong number system</h2>
+<p>The GBA backend's shaded sprites and triangles go through
+<tt class="docutils literal">gba_palette_index()</tt>: a linear scan (up to 256 entries, with a nearest-
+color distance calculation once full) that maps a computed RGB555 value
+onto <tt class="docutils literal">BG_PALETTE</tt>, since Mode 4 is 8bpp paletted, not true color. A
+one-entry cache short-circuits two <em>consecutive</em> calls requesting the
+exact same value — but continuous per-frame lighting math (<tt class="docutils literal">examples/
+lighting</tt>, added since this article's original techniques, orbits two
+colored point lights around a static sphere and cube) makes each shaded
+triangle request a slightly different value almost every frame, defeating
+that cache and driving the palette to saturation within seconds.</p>
+<p>The fix looked obvious: round each lit color channel to a coarser step —
+16 buckets instead of RGB555's own 32 — before it ever reaches the
+palette lookup. A gradually-changing light then collapses onto a much
+smaller, more repeated set of values: more cache hits, and a palette that
+stays truer to intent for longer before saturating. The first
+implementation did this in float space, right where the lit color was
+already a <tt class="docutils literal">float</tt>:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* looked free, measured otherwise */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">gba_quantize_channel</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">16.0f</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)(</span><span class="kt">int</span><span class="p">)(</span><span class="n">v</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">steps</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>Measured with <tt class="docutils literal">cycle_probe.py</tt> on the same orbiting-lights demo, 150
+frames, steady-state average over frames 101-150: <strong>646528 cycles/frame
+with no quantization at all, versus 658869 with it — a ~1.9%
+regression</strong>, not the improvement it was meant to be.</p>
+<p>The cause, once measured rather than assumed: this is still the same
+FPU-less ARM7TDMI every other technique in this article exists to work
+around. <tt class="docutils literal">v * steps + 0.5f</tt>, the cast, and <tt class="docutils literal">* (1.0f / steps)</tt> are three
+more soft-float library calls, paid on every one of the three channels,
+for every shaded triangle, every frame — and that cost was larger than
+whatever palette-scan time it was saving. An optimization aimed
+<em>specifically</em> at this hardware's constraint had itself ignored that same
+constraint.</p>
+<p>The fix moves the rounding into integer space instead, using a value the
+code already computes. <tt class="docutils literal">f_to_5bit()</tt> (the existing float→RGB555-channel
+helper) produces a clamped 0-31 integer; masking off its low bit gives 16
+buckets — the identical bucket count as the float version — for the cost
+of one <tt class="docutils literal">AND</tt> on a value that has to be computed either way:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">u16</span><span class="w"> </span><span class="nf">f_to_5bit_quantized</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">u16</span><span class="p">)(</span><span class="n">f_to_5bit</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="mi">1u</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>Same demo, same steady-state measurement: <strong>642455 cycles/frame</strong> — a
+genuine, if modest, <strong>~0.63% improvement</strong> over the no-quantization
+baseline. The idea behind the optimization was sound; it just had to be
+expressed in a number system this CPU can actually multiply in for free.</p>
+</div>
 <div class="section" id="where-this-leaves-things">
 <h2>Where this leaves things</h2>
 <p>After all of the above, <tt class="docutils literal">examples/simple_cube</tt> sits at 288074
@@ -784,7 +837,7 @@ to be that generation's equivalent surprise.</p>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">posted at 22:12</a>
-                    &nbsp;&middot;&nbsp;16 min read
+                    &nbsp;&middot;&nbsp;18 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags selected">gba</a>
