@@ -3,12 +3,12 @@ Squeezing Cycles: Optimizing a Software 3D Renderer for the GBA
 ===============================================================
 
 :date: 2026-06-24 22:12
-:modified: 2026-06-24 22:12
+:modified: 2026-07-07 20:53
 :tags: gba, performance, optimization, embedded, retro, gamedev, fixed-point, article
 :category: gamedev
 :slug: gba-performance-optimization-framer-engine
 :authors: tperrot
-:summary: Real techniques, real cycle counts, and a couple of "obviously
+:summary: Real techniques, real cycle counts, and a few "obviously
     correct" optimizations that backfired, from porting a software 3D
     renderer to the Game Boy Advance's FPU-less ARM7TDMI in framer-engine.
 :lang: en
@@ -434,6 +434,69 @@ in the direction your mental model of the code predicts. The only way to
 know is the same ``cycle_probe.py`` round-trip used for every win in this
 article: change one thing, measure, keep it only if the number actually
 goes down.
+
+War story 3: quantizing colors in the wrong number system
+==============================================================
+
+The GBA backend's shaded sprites and triangles go through
+``gba_palette_index()``: a linear scan (up to 256 entries, with a nearest-
+color distance calculation once full) that maps a computed RGB555 value
+onto ``BG_PALETTE``, since Mode 4 is 8bpp paletted, not true color. A
+one-entry cache short-circuits two *consecutive* calls requesting the
+exact same value — but continuous per-frame lighting math (``examples/
+lighting``, added since this article's original techniques, orbits two
+colored point lights around a static sphere and cube) makes each shaded
+triangle request a slightly different value almost every frame, defeating
+that cache and driving the palette to saturation within seconds.
+
+The fix looked obvious: round each lit color channel to a coarser step —
+16 buckets instead of RGB555's own 32 — before it ever reaches the
+palette lookup. A gradually-changing light then collapses onto a much
+smaller, more repeated set of values: more cache hits, and a palette that
+stays truer to intent for longer before saturating. The first
+implementation did this in float space, right where the lit color was
+already a ``float``:
+
+.. code-block:: c
+
+    /* looked free, measured otherwise */
+    static inline float gba_quantize_channel(float v)
+    {
+        const float steps = 16.0f;
+        return (float)(int)(v * steps + 0.5f) * (1.0f / steps);
+    }
+
+Measured with ``cycle_probe.py`` on the same orbiting-lights demo, 150
+frames, steady-state average over frames 101-150: **646528 cycles/frame
+with no quantization at all, versus 658869 with it — a ~1.9%
+regression**, not the improvement it was meant to be.
+
+The cause, once measured rather than assumed: this is still the same
+FPU-less ARM7TDMI every other technique in this article exists to work
+around. ``v * steps + 0.5f``, the cast, and ``* (1.0f / steps)`` are three
+more soft-float library calls, paid on every one of the three channels,
+for every shaded triangle, every frame — and that cost was larger than
+whatever palette-scan time it was saving. An optimization aimed
+*specifically* at this hardware's constraint had itself ignored that same
+constraint.
+
+The fix moves the rounding into integer space instead, using a value the
+code already computes. ``f_to_5bit()`` (the existing float→RGB555-channel
+helper) produces a clamped 0-31 integer; masking off its low bit gives 16
+buckets — the identical bucket count as the float version — for the cost
+of one ``AND`` on a value that has to be computed either way:
+
+.. code-block:: c
+
+    static inline u16 f_to_5bit_quantized(float v)
+    {
+        return (u16)(f_to_5bit(v) & ~1u);
+    }
+
+Same demo, same steady-state measurement: **642455 cycles/frame** — a
+genuine, if modest, **~0.63% improvement** over the no-quantization
+baseline. The idea behind the optimization was sound; it just had to be
+expressed in a number system this CPU can actually multiply in for free.
 
 Where this leaves things
 ==========================
