@@ -28,6 +28,12 @@ the same interface as the desktop one. Component definitions, systems and
 queries are identical between a PC build and a GBA build. Only one file
 differs: which ``world.c`` is linked.
 
+.. note::
+
+   ``framer-engine`` is a personal side project. The source code will be
+   made publicly available once the engine reaches a sufficient level of
+   maturity.
+
 Two ECS backends, one interface
 =================================
 
