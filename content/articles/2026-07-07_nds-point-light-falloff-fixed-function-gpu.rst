@@ -37,6 +37,12 @@ real hardware surprise straight out of GBATEK, and a fix that gets
 meaningfully closer to real point-light falloff without ever abandoning
 the GPU's own lighting hardware for a software fallback.
 
+.. note::
+
+   ``framer-engine`` is a personal side project. The source code will be
+   made publicly available once the engine reaches a sufficient level of
+   maturity.
+
 The hardware constraint that drives everything
 =================================================
 

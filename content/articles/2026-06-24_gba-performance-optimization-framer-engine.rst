@@ -26,6 +26,12 @@ no hardware polygon fill**. Every float operation is a soft-float library
 call, every divide is a library call, and every pixel is a CPU
 read-modify-write into VRAM.
 
+.. note::
+
+   ``framer-engine`` is a personal side project. The source code will be
+   made publicly available once the engine reaches a sufficient level of
+   maturity.
+
 .. figure:: {static}/static/images/gba-performance/simple_cube.png
    :alt: examples/simple_cube running in mGBA — a single shaded, rotating cube
    :align: center
