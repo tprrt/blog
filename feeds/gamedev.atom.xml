@@ -1,5 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-07T20:53:00+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance</title><link href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="alternate"/><published>2026-06-25T23:30:00+02:00</published><updated>2026-06-25T23:30:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-25:/static-ecs-no-heap-retro-platforms.html</id><summary type="html">&lt;p class="first last"&gt;How framer-engine's Entity Component System works on hardware
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-07T21:14:00+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU</title><link href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html" rel="alternate"/><published>2026-07-07T21:14:00+02:00</published><updated>2026-07-07T21:14:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-07:/nds-point-light-falloff-fixed-function-gpu.html</id><summary type="html">&lt;p class="first last"&gt;The Nintendo DS's fixed-function GPU only supports directional
+lights, full stop. Two real bugs, one hardware surprise straight out
+of GBATEK, and a way to get real per-object point-light falloff out
+of hardware that has no concept of one, without ever leaving the
+hardware-accelerated path.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The previous two articles on this blog — one on &lt;a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html"&gt;cycle-level
+optimization&lt;/a&gt;, one on the &lt;a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html"&gt;no-heap ECS&lt;/a&gt; underneath it — were both about the Game Boy
+Advance: an FPU-less CPU with no hardware polygon fill at all, where
+every trick is about avoiding soft-float calls and touching as few VRAM
+bytes as possible. The Nintendo DS backend in &lt;a class="reference external" href="https://github.com/tprrt/framer-engine"&gt;framer-engine&lt;/a&gt;
+is the opposite kind of retro target — it has a real fixed-function 3D
+GPU, with hardware transform, lighting, and rasterization. That sounds
+like it should make lighting the &lt;em&gt;easy&lt;/em&gt; part. It doesn't. It just moves
+the constraint from &amp;quot;the CPU can't do float math&amp;quot; to &amp;quot;the GPU can't do
+the thing you're asking it to do, and it won't tell you that — it'll just
+render something else instead.&amp;quot;&lt;/p&gt;
+&lt;p&gt;This article is about chasing exactly that down: a real rendering bug, a
+real hardware surprise straight out of GBATEK, and a fix that gets
+meaningfully closer to real point-light falloff without ever abandoning
+the GPU's own lighting hardware for a software fallback.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;framer-engine&lt;/span&gt;&lt;/tt&gt; is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-hardware-constraint-that-drives-everything"&gt;
+&lt;h2&gt;The hardware constraint that drives everything&lt;/h2&gt;
+&lt;p&gt;Every light in framer-engine — directional, point, or spot — is the same
+&lt;tt class="docutils literal"&gt;struct light&lt;/tt&gt; component, and every backend (GBA's software rasterizer,
+desktop OpenGL/Vulkan/software, and this one) is expected to shade point
+lights with real distance falloff: the closer an object is, the brighter
+it gets, fading to nothing at the light's configured range. The DS's own
+hardware lighting docs rule that out before any code gets written.
+libnds's &lt;tt class="docutils literal"&gt;glLight()&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;void glLight(int id, rgb color, v10 x, v10 y, v10 z)
+Only parallel light sources are supported on the DS
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Four hardware light slots, each one a color and a direction vector — no
+position, no range, no falloff term anywhere in the API. The DS's GPU
+computes real per-vertex Lambertian shading (&lt;tt class="docutils literal"&gt;N·L&lt;/tt&gt;) against those four
+directions entirely in fixed-function hardware, at zero CPU cost per
+triangle — genuinely excellent, for a directional light. A point light,
+on this hardware, can only ever be an approximation: pick a direction,
+accept that &amp;quot;distance&amp;quot; isn't a thing the lighting unit knows about, and
+find whatever ways are still available to make that approximation better
+without leaving hardware lighting behind entirely for a per-vertex
+CPU-side shading pass (which the DS's ARM946E-S can do, but which throws
+away the entire reason to use the GPU's fixed-function path in the first
+place).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="bug-1-an-ambient-floor-that-was-zero-on-purpose"&gt;
+&lt;h2&gt;Bug 1: an ambient floor that was zero on purpose&lt;/h2&gt;
+&lt;p&gt;Before any of the point-light work, the hardware 3D path had a simpler
+problem: &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt; — the DS's material property for &amp;quot;the color when
+a face isn't catching any light at all&amp;quot; — was set to black,
+unconditionally, the instant any &lt;tt class="docutils literal"&gt;Light&lt;/tt&gt; entity existed in the scene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* what shipped, briefly */&lt;/span&gt;
+&lt;span class="n"&gt;glMaterialf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GL_AMBIENT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;RGB15&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;glLight()&lt;/tt&gt; only lights a face whose normal faces &lt;em&gt;toward&lt;/em&gt; one of the
+four active directions — anything else gets zero contribution from
+diffuse, and with &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt; pinned to black, zero contribution from
+ambient too. The result: any face pointing away from every active light
+rendered as pure, flat black, on hardware that was otherwise correctly
+shading everything facing the right way. The fix looked simple —
+accumulate every ambient/directional light's color into a running sum
+each frame, and feed &lt;em&gt;that&lt;/em&gt; into &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt; instead of a hardcoded
+zero:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;s_ambient_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;s_ambient_g&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;s_ambient_b&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="cm"&gt;/* ...clamped to 1.0 after the loop, then: */&lt;/span&gt;
+&lt;span class="n"&gt;glMaterialf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GL_AMBIENT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;RGB15&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_ambient_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;31.0f&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* ...g, b... */&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It rendered correctly with exactly one active light. It did not render
+correctly with two.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-hardware-surprise-ambient-is-summed-once-per-active-light"&gt;
+&lt;h2&gt;The hardware surprise: ambient is summed once per active light&lt;/h2&gt;
+&lt;p&gt;Adding a second point light to the scene — the natural next step, since
+the whole point of this work was to support more than one — turned every
+previously-correctly-shaded face white. Not brighter: blown-out,
+clipped-to-white white, on geometry that had looked exactly right a
+commit earlier.&lt;/p&gt;
+&lt;p&gt;The cause is in GBATEK's own description of the DS's polygon lighting
+equation, easy to miss because nothing in libnds's &lt;tt class="docutils literal"&gt;glMaterialf()&lt;/tt&gt; doc
+comment mentions it: the hardware doesn't compute &lt;tt class="docutils literal"&gt;MaterialAmbient&lt;/tt&gt;
+once and add it to the final result. It computes &lt;tt class="docutils literal"&gt;MaterialAmbient ×
+LightColor&lt;/tt&gt;, separately, &lt;em&gt;for every currently active light&lt;/em&gt;, and sums
+those. Diffuse and specular are supposed to work that way — that's how
+multiple colored lights are meant to combine — but ambient, conceptually,
+is &amp;quot;the floor when nothing is lighting this face,&amp;quot; and nothing about that
+concept should scale with how many lights happen to be turned on. The DS
+hardware doesn't make that distinction. Set &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt; to the value
+you actually want as a floor, and with three active lights, the hardware
+hands you back three times that, added into every face's final color.&lt;/p&gt;
+&lt;p&gt;The first attempted fix was the obvious one: divide by the number of
+active lights before setting &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt;, so the hardware's own
+summation would reconstruct roughly the intended value.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* looked right, wasn&amp;#39;t */&lt;/span&gt;
+&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ambient_scale&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.0f&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;s_num_lights&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This fixed the two-point-light overexposure. It also made a sphere lit by
+one dim ambient light and two much brighter colored point lights render
+far too dark — because a flat &lt;tt class="docutils literal"&gt;1/N&lt;/tt&gt; correction has no way to know that
+those three active lights aren't equally bright. It divides down a lone
+dim ambient contribution by exactly as much as it divides down two point
+lights that have nothing to do with the ambient floor at all. A cube's
+few flat faces happened to look fine anyway (whichever face caught a
+point light's direction was still bright from diffuse); a sphere's curved
+surface — mostly &lt;em&gt;not&lt;/em&gt; facing any of the three light directions — was
+left with almost nothing but that over-divided ambient term, and rendered
+close to black again, just from a different arithmetic mistake than
+bug 1.&lt;/p&gt;
+&lt;p&gt;The actual fix reconstructs the target ambient &lt;em&gt;exactly&lt;/em&gt;, not
+approximately: track the real per-channel sum of every active light's own
+color (not just the count of lights), and divide by that instead.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* MaterialAmbient * sum(LightColor) == target once hardware sums it&lt;/span&gt;
+&lt;span class="cm"&gt; * back, regardless of how many lights are active or how bright any&lt;/span&gt;
+&lt;span class="cm"&gt; * one of them is. */&lt;/span&gt;
+&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ambient_scale_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.0f&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fmaxf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s_light_color_sum_r&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;0.05f&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;glMaterialf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GL_AMBIENT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;RGB15&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;amb_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ambient_scale_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;31.0f&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* ...g, b... */&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Since &lt;tt class="docutils literal"&gt;MaterialAmbient × sum(LightColor)&lt;/tt&gt; is exactly what the hardware
+computes internally, setting &lt;tt class="docutils literal"&gt;MaterialAmbient = target / sum(LightColor)&lt;/tt&gt;
+makes the hardware's own summation land back on &lt;tt class="docutils literal"&gt;target&lt;/tt&gt; — no matter
+how many lights are active or how differently bright each one is. The
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;fmaxf(...,&lt;/span&gt; 0.05f)&lt;/tt&gt; floor matters for a real edge case this reasoning
+otherwise misses entirely: if every active light has an exact &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; in
+one color channel (a pure-hue light, easy to reach — a pure green point
+light has no red or blue component at all), the sum for that channel is
+genuinely zero, and no &lt;tt class="docutils literal"&gt;MaterialAmbient&lt;/tt&gt; value can make hardware
+produce a nonzero result by multiplying against a color that has none.
+Flooring the divisor doesn't fully fix that case — the DS hardware
+mathematically cannot recover a floor for a channel no active light
+contributes to — but it keeps the reconstruction from returning &lt;tt class="docutils literal"&gt;inf&lt;/tt&gt;
+and cascading into garbage the moment a scene reaches for a light whose
+color isn't already a happy accident of &amp;quot;has something in every channel.&amp;quot;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="rgb555-has-an-opinion-about-how-bright-bright-enough-is"&gt;
+&lt;h2&gt;RGB555 has an opinion about how bright &amp;quot;bright enough&amp;quot; is&lt;/h2&gt;
+&lt;p&gt;With the arithmetic fixed, faces pointing away from every light were no
+longer &lt;em&gt;wrong&lt;/em&gt; — just still visually indistinguishable from unlit black
+in a real screenshot. RGB555 gives each channel 5 bits, 32 steps; a first
+ambient floor of 0.18 on a 0.8-albedo material works out to roughly
+&lt;tt class="docutils literal"&gt;0.8 * 0.18 * 31 ≈ 4/31&lt;/tt&gt; — technically nonzero, comfortably lost to
+ordinary display gamma and contrast. Raising the floor to 0.45 reaches
+roughly &lt;tt class="docutils literal"&gt;11/31&lt;/tt&gt;, about 35%: the difference between &amp;quot;the math is
+correct&amp;quot; and &amp;quot;a person looking at the screen can tell the math is
+correct.&amp;quot; Getting the equation right and getting the number right turned
+out to be two separate bugs, not one.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="real-per-object-falloff-without-leaving-hardware-lighting"&gt;
+&lt;h2&gt;Real per-object falloff, without leaving hardware lighting&lt;/h2&gt;
+&lt;p&gt;With the ambient floor actually behaving, the remaining problem was the
+one this article opened with: point lights, as hardware directional
+lights, weren't just &amp;quot;no falloff&amp;quot; in the abstract — the direction itself
+was computed once per &lt;em&gt;frame&lt;/em&gt;, not per object, from the world &lt;em&gt;origin&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* once per frame, not once per object */&lt;/span&gt;
+&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ly&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lz&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* the light&amp;#39;s position */&lt;/span&gt;
+&lt;span class="cm"&gt;/* ...normalize (lx, ly, lz) as a direction from the origin... */&lt;/span&gt;
+&lt;span class="n"&gt;glLight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s_num_lights&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hw_color&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dz&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Every object in the scene, regardless of where it actually sat relative
+to that light, saw the identical direction and the identical brightness,
+with no falloff at all. A &amp;quot;point&amp;quot; light behaved exactly like a directional one
+from every single object's point of view — which is a stronger
+regression than the hardware's own real limitation demands. The DS
+genuinely cannot do per-&lt;em&gt;pixel&lt;/em&gt; or per-&lt;em&gt;vertex-across-one-object&lt;/em&gt; falloff
+for a point light; it can absolutely do a different, &lt;em&gt;correct&lt;/em&gt; direction
+and brightness for each separate object, if something recomputes those
+per object instead of once for the whole frame.&lt;/p&gt;
+&lt;p&gt;That's the fix: move the &lt;tt class="docutils literal"&gt;glLight()&lt;/tt&gt; upload from once-per-frame to
+once-per-object, called right before that object's own triangles submit,
+computing real direction and falloff from &lt;em&gt;that object's&lt;/em&gt; actual world
+position:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;nds_upload_lights_for_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s_num_lights&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="cm"&gt;/* ...ambient/directional lights reuse the once-per-frame&lt;/span&gt;
+&lt;span class="cm"&gt;         * direction/color computed earlier -- no position to react&lt;/span&gt;
+&lt;span class="cm"&gt;         * to, so recomputing per object would be pure waste... */&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ly&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lz&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;d2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lx&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ly&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ly&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lz&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lz&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;atten&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.0f&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;d2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;gl&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;inv_range2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cm"&gt;/* same falloff every backend uses */&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="cm"&gt;/* ...clamp atten to [0, 1], normalize (lx, ly, lz), scale color by atten... */&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;glLight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hw_color&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dz&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;An object near the light now renders bright; an object near the edge of
+its range renders dim; an object outside the range entirely gets nothing
+from it — a real approximation of point-light falloff, per object,
+running through the exact same hardware &lt;tt class="docutils literal"&gt;N·L&lt;/tt&gt; diffuse calculation the
+GPU always did. Nothing about the triangle count, vertex count, or
+rasterization work changes even slightly — this only changes the
+&lt;em&gt;values&lt;/em&gt; written into two hardware registers that were already being
+written once per object either way.&lt;/p&gt;
+&lt;p&gt;It isn't free in the sense of costing literally zero CPU cycles — a
+point light's direction still needs a square root to normalize, and that
+now happens once per (point light, object) pair instead of once per
+frame. But it's the same fixed-point &lt;tt class="docutils literal"&gt;sqrtf32&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;divf32&lt;/tt&gt; primitives
+this code already used for the once-per-frame version, on a scene with a
+handful of lights and a handful of objects — a few extra fixed-point
+operations, not a new soft-float cost, and not one more vertex for the
+GPU to transform or one more pixel for it to fill. Against the cost of
+submitting an object's actual geometry at all, it doesn't move the
+needle, which is the only sense of &amp;quot;free&amp;quot; that was ever on the table for
+a change like this.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="two-smaller-wins-that-came-out-of-the-same-pass"&gt;
+&lt;h2&gt;Two smaller wins that came out of the same pass&lt;/h2&gt;
+&lt;p&gt;Two more things fell out of looking this closely at the hardware
+lighting path, neither one changing a single triangle:&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;GL_ANTIALIAS&lt;/tt&gt; was already enabled at startup, and doing about half of
+its job. The DS only blends an edge under antialiasing where the polygon
+ID changes across it — and every object in the scene defaulted to the
+same ID (0), so hardware edge smoothing only ever applied where an
+object's silhouette met the background. Two overlapping objects, sharing
+the same ID, got a hard edge between them regardless. Assigning each
+object its own ID (an index mod 63, since &lt;tt class="docutils literal"&gt;glClearPolyID(63)&lt;/tt&gt; reserves
+63 for the backdrop) makes that blending apply between objects too — a
+different bitmask, OR'd into a &lt;tt class="docutils literal"&gt;glPolyFmt()&lt;/tt&gt; call that already happens
+once per object, at the same cost as before.&lt;/p&gt;
+&lt;p&gt;And the built-in sphere/cone mesh, generated at 12 sectors × 6 stacks
+(120 triangles), was sized for a target this GPU isn't. That segment
+count lives in a comment noting the DS's real per-frame budget is &amp;quot;on the
+order of a couple thousand polygons&amp;quot; — a 360-triangle sphere at 20×10 is
+still a rounding error against that, and visibly rounder on screen, for a
+target whose real constraint was never triangle count in the first
+place.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="verifying-a-change-with-nothing-to-count"&gt;
+&lt;h2&gt;Verifying a change with nothing to count&lt;/h2&gt;
+&lt;p&gt;The GBA articles on this blog leaned on &lt;tt class="docutils literal"&gt;cycle_probe.py&lt;/tt&gt; for every
+claim — a deterministic emulator's own cycle counter, diffed between
+frames, turning &amp;quot;did this help&amp;quot; into a yes/no number. None of that
+tooling applies here, and that's not an oversight: this whole article is
+about work that happens on the GPU's fixed-function pipeline, not the
+ARM9's own cycles. There's no CPU-side cost to isolate with a breakpoint,
+because there almost isn't one — the actual verification for this kind
+of change is the build and test suite (native, GBA, and NDS cross builds,
+all passing unchanged throughout), plus looking at the actual rendered
+frame in melonDS to confirm the sphere in &lt;tt class="docutils literal"&gt;examples/lighting&lt;/tt&gt; is now
+visibly shaded by two differently-colored, differently-positioned lights
+instead of one flat approximation. Different kind of hardware, different
+kind of proof.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="where-this-goes-next"&gt;
+&lt;h2&gt;Where this goes next&lt;/h2&gt;
+&lt;p&gt;The DS's fixed-function GPU has real capabilities this backend still
+doesn't touch at all: hardware texture sampling from VRAM, a specular
+shininess table, per-vertex fog. None of those are CPU-cost questions —
+they're GPU features sitting unused, the same shape of opportunity this
+article's point-light work turned out to be. The natural next piece,
+given how this one went, is real diffuse texturing: the highest-value use
+of hardware this backend doesn't ask anything of yet, and — if the
+pattern from the ambient bug repeats — probably has its own GBATEK
+surprise waiting to be found the same way this one was, by trying the
+obvious thing first and actually looking at what came out the other end.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="lighting"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="article"/></entry><entry><title>No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance</title><link href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="alternate"/><published>2026-06-25T23:30:00+02:00</published><updated>2026-06-25T23:30:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-25:/static-ecs-no-heap-retro-platforms.html</id><summary type="html">&lt;p class="first last"&gt;How framer-engine's Entity Component System works on hardware
 that has no operating system, no virtual memory, and no malloc(),
 plus two real bugs the design caught before they shipped.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
@@ -16,6 +283,12 @@ living behind the same interface as the desktop one. Every game-logic
 line — component definitions, systems, queries — is identical between a
 PC build and a GBA build. Only one file differs: which &lt;tt class="docutils literal"&gt;world.c&lt;/tt&gt; gets
 linked in.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;framer-engine&lt;/span&gt;&lt;/tt&gt; is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="two-ecs-backends-one-interface"&gt;
 &lt;h2&gt;Two ECS backends, one interface&lt;/h2&gt;
@@ -290,6 +563,12 @@ a CPU-only software rasterizer, on a 16.78MHz ARM7TDMI with &lt;strong&gt;no FPU
 no hardware polygon fill&lt;/strong&gt;. Every float operation is a soft-float library
 call, every divide is a library call, and every pixel is a CPU
 read-modify-write into VRAM.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;framer-engine&lt;/span&gt;&lt;/tt&gt; is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.&lt;/p&gt;
+&lt;/div&gt;
 &lt;div class="figure align-center"&gt;
 &lt;img alt="examples/simple_cube running in mGBA — a single shaded, rotating cube" src="https://tprrt.tupi.fr/static/images/gba-performance/simple_cube.png" /&gt;
 &lt;p class="caption"&gt;&lt;tt class="docutils literal"&gt;examples/simple_cube&lt;/tt&gt;, captured straight from mGBA — the demo this

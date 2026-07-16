@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | articles tagged "lighting"</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta name="author" content="Thomas Perrot" />
+    <style>
+        footer .license-info { margin-top: 0.5em; font-size: 0.9em; }
+    </style>
+    <script>
+    // Remove stale GA-era cookie consent key left in returning visitors' browsers
+    localStorage.removeItem('cookieConsent');
+    </script>
+    <meta property="og:site_name" content="Tprrt's Blog" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tprrt's Blog" />
+    <meta property="og:description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta property="og:url" content="https://tprrt.tupi.fr/" />
+    <meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tprrt's Blog" />
+    <meta name="twitter:description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"Tprrt\u0027s Blog","description":"Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness","url":"https://tprrt.tupi.fr"}
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/lighting.html">lighting</a></li>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
+                <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/about.html">About</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Jul 07, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html" rel="bookmark" title="Permanent Link to &quot;Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU&quot;">Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The previous two articles on this blog — one on <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">cycle-level
+optimization</a>, one on the <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">no-heap ECS</a> underneath it — were both about the Game Boy
+Advance: an FPU-less CPU with no hardware polygon fill at all, where
+every trick is about avoiding soft-float calls and touching as few VRAM
+bytes as possible. The Nintendo DS backend in <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>
+is the opposite kind of retro target — it has a real fixed-function 3D
+GPU, with hardware transform, lighting, and rasterization. That sounds
+like it should make lighting the <em>easy</em> part. It doesn't. It just moves
+the constraint from &quot;the CPU can't do float math&quot; to &quot;the GPU can't do
+the thing you're asking it to do, and it won't tell you that — it'll just
+render something else instead.&quot;</p>
+<p>This article is about chasing exactly that down: a real rendering bug, a
+real hardware surprise straight out of GBATEK, and a fix that gets
+meaningfully closer to real point-light falloff without ever abandoning
+the GPU's own lighting hardware for a software fallback.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.</p>
+</div>
+</div>
+<div class="section" id="the-hardware-constraint-that-drives-everything">
+<h2>The hardware constraint that drives everything</h2>
+<p>Every light in framer-engine — directional, point, or spot — is the same
+<tt class="docutils literal">struct light</tt> component, and every backend (GBA's software rasterizer,
+desktop OpenGL/Vulkan/software, and this one) is expected to shade point
+lights with real distance falloff: the closer an object is, the brighter
+it gets, fading to nothing at the light's configured range. The DS's own
+hardware lighting docs rule that out before any code gets written.
+libnds's <tt class="docutils literal">glLight()</tt>:</p>
+<div class="highlight"><pre><span></span>void glLight(int id, rgb color, v10 x, v10 y, v10 z)
+Only parallel light sources are supported on the DS
+</pre></div>
+<p>Four hardware light slots, each one a color and a direction vector — no
+position, no range, no falloff term anywhere in the API. The DS's GPU
+computes real per-vertex Lambertian shading (<tt class="docutils literal">N·L</tt>) against those four
+directions entirely in fixed-function hardware, at zero CPU cost per
+triangle — genuinely excellent, for a directional light. A point light,
+on this hardware, can only ever be an approximation: pick a direction,
+accept that &quot;distance&quot; isn't a thing the lighting unit knows about, and
+find whatever ways are still available to make that approximation better
+without leaving hardware lighting behind entirely for a per-vertex
+CPU-side shading pass (which the DS's ARM946E-S can do, but which throws
+away the entire reason to use the GPU's fixed-function path in the first
+place).</p>
+</div>
+<div class="section" id="bug-1-an-ambient-floor-that-was-zero-on-purpose">
+<h2>Bug 1: an ambient floor that was zero on purpose</h2>
+<p>Before any of the point-light work, the hardware 3D path had a simpler
+problem: <tt class="docutils literal">GL_AMBIENT</tt> — the DS's material property for &quot;the color when
+a face isn't catching any light at all&quot; — was set to black,
+unconditionally, the instant any <tt class="docutils literal">Light</tt> entity existed in the scene:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* what shipped, briefly */</span>
+<span class="n">glMaterialf</span><span class="p">(</span><span class="n">GL_AMBIENT</span><span class="p">,</span><span class="w"> </span><span class="n">RGB15</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+</pre></div>
+<p><tt class="docutils literal">glLight()</tt> only lights a face whose normal faces <em>toward</em> one of the
+four active directions — anything else gets zero contribution from
+diffuse, and with <tt class="docutils literal">GL_AMBIENT</tt> pinned to black, zero contribution from
+ambient too. The result: any face pointing away from every active light
+rendered as pure, flat black, on hardware that was otherwise correctly
+shading everything facing the right way. The fix looked simple —
+accumulate every ambient/directional light's color into a running sum
+each frame, and feed <em>that</em> into <tt class="docutils literal">GL_AMBIENT</tt> instead of a hardcoded
+zero:</p>
+<div class="highlight"><pre><span></span><span class="n">s_ambient_r</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">r</span><span class="p">;</span>
+<span class="n">s_ambient_g</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">g</span><span class="p">;</span>
+<span class="n">s_ambient_b</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;</span>
+<span class="cm">/* ...clamped to 1.0 after the loop, then: */</span>
+<span class="n">glMaterialf</span><span class="p">(</span><span class="n">GL_AMBIENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RGB15</span><span class="p">((</span><span class="kt">int</span><span class="p">)(</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s_ambient_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">31.0f</span><span class="p">),</span><span class="w"> </span><span class="cm">/* ...g, b... */</span><span class="p">));</span>
+</pre></div>
+<p>It rendered correctly with exactly one active light. It did not render
+correctly with two.</p>
+</div>
+<div class="section" id="the-hardware-surprise-ambient-is-summed-once-per-active-light">
+<h2>The hardware surprise: ambient is summed once per active light</h2>
+<p>Adding a second point light to the scene — the natural next step, since
+the whole point of this work was to support more than one — turned every
+previously-correctly-shaded face white. Not brighter: blown-out,
+clipped-to-white white, on geometry that had looked exactly right a
+commit earlier.</p>
+<p>The cause is in GBATEK's own description of the DS's polygon lighting
+equation, easy to miss because nothing in libnds's <tt class="docutils literal">glMaterialf()</tt> doc
+comment mentions it: the hardware doesn't compute <tt class="docutils literal">MaterialAmbient</tt>
+once and add it to the final result. It computes <tt class="docutils literal">MaterialAmbient ×
+LightColor</tt>, separately, <em>for every currently active light</em>, and sums
+those. Diffuse and specular are supposed to work that way — that's how
+multiple colored lights are meant to combine — but ambient, conceptually,
+is &quot;the floor when nothing is lighting this face,&quot; and nothing about that
+concept should scale with how many lights happen to be turned on. The DS
+hardware doesn't make that distinction. Set <tt class="docutils literal">GL_AMBIENT</tt> to the value
+you actually want as a floor, and with three active lights, the hardware
+hands you back three times that, added into every face's final color.</p>
+<p>The first attempted fix was the obvious one: divide by the number of
+active lights before setting <tt class="docutils literal">GL_AMBIENT</tt>, so the hardware's own
+summation would reconstruct roughly the intended value.</p>
+<div class="highlight"><pre><span></span><span class="cm">/* looked right, wasn&#39;t */</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">ambient_scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">s_num_lights</span><span class="p">;</span>
+</pre></div>
+<p>This fixed the two-point-light overexposure. It also made a sphere lit by
+one dim ambient light and two much brighter colored point lights render
+far too dark — because a flat <tt class="docutils literal">1/N</tt> correction has no way to know that
+those three active lights aren't equally bright. It divides down a lone
+dim ambient contribution by exactly as much as it divides down two point
+lights that have nothing to do with the ambient floor at all. A cube's
+few flat faces happened to look fine anyway (whichever face caught a
+point light's direction was still bright from diffuse); a sphere's curved
+surface — mostly <em>not</em> facing any of the three light directions — was
+left with almost nothing but that over-divided ambient term, and rendered
+close to black again, just from a different arithmetic mistake than
+bug 1.</p>
+<p>The actual fix reconstructs the target ambient <em>exactly</em>, not
+approximately: track the real per-channel sum of every active light's own
+color (not just the count of lights), and divide by that instead.</p>
+<div class="highlight"><pre><span></span><span class="cm">/* MaterialAmbient * sum(LightColor) == target once hardware sums it</span>
+<span class="cm"> * back, regardless of how many lights are active or how bright any</span>
+<span class="cm"> * one of them is. */</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">ambient_scale_r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">fmaxf</span><span class="p">(</span><span class="n">s_light_color_sum_r</span><span class="p">,</span><span class="w"> </span><span class="mf">0.05f</span><span class="p">);</span>
+<span class="n">glMaterialf</span><span class="p">(</span><span class="n">GL_AMBIENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">RGB15</span><span class="p">((</span><span class="kt">int</span><span class="p">)(</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">amb_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ambient_scale_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">31.0f</span><span class="p">),</span><span class="w"> </span><span class="cm">/* ...g, b... */</span><span class="p">));</span>
+</pre></div>
+<p>Since <tt class="docutils literal">MaterialAmbient × sum(LightColor)</tt> is exactly what the hardware
+computes internally, setting <tt class="docutils literal">MaterialAmbient = target / sum(LightColor)</tt>
+makes the hardware's own summation land back on <tt class="docutils literal">target</tt> — no matter
+how many lights are active or how differently bright each one is. The
+<tt class="docutils literal"><span class="pre">fmaxf(...,</span> 0.05f)</tt> floor matters for a real edge case this reasoning
+otherwise misses entirely: if every active light has an exact <tt class="docutils literal">0</tt> in
+one color channel (a pure-hue light, easy to reach — a pure green point
+light has no red or blue component at all), the sum for that channel is
+genuinely zero, and no <tt class="docutils literal">MaterialAmbient</tt> value can make hardware
+produce a nonzero result by multiplying against a color that has none.
+Flooring the divisor doesn't fully fix that case — the DS hardware
+mathematically cannot recover a floor for a channel no active light
+contributes to — but it keeps the reconstruction from returning <tt class="docutils literal">inf</tt>
+and cascading into garbage the moment a scene reaches for a light whose
+color isn't already a happy accident of &quot;has something in every channel.&quot;</p>
+</div>
+<div class="section" id="rgb555-has-an-opinion-about-how-bright-bright-enough-is">
+<h2>RGB555 has an opinion about how bright &quot;bright enough&quot; is</h2>
+<p>With the arithmetic fixed, faces pointing away from every light were no
+longer <em>wrong</em> — just still visually indistinguishable from unlit black
+in a real screenshot. RGB555 gives each channel 5 bits, 32 steps; a first
+ambient floor of 0.18 on a 0.8-albedo material works out to roughly
+<tt class="docutils literal">0.8 * 0.18 * 31 ≈ 4/31</tt> — technically nonzero, comfortably lost to
+ordinary display gamma and contrast. Raising the floor to 0.45 reaches
+roughly <tt class="docutils literal">11/31</tt>, about 35%: the difference between &quot;the math is
+correct&quot; and &quot;a person looking at the screen can tell the math is
+correct.&quot; Getting the equation right and getting the number right turned
+out to be two separate bugs, not one.</p>
+</div>
+<div class="section" id="real-per-object-falloff-without-leaving-hardware-lighting">
+<h2>Real per-object falloff, without leaving hardware lighting</h2>
+<p>With the ambient floor actually behaving, the remaining problem was the
+one this article opened with: point lights, as hardware directional
+lights, weren't just &quot;no falloff&quot; in the abstract — the direction itself
+was computed once per <em>frame</em>, not per object, from the world <em>origin</em>:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* once per frame, not once per object */</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">lz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">z</span><span class="p">;</span><span class="w"> </span><span class="cm">/* the light&#39;s position */</span>
+<span class="cm">/* ...normalize (lx, ly, lz) as a direction from the origin... */</span>
+<span class="n">glLight</span><span class="p">(</span><span class="n">s_num_lights</span><span class="p">,</span><span class="w"> </span><span class="n">hw_color</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">dz</span><span class="p">);</span>
+</pre></div>
+<p>Every object in the scene, regardless of where it actually sat relative
+to that light, saw the identical direction and the identical brightness,
+with no falloff at all. A &quot;point&quot; light behaved exactly like a directional one
+from every single object's point of view — which is a stronger
+regression than the hardware's own real limitation demands. The DS
+genuinely cannot do per-<em>pixel</em> or per-<em>vertex-across-one-object</em> falloff
+for a point light; it can absolutely do a different, <em>correct</em> direction
+and brightness for each separate object, if something recomputes those
+per object instead of once for the whole frame.</p>
+<p>That's the fix: move the <tt class="docutils literal">glLight()</tt> upload from once-per-frame to
+once-per-object, called right before that object's own triangles submit,
+computing real direction and falloff from <em>that object's</em> actual world
+position:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">nds_upload_lights_for_object</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">s_num_lights</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* ...ambient/directional lights reuse the once-per-frame</span>
+<span class="cm">         * direction/color computed earlier -- no position to react</span>
+<span class="cm">         * to, so recomputing per object would be pure waste... */</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">lz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">d2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ly</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lz</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lz</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">atten</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">d2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gl</span><span class="o">-&gt;</span><span class="n">inv_range2</span><span class="p">;</span><span class="w"> </span><span class="cm">/* same falloff every backend uses */</span>
+<span class="w">        </span><span class="cm">/* ...clamp atten to [0, 1], normalize (lx, ly, lz), scale color by atten... */</span>
+<span class="w">        </span><span class="n">glLight</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">hw_color</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">dz</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>An object near the light now renders bright; an object near the edge of
+its range renders dim; an object outside the range entirely gets nothing
+from it — a real approximation of point-light falloff, per object,
+running through the exact same hardware <tt class="docutils literal">N·L</tt> diffuse calculation the
+GPU always did. Nothing about the triangle count, vertex count, or
+rasterization work changes even slightly — this only changes the
+<em>values</em> written into two hardware registers that were already being
+written once per object either way.</p>
+<p>It isn't free in the sense of costing literally zero CPU cycles — a
+point light's direction still needs a square root to normalize, and that
+now happens once per (point light, object) pair instead of once per
+frame. But it's the same fixed-point <tt class="docutils literal">sqrtf32</tt>/<tt class="docutils literal">divf32</tt> primitives
+this code already used for the once-per-frame version, on a scene with a
+handful of lights and a handful of objects — a few extra fixed-point
+operations, not a new soft-float cost, and not one more vertex for the
+GPU to transform or one more pixel for it to fill. Against the cost of
+submitting an object's actual geometry at all, it doesn't move the
+needle, which is the only sense of &quot;free&quot; that was ever on the table for
+a change like this.</p>
+</div>
+<div class="section" id="two-smaller-wins-that-came-out-of-the-same-pass">
+<h2>Two smaller wins that came out of the same pass</h2>
+<p>Two more things fell out of looking this closely at the hardware
+lighting path, neither one changing a single triangle:</p>
+<p><tt class="docutils literal">GL_ANTIALIAS</tt> was already enabled at startup, and doing about half of
+its job. The DS only blends an edge under antialiasing where the polygon
+ID changes across it — and every object in the scene defaulted to the
+same ID (0), so hardware edge smoothing only ever applied where an
+object's silhouette met the background. Two overlapping objects, sharing
+the same ID, got a hard edge between them regardless. Assigning each
+object its own ID (an index mod 63, since <tt class="docutils literal">glClearPolyID(63)</tt> reserves
+63 for the backdrop) makes that blending apply between objects too — a
+different bitmask, OR'd into a <tt class="docutils literal">glPolyFmt()</tt> call that already happens
+once per object, at the same cost as before.</p>
+<p>And the built-in sphere/cone mesh, generated at 12 sectors × 6 stacks
+(120 triangles), was sized for a target this GPU isn't. That segment
+count lives in a comment noting the DS's real per-frame budget is &quot;on the
+order of a couple thousand polygons&quot; — a 360-triangle sphere at 20×10 is
+still a rounding error against that, and visibly rounder on screen, for a
+target whose real constraint was never triangle count in the first
+place.</p>
+</div>
+<div class="section" id="verifying-a-change-with-nothing-to-count">
+<h2>Verifying a change with nothing to count</h2>
+<p>The GBA articles on this blog leaned on <tt class="docutils literal">cycle_probe.py</tt> for every
+claim — a deterministic emulator's own cycle counter, diffed between
+frames, turning &quot;did this help&quot; into a yes/no number. None of that
+tooling applies here, and that's not an oversight: this whole article is
+about work that happens on the GPU's fixed-function pipeline, not the
+ARM9's own cycles. There's no CPU-side cost to isolate with a breakpoint,
+because there almost isn't one — the actual verification for this kind
+of change is the build and test suite (native, GBA, and NDS cross builds,
+all passing unchanged throughout), plus looking at the actual rendered
+frame in melonDS to confirm the sphere in <tt class="docutils literal">examples/lighting</tt> is now
+visibly shaded by two differently-colored, differently-positioned lights
+instead of one flat approximation. Different kind of hardware, different
+kind of proof.</p>
+</div>
+<div class="section" id="where-this-goes-next">
+<h2>Where this goes next</h2>
+<p>The DS's fixed-function GPU has real capabilities this backend still
+doesn't touch at all: hardware texture sampling from VRAM, a specular
+shininess table, per-vertex fog. None of those are CPU-cost questions —
+they're GPU features sitting unused, the same shape of opportunity this
+article's point-light work turned out to be. The natural next piece,
+given how this one went, is real diffuse texturing: the highest-value use
+of hardware this backend doesn't ask anything of yet, and — if the
+pattern from the ambient bug repeats — probably has its own GBATEK
+surprise waiting to be found the same way this one was, by trying the
+obvious thing first and actually looking at what came out the other end.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html">posted at 21:14</a>
+                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/nds.html" class="tags">nds</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gpu.html" class="tags">gpu</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/lighting.html" class="tags selected">lighting</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+                </p>
+                <p class="license-info">Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></p>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+<script data-goatcounter="https://tperrot.goatcounter.com/count"
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
+</body>
+</html>

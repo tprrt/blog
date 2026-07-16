@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Gaming</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gaming.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-07T19:06:48.221173+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Retrogaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:49:00+02:00</published><updated>2026-07-07T19:06:48.221173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/retrogaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Gaming</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gaming.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-16T12:22:47.987237+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Retrogaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:49:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/retrogaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-developments"&gt;
@@ -35,7 +35,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/07/this-project-is-not-vibe-coded-developer-behind-ps1-recompilation-tool-takes-aim-at-ai"&gt;This Project Is Not Vibe-Coded - Developer Behind PS1 Recompilation Tool Takes Aim At AI&lt;/a&gt; - Time Extension covers a developer's perspective on the role of AI in enhancing retro game compilations, emphasizing the value of human creativity in gaming projects.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:42:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/linux-gaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:42:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/linux-gaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming-enhancements"&gt;
@@ -65,7 +65,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://linuxgamenews.com"&gt;Linux Game News&lt;/a&gt; — Tavily Search&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:37:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/retrogaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:37:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/retrogaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -100,7 +100,7 @@
 &lt;/ul&gt;
 &lt;p&gt;These articles highlight the diversity and enthusiasm within the retrogaming scene, from hardware innovations to community discussions. As we continue to cherish and explore the classic games of our past, the future of retrogaming looks bright.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:46:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/linux-gaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:46:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/linux-gaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -143,7 +143,7 @@
 &lt;/ul&gt;
 &lt;p&gt;As the Linux gaming scene evolves, these articles provide insight into resources and advancements, empowering gamers with the knowledge to make informed decisions and enjoy a richer gaming experience on Linux platforms.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -176,7 +176,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -216,7 +216,7 @@
 &lt;p&gt;In conclusion, the Linux gaming sector is thriving with a plethora of new games, significant technological advancements, and a supportive community focused on improving user experiences across platforms.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-07-07T19:06:48.220173+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retro-gaming-news"&gt;
@@ -247,7 +247,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/06/we-have-the-means-to-fight-this-case-to-the-end-gamings-most-infamous-trademark-troll-is-back"&gt;”We Have The Means To Fight This Case To The End” - Gaming's Most Infamous Trademark Troll Is Back&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -281,7 +281,7 @@
 &lt;p&gt;As Linux gaming continues to grow, being informed about the latest updates, potential threats, and performance improvements is vital for developers and gamers alike.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -313,7 +313,7 @@
 &lt;p&gt;In summary, the retrogaming landscape remains vibrant, enriched by new releases and nostalgic reflections on the classics that shaped the industry.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -361,7 +361,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-news-digest"&gt;
@@ -396,7 +396,7 @@
 &lt;p&gt;This week's articles reflect the ongoing passion and innovation within the retrogaming community, ensuring that the games we love continue to thrive and evolve.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming-performance"&gt;
@@ -434,7 +434,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/OpenCL-3.1.1-Released"&gt;OpenCL 3.1.1 Released To Address A Possible Performance Regression&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -487,7 +487,7 @@
 &lt;/ul&gt;
 &lt;p&gt;Linux gaming continues to evolve with promising trends, new distributions, software enhancements, and an expanding library, making 2026 a pivotal year for enthusiasts and new users alike.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -535,7 +535,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/AMD-K5-CPUs"&gt;AMD K5 CPUs The Latest To Be Retired With Linux's Aging Hardware Support | Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-07-07T19:06:48.219533+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-digest"&gt;
