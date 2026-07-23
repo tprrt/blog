@@ -3,7 +3,7 @@ Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU
 =============================================================================
 
 :date: 2026-07-07 21:14
-:modified: 2026-07-07 21:14
+:modified: 2026-07-23 16:52
 :tags: nds, gpu, lighting, embedded, retro, gamedev, article
 :category: gamedev
 :slug: nds-point-light-falloff-fixed-function-gpu
@@ -285,6 +285,62 @@ order of a couple thousand polygons" — a 360-triangle sphere at 20×10 is
 still a rounding error against that, and visibly rounder on screen, for a
 target whose real constraint was never triangle count in the first
 place.
+
+Update: the tessellation win had a hidden cost
+====================================================
+
+That "visibly rounder on screen" sphere from the section above had a
+cost this article didn't account for at the time. ``examples/lighting``
+quietly ran at exactly 30fps on real NDS timing (melonDS) rather than
+60, and the cause traced straight back to this same pass.
+
+``nds_submit_tri()`` — the function issuing each triangle's vertices —
+was also where every triangle's ``GL_AMBIENT``/``GL_DIFFUSE`` material
+state got (re)computed, including the full ambient-reconstruction
+division this article spent three sections on above. For a single-color
+object that's pure waste: the material state is identical across every
+one of an object's triangles, so it only ever needs setting once per
+object, not once per triangle. A 12×6 (120-triangle) sphere issued 120
+redundant ``glMaterialf()`` pairs into the GX FIFO every frame even
+before this article's own change; the same sphere at 20×10 (360
+triangles, the tessellation bump described above) issued 360. Combined
+with the lighting example's four active lights — each one re-triggering
+that same reconstruction math on every single one of those calls — frame
+time crept just past one VBlank period.
+
+``swiWaitForVBlank()`` doesn't degrade gracefully when that happens. It
+waits for the *next* VBlank interrupt after the frame's work completes,
+full stop — there's no "a little late" state between VBlanks, only "made
+it" or "missed it and now wait for the one after." Missing a single
+VBlank by any margin, even a fraction of a scanline's worth of GX FIFO
+backlog, halves the observed frame rate outright: 60fps to exactly
+30fps, not 59 or 58. The tessellation bump didn't cause a gradual
+slowdown that could be spotted incrementally — it silently sat under the
+VBlank deadline until it didn't, and the frame rate cut itself exactly
+in half the moment it crossed.
+
+The fix has nothing to do with tessellation, lighting, or the ambient
+math itself — all of that stays correct, unchanged. It's purely a matter
+of *when* the material state gets written: once per object (or once per
+face, only for the rare object whose faces genuinely have different
+colors), immediately before that object's triangles submit, instead of
+redundantly with every single triangle. The exact same
+``GL_AMBIENT``/``GL_DIFFUSE`` values land on the GPU either way — this
+changes nothing about what gets drawn, only how many times the identical
+FIFO command gets issued to say so.
+
+This doesn't extend to the GBA backend: its software rasterizer computes
+each face's final color directly in ``gba_lit_color_face()``, with no
+separate material/normal GPU state to redundantly reissue in the first
+place — there's no equivalent waste to hoist out over there.
+
+Confirmed on real timing (melonDS): back to a solid 60fps. The
+underlying shape of the bug is the same one this whole article is
+about — a GPU that will happily do exactly what's asked of it, at
+whatever cost that actually carries, and won't warn you when two
+separately reasonable changes (a rounder sphere, correct per-object
+point-light falloff) compound into a cost neither one would have caused
+alone.
 
 Verifying a change with nothing to count
 ============================================
