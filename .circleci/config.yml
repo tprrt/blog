@@ -2,8 +2,6 @@
 # Copyright (C) 2020-2026 Thomas Perrot <thomas.perrot@tupi.fr>
 
 version: 2.1
-orbs:
-  sonarcloud: sonarsource/sonarcloud@2.0.0
 executors:
   docker-python3:
     docker:
@@ -18,7 +16,15 @@ jobs:
     executor: docker-sonarcloud
     steps:
       - checkout
-      - sonarcloud/scan
+      - run:
+          name: Run SonarCloud analysis
+          command: |
+            SCANNER_VERSION=6.2.1.4610
+            curl -sSLo /tmp/sonar-scanner.zip \
+              "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCANNER_VERSION}-linux-x64.zip"
+            unzip -q /tmp/sonar-scanner.zip -d /tmp
+            /tmp/sonar-scanner-${SCANNER_VERSION}-linux-x64/bin/sonar-scanner \
+              -Dsonar.token="${SONAR_TOKEN}"
   build:
     executor: docker-python3
     steps:
