@@ -1,5 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-16T12:22:47.987237+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU</title><link href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html" rel="alternate"/><published>2026-07-07T21:14:00+02:00</published><updated>2026-07-07T21:14:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-07:/nds-point-light-falloff-fixed-function-gpu.html</id><summary type="html">&lt;p class="first last"&gt;The Nintendo DS's fixed-function GPU only supports directional
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-07-24T07:50:59.840414+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:56:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/zephyr-rtos-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="zephyr-rtos-ecosystem-growth"&gt;
+&lt;h2&gt;Zephyr RTOS Ecosystem Growth&lt;/h2&gt;
+&lt;p&gt;The Zephyr RTOS ecosystem continues to expand with significant updates and new members. Recent developments highlight the enhanced collaborative effort to further integrate Zephyr within various industry sectors.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.prnewswire.com/news-releases/zephyr-rtos-expands-ecosystem-with-renesas-and-wind-river-upgrading-to-platinum-membership-and-new-silver-members-blecon-and-embeint-302485307.html"&gt;Zephyr RTOS Expands Ecosystem with Renesas and Wind River Upgrading to Platinum Membership and New Silver Members Blecon and Embeint&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org/category/news"&gt;News – Zephyr Project&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="development-and-releases"&gt;
+&lt;h2&gt;Development and Releases&lt;/h2&gt;
+&lt;p&gt;The continued development of Zephyr RTOS is marked by the release of updates and fixes that enhance functionality and address issues. The community's engagement in troubleshooting is evident in the ongoing discussions about recent driver changes.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/zephyrproject-rtos/zephyr/releases"&gt;Releases · zephyrproject-rtos/zephyr · GitHub&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="security-and-application-testing"&gt;
+&lt;h2&gt;Security and Application Testing&lt;/h2&gt;
+&lt;p&gt;With the growing adoption of Zephyr RTOS, the focus on security and application reliability has increased. Innovative methods such as fuzz testing are being explored to enhance the robustness of applications running on this platform.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://zephyrproject.org/exploring-fuzzing-for-zephyr-applications-with-libfuzzer-and-afl/"&gt;Exploring Fuzzing for Zephyr Applications with libFuzzer and AFL++&lt;/a&gt; — Zephyr Project&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="notable-integrations"&gt;
+&lt;h2&gt;Notable Integrations&lt;/h2&gt;
+&lt;p&gt;Emerging hardware that supports Zephyr applications is being introduced, promoting diverse use cases and bolstering the capacity for development and innovation in embedded systems.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/07/23/ais-1000-ai-surveillance-station-a-3640-ndaa-and-taa-compliant-ai-box-based-on-raspberry-pi-5-and-hailo-8l/"&gt;AIS-1000 AI Surveillance Station – A $3,640 NDAA and TAA-compliant AI box based on Raspberry Pi 5 and Hailo-8L&lt;/a&gt; — CNX Software – Embedded Systems News&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/07/23/icy-electronics-nrf54l15-discovery-devboard-integrates-a-snappable-nrf52820-cmsis-dap-debugger/"&gt;Icy Electronics nRF54L15 Discovery devboard integrates a snappable nRF52820 CMSIS-DAP debugger&lt;/a&gt; — CNX Software – Embedded Systems News&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/07/23/99-xteink-x4-pro-4-3-inch-touchscreen-ereader-to-support-crosspoint-reader-open-source-firmware/"&gt;$99 Xteink X4 Pro 4.3-inch touchscreen eReader to support CrossPoint Reader open-source firmware&lt;/a&gt; — CNX Software – Embedded Systems News&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:55:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/crossfit-hyrox-and-powerlifting-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="crossfit-and-hyrox"&gt;
+&lt;h2&gt;CrossFit and Hyrox&lt;/h2&gt;
+&lt;p&gt;This week saw a strong focus on CrossFit, especially with the ongoing 2026 CrossFit Games, while Hyrox continues to grow in popularity among fitness enthusiasts as an alternative competition format.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/2026-crossfit-games-day-1-recap-who-leads-after-brutal-return-to-the-ranch/"&gt;2026 CrossFit Games Day 1 Recap – Who Leads After Brutal Return to The Ranch?&lt;/a&gt; - BOXROX covers the highlights from the opening day of the iconic CrossFit Games, celebrating 20 years of competition.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/first-event-win-for-ty-jenkins-and-lucy-campbell-beats-all-the-boys-event-7-swim-standard-at-2026-crossfit-games/"&gt;First Event Win for Ty Jenkins and Lucy Campbell Beats All the Boys, Event 7 Swim Standard at 2026 CrossFit Games&lt;/a&gt; - BOXROX reports on notable performances, including a standout swim event at the Games.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://morningchalkup.com/2026/07/22/5-standout-performances-on-day-1-at-the-2026-crossfit-games/"&gt;5 Standout Performances on Day 1 at the 2026 CrossFit Games&lt;/a&gt; - Morning Chalk Up highlights exemplary performances on the first day, showcasing the competitors' skills.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://morningchalkup.com/2026/07/20/this-too-shall-pass-ellie-turner-returns-to-the-games/"&gt;“This Too Shall Pass”: Ellie Turner Returns to the Games&lt;/a&gt; - Morning Chalk Up features Ellie Turner's journey back to the CrossFit stage and her mental resilience.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="hyrox-developments"&gt;
+&lt;h2&gt;Hyrox Developments&lt;/h2&gt;
+&lt;p&gt;Hyrox continues to make waves in the hybrid fitness realm, with new competitions and insights into its comparative benefits against traditional strength training methods.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.cyclingweekly.com/fitness/crossfit-vs-hyrox-i-tried-both-fitness-trends-and-only-one-made-me-a-better-cyclist"&gt;'I haven't been this excited about a sport since cyclo-cross' – we tried Hyrox and Crossfit, and one of them actually improved our riding&lt;/a&gt; - Cycling Weekly compares Hyrox and CrossFit, emphasizing Hyrox's accessibility and benefits for cyclists.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/news"&gt;News&lt;/a&gt; - BOXROX shares updates on how the Centr x HYROX Official Competition Equipment is being utilized in global fitness facilities.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hybridfitnessmedia.com/category/news"&gt;News Archives - Hybrid Fitness Media&lt;/a&gt; - Tavily Search reports on the successful inaugural XENOM competition, highlighting participant engagement in such hybrid competitions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="powerlifting-insights"&gt;
+&lt;h2&gt;Powerlifting Insights&lt;/h2&gt;
+&lt;p&gt;While this digest primarily focuses on CrossFit and Hyrox, powerlifting also finds its place in discussions about strength and conditioning workouts.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.strongfirst.com/the-get-up-change-your-perspective-to-build-strength/"&gt;The Get-Up: Change Your Perspective to Build Strength&lt;/a&gt; - StrongFirst explores the get-up exercise, a crucial movement for developing strength and stability that is relevant across various fitness disciplines.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/strength-side-shares-10-simple-movements-to-reverse-the-effects-of-sitting/"&gt;Strength Side Shares 10 Simple Movements to Reverse the Effects of Sitting&lt;/a&gt; - BOXROX presents movements to counteract the negative effects of prolonged sitting, promoting overall fitness and strength maintenance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This week's updates reflect the vibrant landscape of hybrid fitness, encompassing the competition, training diversity, and health awareness trends.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:55:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/retrogaming-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="retrogaming-news"&gt;
+&lt;h2&gt;Retrogaming News&lt;/h2&gt;
+&lt;p&gt;The retrogaming scene continues to thrive, with a plethora of new updates and releases that appeal to both nostalgic fans and newcomers alike. This week's news highlights exciting collaboration announcements, gaming merchandise, and the ongoing preservation of gaming history.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://retrododo.com/tag/news"&gt;Retro Dodo - Independent Retro Gaming News 24/7&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://retrododo.com"&gt;Retro Dodo - Retro Gaming News &amp;amp; Reviews&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.gamingbible.com/retro-gaming"&gt;Retro Gaming | Latest News, Reviews &amp;amp; Updates | GAMINGbible&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://retronauts.com/article/2529/retro-re-release-roundup-week-of-july-16-2026"&gt;Retro Re-release Roundup, week of July 16, 2026&lt;/a&gt; — Retronauts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="nostalgic-game-adaptations"&gt;
+&lt;h2&gt;Nostalgic Game Adaptations&lt;/h2&gt;
+&lt;p&gt;The intersection of gaming and cinema is alive with renewed interest in classic franchises. Recent trailers and adaptations continue to stir excitement among fans.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.nintendolife.com/news/2026/07/resident-evil-movie-trailer-is-already-putting-past-adaptations-to-shame"&gt;Resident Evil Movie Trailer Is Already Putting Past Adaptations To Shame&lt;/a&gt; — Nintendo Life&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.nintendolife.com/news/2026/07/shigeru-miyamoto-not-really-thinking-about-directing-another-game"&gt;Shigeru Miyamoto &amp;quot;Not Really Thinking About&amp;quot; Directing Another Game&lt;/a&gt; — Nintendo Life&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cultural-and-historical-insights"&gt;
+&lt;h2&gt;Cultural and Historical Insights&lt;/h2&gt;
+&lt;p&gt;This week provided a peek into gaming history, featuring discussions on classic titles and the significance of preserving gaming materials for future generations.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/07/were-taking-you-closer-to-the-event-than-ever-before-early-conker-and-banjo-footage-among-materials-preserved-in-new-vghf-e3-collections"&gt;We're Taking You Closer To The Event Than Ever Before - Early Conker &amp;amp; Banjo Footage Among Materials Preserved In New VGHF E3 Collections&lt;/a&gt; — Time Extension&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/features/interview-i-may-have-been-the-first-person-to-ever-finish-the-game-the-real-story-behind-wizardrys-iconic-enemy-murphys-ghost"&gt;Interview: &amp;quot;I May Have Been The First Person To Ever Finish The Game&amp;quot; - The Real Story Behind Wizardry's Iconic Enemy, Murphy's Ghost&lt;/a&gt; — Time Extension&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://retronauts.com/article/2530/retronauts-episode-782-rca-home-computing"&gt;Retronauts Episode 782: RCA Home Computing&lt;/a&gt; — Retronauts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="innovative-gaming-experiences"&gt;
+&lt;h2&gt;Innovative Gaming Experiences&lt;/h2&gt;
+&lt;p&gt;The creative revival of classic gaming formats sees new projects that engage players in unique ways, reflecting a blend of old and new gaming mechanics.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.nintendolife.com/news/2026/07/maestro-has-you-conducting-music-with-your-joy-con-and-it-looks-wild"&gt;'Maestro' Has You Conducting Music With Your Joy-Con, And It Looks Wild&lt;/a&gt; — Nintendo Life&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/07/thanks-for-sharing-but-i-do-not-support-genai-dev-behind-sonic-and-the-black-knight-recomp-corrects-ai-slop-website"&gt;Thanks For Sharing, But I Do Not Support GenAI - Dev Behind Sonic And The Black Knight Recomp Corrects &amp;quot;AI Slop&amp;quot; Website&lt;/a&gt; — Time Extension&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:50:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/open-source-hardware-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="open-source-hardware"&gt;
+&lt;h2&gt;Open-Source Hardware&lt;/h2&gt;
+&lt;p&gt;The open-source hardware movement continues to innovate and facilitate collaboration among makers and engineers. This week's digest highlights significant advancements, projects, and community initiatives within this domain.&lt;/p&gt;
+&lt;div class="section" id="open-source-hardware-projects"&gt;
+&lt;h3&gt;Open-Source Hardware Projects&lt;/h3&gt;
+&lt;p&gt;A variety of recent articles showcase notable open-source hardware projects, providing inspiration and practical applications for enthusiasts.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://github.com/topics/open-hardware"&gt;open-hardware · GitHub Topics · GitHub&lt;/a&gt; — An overview of helpful items for making open-source hardware projects. (Source: Tavily Search)&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://techcrunch.com/tag/open-source-hardware"&gt;Open source hardware | TechCrunch&lt;/a&gt; — Features on rapid 3D printing technology and underwater drones. (Source: Tavily Search)&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/List_of_open-source_hardware_projects"&gt;List of open-source hardware projects - Wikipedia&lt;/a&gt; — A comprehensive list of notable projects in the open-source hardware community. (Source: Tavily Search)&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://makezine.com/projects/easy-diy-cnc-workholding-clamps/"&gt;Easy DIY CNC Workholding Clamps&lt;/a&gt; — A practical guide for creating clamps to enhance CNC workholding. (Source: Make: DIY Projects and Ideas for Makers)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="practical-design-solutions"&gt;
+&lt;h3&gt;Practical Design Solutions&lt;/h3&gt;
+&lt;p&gt;This section highlights innovative designs that enhance everyday tasks, focusing on cable organization and modular systems.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/07/23/cable-organizer-foldable-clip-for-charging-usb-cables-3dthursday-3dprinting/"&gt;Cable Organizer – Foldable Clip for Charging/USB Cables #3DThursday #3DPrinting&lt;/a&gt; — A portable clip for managing charging and USB cables. (Source: Adafruit Industries)&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/07/23/desk-clamp-cable-holder-modular-multi-cable-system-3dprinting-3dthursday/"&gt;Desk Clamp Cable Holder – Modular Multi-Cable System #3DPrinting #3DThursday&lt;/a&gt; — A modular organizer that accommodates various cables on tabletops. (Source: Adafruit Industries)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="community-engagement"&gt;
+&lt;h3&gt;Community Engagement&lt;/h3&gt;
+&lt;p&gt;Engagement within the maker community plays a pivotal role in the open-source hardware movement. Articles in this group highlight the value of community support and interaction.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/07/23/from-the-mail-bag-798/"&gt;From the mail bag…&lt;/a&gt; — A reflective piece on the sense of community among Adafruit members. (Source: Adafruit Industries)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="technical-advancements"&gt;
+&lt;h3&gt;Technical Advancements&lt;/h3&gt;
+&lt;p&gt;Technological advancements shape the landscape of open-source hardware, with recent developments in GPU adaptations and internet speed measurement methods.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/07/22/industrial-gpu-adapted-for-the-desktop/"&gt;Industrial GPU Adapted for the Desktop&lt;/a&gt; — A look at how industrial GPUs are being repurposed for desktop use. (Source: Hackaday)&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/07/22/the-need-for-speed-internet-speed-measurement-or-diy/"&gt;The Need for Speed: Internet Speed Measurement (or DIY?)&lt;/a&gt; — A discussion on DIY approaches to measuring internet speed. (Source: Hackaday)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="scientific-innovations"&gt;
+&lt;h3&gt;Scientific Innovations&lt;/h3&gt;
+&lt;p&gt;This week also witnessed scientific explorations that intersect with technology, particularly in understanding natural phenomena through engineering principles.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/07/22/v-formation-flying-of-birds-is-explained-by-a-minimal-wake-vortex-model/"&gt;V Formation Flying of Birds is Explained by a Minimal Wake–Vortex Model&lt;/a&gt; — Insights into avian flight patterns and their engineering implications. (Source: Hackaday)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:48:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/linux-gaming-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="linux-gaming-news"&gt;
+&lt;h2&gt;Linux Gaming News&lt;/h2&gt;
+&lt;p&gt;The Linux gaming landscape continues to evolve with exciting new releases and developments. Notably, several upcoming games and bundles cater to a variety of gaming enthusiasts.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://linuxgameconsortium.com"&gt;Tormentum II to dive into the grim world&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.gamingonlinux.com/2026/07/get-some-great-point-and-click-adventures-and-digital-board-games-in-two-new-humble-bundles/"&gt;Get some great point and click adventures, and digital board games in two new Humble Bundles&lt;/a&gt; — GamingOnLinux Latest Articles&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.gamingonlinux.com/2026/07/yet-another-zombie-survivors-1-0-release-announced-for-august/"&gt;Yet Another Zombie Survivors 1.0 release announced for August&lt;/a&gt; — GamingOnLinux Latest Articles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="steam-and-hardware-updates"&gt;
+&lt;h2&gt;Steam and Hardware Updates&lt;/h2&gt;
+&lt;p&gt;The integration of gaming hardware with Linux is a key topic, particularly with the Steam Machine and new insights into hardware performance.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.gamingonlinux.com/2026/07/steam-machine-with-steamos-linux-initial-thoughts/"&gt;Steam Machine with SteamOS Linux - initial thoughts&lt;/a&gt; — GamingOnLinux Latest Articles&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/review/linux-72-epyc-9455p"&gt;AMD EPYC Turin With PCIe 5.0 Storage Shows Off Nice Gains On Linux 7.2&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="technical-enhancements"&gt;
+&lt;h2&gt;Technical Enhancements&lt;/h2&gt;
+&lt;p&gt;Various technical advancements are being highlighted, particularly around video decoding and compatibility layers, enhancing the overall experience for gamers on Linux.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/dav1d-1.5.4"&gt;dav1d 1.5.4 Brings AV1 Decoding To OS/2&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/libx11-compat"&gt;libx11-compat Is Working To Implement Xlib Atop SDL For Wayland, macOS, Android&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="general-gaming-insights"&gt;
+&lt;h2&gt;General Gaming Insights&lt;/h2&gt;
+&lt;p&gt;Additional insights into the current state and future of Linux gaming are circulating, capturing the interest of both casual and hardcore gamers.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.youtube.com/watch?v=EsRGK1ySfCI"&gt;Linux Gaming news, Local AI and stuff.&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://linuxgamenews.com"&gt;Linux Game News&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:47:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/embedded-linux-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="embedded-linux-trends-and-innovations"&gt;
+&lt;h2&gt;Embedded Linux Trends and Innovations&lt;/h2&gt;
+&lt;p&gt;Recent discussions in the realm of Embedded Linux are focusing on key trends anticipated for 2026. Transformative advancements promise to shape the industry, particularly in real-time performance and new application areas within IoT and industrial systems.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.lctautomation.com/blog/top-embedded-linux-solutions-for-2026"&gt;Top Embedded Linux Solutions for 2026 What to Look For?&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.linkedin.com/pulse/embedded-linux-trends-2026-theembeddedkit-q3ope"&gt;Embedded Linux trends for 2026&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://linuxgizmos.com"&gt;LinuxGizmos.com: embedded Linux news &amp;amp; devices&lt;/a&gt; — Tavily Search&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="security-considerations"&gt;
+&lt;h2&gt;Security Considerations&lt;/h2&gt;
+&lt;p&gt;Security remains a critical component of the Embedded Linux ecosystem. Recent updates highlight ongoing efforts to bolster the safety of various systems, pointing to the need for vigilant monitoring and updates.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://lwn.net/Articles/1084401/"&gt;Security updates for Thursday&lt;/a&gt; — LWN.net&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://lwn.net/Articles/1083123/"&gt;LWN.net Weekly Edition for July 23, 2026&lt;/a&gt; — LWN.net&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="cross-platform-innovations"&gt;
+&lt;h2&gt;Cross-Platform Innovations&lt;/h2&gt;
+&lt;p&gt;Innovations continue to emerge that enhance cross-platform compatibility and functionality. Recent developments support newer hardware and software integrations, promoting flexibility and improved performance in the Embedded Linux space.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/dav1d-1.5.4"&gt;dav1d 1.5.4 Brings AV1 Decoding To OS/2&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/review/linux-72-epyc-9455p"&gt;AMD EPYC Turin With PCIe 5.0 Storage Shows Off Nice Gains On Linux 7.2&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/libx11-compat"&gt;libx11-compat Is Working To Implement Xlib Atop SDL For Wayland, macOS, Android&lt;/a&gt; — Phoronix&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="floss-and-ai-policy-discussions"&gt;
+&lt;h2&gt;FLOSS and AI Policy Discussions&lt;/h2&gt;
+&lt;p&gt;The ongoing dialogue concerning the intersection of FLOSS (Free/Libre and Open Source Software) and AI reflects a growing awareness about safeguarding community-driven projects. New policies emphasize the importance of ethical considerations in technology development.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://lwn.net/Articles/1084404/"&gt;Codeberg: Protecting our FLOSS commons from LLMs&lt;/a&gt; — LWN.net&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Only Parallel Light Sources Are Supported: Faking Point Lights on the DS GPU</title><link href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html" rel="alternate"/><published>2026-07-07T21:14:00+02:00</published><updated>2026-07-23T16:52:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-07:/nds-point-light-falloff-fixed-function-gpu.html</id><summary type="html">&lt;p class="first last"&gt;The Nintendo DS's fixed-function GPU only supports directional
 lights, full stop. Two real bugs, one hardware surprise straight out
 of GBATEK, and a way to get real per-object point-light falloff out
 of hardware that has no concept of one, without ever leaving the
@@ -237,6 +459,56 @@ still a rounding error against that, and visibly rounder on screen, for a
 target whose real constraint was never triangle count in the first
 place.&lt;/p&gt;
 &lt;/div&gt;
+&lt;div class="section" id="update-the-tessellation-win-had-a-hidden-cost"&gt;
+&lt;h2&gt;Update: the tessellation win had a hidden cost&lt;/h2&gt;
+&lt;p&gt;That &amp;quot;visibly rounder on screen&amp;quot; sphere from the section above had a
+cost this article didn't account for at the time. &lt;tt class="docutils literal"&gt;examples/lighting&lt;/tt&gt;
+quietly ran at exactly 30fps on real NDS timing (melonDS) rather than
+60, and the cause traced straight back to this same pass.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;nds_submit_tri()&lt;/tt&gt; — the function issuing each triangle's vertices —
+was also where every triangle's &lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;GL_DIFFUSE&lt;/tt&gt; material
+state got (re)computed, including the full ambient-reconstruction
+division this article spent three sections on above. For a single-color
+object that's pure waste: the material state is identical across every
+one of an object's triangles, so it only ever needs setting once per
+object, not once per triangle. A 12×6 (120-triangle) sphere issued 120
+redundant &lt;tt class="docutils literal"&gt;glMaterialf()&lt;/tt&gt; pairs into the GX FIFO every frame even
+before this article's own change; the same sphere at 20×10 (360
+triangles, the tessellation bump described above) issued 360. Combined
+with the lighting example's four active lights — each one re-triggering
+that same reconstruction math on every single one of those calls — frame
+time crept just past one VBlank period.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;swiWaitForVBlank()&lt;/tt&gt; doesn't degrade gracefully when that happens. It
+waits for the &lt;em&gt;next&lt;/em&gt; VBlank interrupt after the frame's work completes,
+full stop — there's no &amp;quot;a little late&amp;quot; state between VBlanks, only &amp;quot;made
+it&amp;quot; or &amp;quot;missed it and now wait for the one after.&amp;quot; Missing a single
+VBlank by any margin, even a fraction of a scanline's worth of GX FIFO
+backlog, halves the observed frame rate outright: 60fps to exactly
+30fps, not 59 or 58. The tessellation bump didn't cause a gradual
+slowdown that could be spotted incrementally — it silently sat under the
+VBlank deadline until it didn't, and the frame rate cut itself exactly
+in half the moment it crossed.&lt;/p&gt;
+&lt;p&gt;The fix has nothing to do with tessellation, lighting, or the ambient
+math itself — all of that stays correct, unchanged. It's purely a matter
+of &lt;em&gt;when&lt;/em&gt; the material state gets written: once per object (or once per
+face, only for the rare object whose faces genuinely have different
+colors), immediately before that object's triangles submit, instead of
+redundantly with every single triangle. The exact same
+&lt;tt class="docutils literal"&gt;GL_AMBIENT&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;GL_DIFFUSE&lt;/tt&gt; values land on the GPU either way — this
+changes nothing about what gets drawn, only how many times the identical
+FIFO command gets issued to say so.&lt;/p&gt;
+&lt;p&gt;This doesn't extend to the GBA backend: its software rasterizer computes
+each face's final color directly in &lt;tt class="docutils literal"&gt;gba_lit_color_face()&lt;/tt&gt;, with no
+separate material/normal GPU state to redundantly reissue in the first
+place — there's no equivalent waste to hoist out over there.&lt;/p&gt;
+&lt;p&gt;Confirmed on real timing (melonDS): back to a solid 60fps. The
+underlying shape of the bug is the same one this whole article is
+about — a GPU that will happily do exactly what's asked of it, at
+whatever cost that actually carries, and won't warn you when two
+separately reasonable changes (a rounder sphere, correct per-object
+point-light falloff) compound into a cost neither one would have caused
+alone.&lt;/p&gt;
+&lt;/div&gt;
 &lt;div class="section" id="verifying-a-change-with-nothing-to-count"&gt;
 &lt;h2&gt;Verifying a change with nothing to count&lt;/h2&gt;
 &lt;p&gt;The GBA articles on this blog leaned on &lt;tt class="docutils literal"&gt;cycle_probe.py&lt;/tt&gt; for every
@@ -266,7 +538,7 @@ pattern from the ambient bug repeats — probably has its own GBATEK
 surprise waiting to be found the same way this one was, by trying the
 obvious thing first and actually looking at what came out the other end.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="lighting"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="lighting"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-07-24T07:50:59.840414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="ecosystem-expansion-and-membership-growth"&gt;
@@ -293,7 +565,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://interrupt.memfault.com/blog/march-through-june-2026-roundup"&gt;What we've been reading this Spring/Early Summer (2026)&lt;/a&gt; — Interrupt&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:40:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/crossfit-hyrox-and-powerlifting-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:40:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/crossfit-hyrox-and-powerlifting-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-and-hyrox"&gt;
@@ -324,7 +596,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;/ul&gt;
 &lt;p&gt;Incorporating these themes and ongoing developments within fitness can inspire both athletes and enthusiasts to remain engaged and informed.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:49:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/retrogaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:49:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/retrogaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-developments"&gt;
@@ -360,7 +632,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/07/this-project-is-not-vibe-coded-developer-behind-ps1-recompilation-tool-takes-aim-at-ai"&gt;This Project Is Not Vibe-Coded - Developer Behind PS1 Recompilation Tool Takes Aim At AI&lt;/a&gt; - Time Extension covers a developer's perspective on the role of AI in enhancing retro game compilations, emphasizing the value of human creativity in gaming projects.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -400,7 +672,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:42:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/linux-gaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:42:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/linux-gaming-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming-enhancements"&gt;
@@ -430,7 +702,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://linuxgamenews.com"&gt;Linux Game News&lt;/a&gt; — Tavily Search&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:37:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/embedded-linux-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:37:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/embedded-linux-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux-updates"&gt;
@@ -458,7 +730,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/Pioneer-DJ-DJM-S11-Linux"&gt;Pioneer DJM-S11 Professional DJ Mixer To Be Supported By Linux 7.3&lt;/a&gt; (Phoronix)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates-and-expansions"&gt;
@@ -500,7 +772,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://blog.golioth.io/cra-compliance-for-embedded-devices-webinar/"&gt;CRA Compliance for Embedded Devices Webinar&lt;/a&gt; — The Golioth Developer Blog&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:39:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/crossfit-hyrox-and-powerlifting-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:39:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/crossfit-hyrox-and-powerlifting-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-hyrox-collaboration"&gt;
@@ -536,7 +808,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://www.cyclingweekly.com/fitness/crossfit-vs-hyrox-i-tried-both-fitness-trends-and-only-one-made-me-a-better-cyclist"&gt;'I haven't been this excited about a sport since cyclo-cross' – we tried Hyrox and Crossfit, and one of them actually improved our riding&lt;/a&gt; — Cycling Weekly&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:37:00+02:00</published><updated>2026-07-16T12:22:47.987237+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/retrogaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:37:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/retrogaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -571,7 +843,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;/ul&gt;
 &lt;p&gt;These articles highlight the diversity and enthusiasm within the retrogaming scene, from hardware innovations to community discussions. As we continue to cherish and explore the classic games of our past, the future of retrogaming looks bright.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-overview"&gt;
@@ -607,7 +879,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/29/the-python-on-microcontrollers-newsletter-subscribe-for-free-6-29/"&gt;The Python on Microcontrollers Newsletter: subscribe for free&lt;/a&gt; – Adafruit Industries&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:46:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/linux-gaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:46:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/linux-gaming-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -650,7 +922,7 @@ obvious thing first and actually looking at what came out the other end.&lt;/p&g
 &lt;/ul&gt;
 &lt;p&gt;As the Linux gaming scene evolves, these articles provide insight into resources and advancements, empowering gamers with the knowledge to make informed decisions and enjoy a richer gaming experience on Linux platforms.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:32:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/embedded-linux-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T20:32:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/embedded-linux-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux-developments"&gt;
@@ -1643,7 +1915,7 @@ boundary, one exposed port, one systemd unit, one script that adapts to
 whatever box it lands on. That boring part is also what makes me comfortable
 leaving it running unattended.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Self-Hosting"/><category term="self-hosting"/><category term="llm"/><category term="ollama"/><category term="podman"/><category term="kubernetes"/><category term="ansible"/><category term="opencode"/><category term="privacy"/><category term="article"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Self-Hosting"/><category term="self-hosting"/><category term="llm"/><category term="ollama"/><category term="podman"/><category term="kubernetes"/><category term="ansible"/><category term="opencode"/><category term="privacy"/><category term="article"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/crossfit-hyrox-and-powerlifting-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="hyrox-and-crossfit"&gt;
@@ -1681,7 +1953,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;NOBULL has launched the Outwork Flex, a promising addition to their footwear lineup aimed at enhancing performance: &lt;a class="reference external" href="https://morningchalkup.com/2026/06/17/nobull-introduces-the-outwork-flex-the-newest-addition-to-the-outwork-line/"&gt;NOBULL Introduces the Outwork Flex, the Newest Addition to the Outwork Line&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-expansion"&gt;
@@ -1714,7 +1986,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org"&gt;Zephyr Project&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:51:00+02:00</published><updated>2026-07-24T07:50:59.839413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/retrogaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -1747,7 +2019,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/linux-gaming-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -1787,7 +2059,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;In conclusion, the Linux gaming sector is thriving with a plethora of new games, significant technological advancements, and a supportive community focused on improving user experiences across platforms.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-16T12:22:47.986796+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-trends"&gt;
@@ -1815,7 +2087,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;Top Ten Projects My Dad Would Like&lt;/strong&gt;: This article offers a light-hearted look at popular projects that could engage community members with hands-on open-source DIY fun. &lt;a class="reference external" href="https://makezine.com/article/home/top-ten-projects-my-dad-would-like/"&gt;Top Ten Projects My Dad Would Like&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:49:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/embedded-linux-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:49:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/embedded-linux-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -1846,7 +2118,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/crossfit-hyrox-and-powerlifting-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="competitive-fitness-trends"&gt;
@@ -1876,7 +2148,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://morningchalkup.com/2026/06/10/the-ultimate-fathers-day-gift-guide-for-the-crossfit-or-hyrox-dad/"&gt;The Ultimate Father’s Day Gift Guide for the CrossFit or HYROX Dad&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos"&gt;
@@ -1916,7 +2188,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;This digest encapsulates the vibrant developments within the Zephyr RTOS community and highlights resources for both potential and seasoned developers within the ecosystem.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:43:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/retrogaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retro-gaming-news"&gt;
@@ -1947,7 +2219,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.timeextension.com/news/2026/06/we-have-the-means-to-fight-this-case-to-the-end-gamings-most-infamous-trademark-troll-is-back"&gt;”We Have The Means To Fight This Case To The End” - Gaming's Most Infamous Trademark Troll Is Back&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/linux-gaming-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -1981,7 +2253,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;As Linux gaming continues to grow, being informed about the latest updates, potential threats, and performance improvements is vital for developers and gamers alike.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-initiatives"&gt;
@@ -2019,7 +2291,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/14/reviving-teletext-for-ham-radio-hamsunday-ieeespectrum/"&gt;Reviving Teletext for Ham Radio #HamSunday &amp;#64;IEEESpectrum&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:41:00+02:00</published><updated>2026-07-16T12:22:47.986390+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/embedded-linux-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:41:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/embedded-linux-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -2051,7 +2323,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates"&gt;
@@ -2079,7 +2351,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;A Brief History of Zephyr RTOS&lt;/strong&gt;: This article chronicles the evolution of Zephyr RTOS, highlighting its origins in earlier commercial systems and its development into an open-source powerhouse. For a deep dive into its history, click here: &lt;a class="reference external" href="https://shawnhymel.com/2791/a-brief-history-of-zephyr-rtos"&gt;A Brief History of Zephyr RTOS&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:13:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:13:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/crossfit-hyrox-and-powerlifting-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-hyrox-and-powerlifting"&gt;
@@ -2113,7 +2385,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;This week’s articles reveal a promising future for competitive fitness as CrossFit, HYROX, and strength training practices continue to evolve and influence the industry.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-engagement"&gt;
@@ -2137,7 +2409,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com"&gt;Linux Hardware Reviews &amp;amp; Performance Benchmarks, Open-Source News - Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/retrogaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming"&gt;
@@ -2169,7 +2441,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;p&gt;In summary, the retrogaming landscape remains vibrant, enriched by new releases and nostalgic reflections on the classics that shaped the industry.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/embedded-linux-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/embedded-linux-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -2190,7 +2462,7 @@ leaving it running unattended.&lt;/p&gt;
 - &lt;strong&gt;KDE Plasma 6.8 Will Make Sure You Don't Miss Your Low Battery Notifications While Gaming&lt;/strong&gt;: Discusses upcoming features in KDE aimed at enhancing user experience for embedded devices, particularly during critical tasks like gaming. [Read more here](&lt;a class="reference external" href="https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S"&gt;https://www.phoronix.com/news/Plasma-6.8-Low-Battery-Full-S&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;These articles reflect the vibrant landscape of embedded Linux, highlighting the ongoing innovations and challenges that developers and users face.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:58:00+02:00</published><updated>2026-07-24T07:50:59.838413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/linux-gaming-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -2238,7 +2510,7 @@ leaving it running unattended.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Capitole du Libre 2026: the CFP is open</title><link href="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-07-16T12:22:47.983499+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/capitole-du-libre-2026-cfp.html</id><summary type="html">&lt;p class="first last"&gt;The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance — submissions close on July 20, 2026.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Capitole du Libre 2026: the CFP is open</title><link href="https://tprrt.tupi.fr/capitole-du-libre-2026-cfp.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-07-24T07:50:59.836413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/capitole-du-libre-2026-cfp.html</id><summary type="html">&lt;p class="first last"&gt;The Call for Proposals for Capitole du Libre 2026 is now open. If you have something to share about Free Software or Open Source, this is your chance — submissions close on July 20, 2026.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://capitoledulibre.org"&gt;Capitole du Libre&lt;/a&gt; is one of France's largest community-driven Free Software and
 Open Source events. It is held every year in Toulouse, and I have had the pleasure
 of speaking there in &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20181117/measured_boot.pdf"&gt;2018&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20191116/building_linux.pdf"&gt;2019&lt;/a&gt;, and &lt;a class="reference external" href="https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf"&gt;2022&lt;/a&gt;. The &lt;strong&gt;2026 edition&lt;/strong&gt; takes place
@@ -2279,7 +2551,7 @@ are not eligible for reimbursement.&lt;/p&gt;
 proposals.&lt;/p&gt;
 &lt;p&gt;Submit your proposal: &lt;a class="reference external" href="https://cfp.capitoledulibre.org/cdl-2026/cfp"&gt;cfp.capitoledulibre.org/cdl-2026/cfp&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Free Software"/><category term="capitole du libre"/><category term="cfp"/><category term="free software"/><category term="open source"/><category term="conference"/><category term="toulouse"/><category term="article"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-07-16T12:22:47.983499+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
+</content><category term="Free Software"/><category term="capitole du libre"/><category term="cfp"/><category term="free software"/><category term="open source"/><category term="conference"/><category term="toulouse"/><category term="article"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-07-24T07:50:59.836413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04"&gt;RIOT-OS 2026.04&lt;/a&gt;, codenamed &lt;strong&gt;Fire Rizzlease&lt;/strong&gt;, was released on May 6, 2026.
 RIOT is a multi-threading operating system targeting microcontrollers found in the
 Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
@@ -2363,7 +2635,7 @@ progressively replacing Doxygen for prose documentation. This release adds:&lt;/
 &lt;li&gt;LVGL configuration and SDL issues on native (#22005, #22139).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-07-16T12:22:47.985976+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -2383,7 +2655,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 - &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:22:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:22:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/crossfit-hyrox-and-powerlifting-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-hyrox-and-powerlifting"&gt;
@@ -2425,7 +2697,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:19:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/retrogaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-news-digest"&gt;
@@ -2460,7 +2732,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;p&gt;This week's articles reflect the ongoing passion and innovation within the retrogaming community, ensuring that the games we love continue to thrive and evolve.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="retrogaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -2492,7 +2764,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;p&gt;As the open-source hardware movement continues to evolve, these articles serve as a testament to its vibrant community, innovative spirit, and the myriad possibilities that open-source design unlocks for makers worldwide.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:16:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/linux-gaming-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming-performance"&gt;
@@ -2530,7 +2802,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/OpenCL-3.1.1-Released"&gt;OpenCL 3.1.1 Released To Address A Possible Performance Regression&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:15:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/embedded-linux-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:15:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/embedded-linux-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -2550,7 +2822,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-07-16T12:22:47.985562+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -2580,7 +2852,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:09:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:09:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/crossfit-hyrox-and-powerlifting-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Crossfit, Hyrox and Powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="competitive-fitness"&gt;
@@ -2618,7 +2890,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.boxrox.com/"&gt;Competitive Fitness and Functional Sport Online Magazine&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -2675,7 +2947,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;The articles this week illustrate the dynamic and multifaceted world of open-source hardware, engaging the community and fostering innovation across various applications and discussions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Linux Gaming Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:25:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/linux-gaming-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux Gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -2728,7 +3000,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;Linux gaming continues to evolve with promising trends, new distributions, software enhancements, and an expanding library, making 2026 a pivotal year for enthusiasts and new users alike.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:23:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/embedded-linux-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:23:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/embedded-linux-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -2772,7 +3044,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;/ul&gt;
 &lt;p&gt;This week's articles present a rich tapestry of information for anyone interested in or working with Embedded Linux, emphasizing the importance of security, kernel updates, and innovative solutions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Yocto Project 6.0 "wrynose" is out</title><link href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="alternate"/><published>2026-05-13T12:00:00+02:00</published><updated>2026-07-16T12:22:47.983499+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-13:/yocto-project-6-0-wrynose-release.html</id><summary type="html">&lt;p class="first last"&gt;Yocto Project 6.0 &amp;quot;wrynose&amp;quot;, the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded"/><category term="linux"/><category term="digest"/></entry><entry><title>Yocto Project 6.0 "wrynose" is out</title><link href="https://tprrt.tupi.fr/yocto-project-6-0-wrynose-release.html" rel="alternate"/><published>2026-05-13T12:00:00+02:00</published><updated>2026-07-24T07:50:59.835561+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-13:/yocto-project-6-0-wrynose-release.html</id><summary type="html">&lt;p class="first last"&gt;Yocto Project 6.0 &amp;quot;wrynose&amp;quot;, the new LTS release, is out today. Here is an overview of the most notable changes and a note on my own contribution to this release.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;The &lt;a class="reference external" href="https://www.yoctoproject.org/software-overview/downloads/"&gt;Yocto Project 6.0&lt;/a&gt;, codenamed &lt;strong&gt;wrynose&lt;/strong&gt;, was released on May 13, 2026. This
 is the new &lt;strong&gt;Long-Term Support (LTS)&lt;/strong&gt; release, succeeding 5.0 &amp;quot;scarthgap&amp;quot;. I am
 happy to have my name in the contributors list for this release, and I wanted to
@@ -2867,7 +3139,7 @@ this external source. A new &lt;tt class="docutils literal"&gt;wicenv&lt;/tt&gt;
 scarthgap (5.0), now is a good time to plan your migration. The migration guide
 is available at the &lt;a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html"&gt;Yocto Project documentation&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="yocto"/><category term="openembedded"/><category term="embedded"/><category term="linux"/><category term="oe-core"/><category term="article"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="yocto"/><category term="openembedded"/><category term="embedded"/><category term="linux"/><category term="oe-core"/><category term="article"/></entry><entry><title>Linux Gaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/linux-gaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:26:00+02:00</published><updated>2026-07-24T07:50:59.837284+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/linux-gaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Linux gaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="linux-gaming"&gt;
@@ -2915,7 +3187,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com/news/AMD-K5-CPUs"&gt;AMD K5 CPUs The Latest To Be Retired With Linux's Aging Hardware Support | Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</content><category term="Gaming"/><category term="linux"/><category term="gaming"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -2958,7 +3230,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://hackaday.io/"&gt;Hackaday.io — The world's largest collaborative hardware development community&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -3002,7 +3274,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;&lt;a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos"&gt;Zephyr RTOS on Silicon Labs platforms&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-07-16T12:22:47.984701+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Crossfit, Hyrox and Powerlifting Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/crossfit-hyrox-powerlifting-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:07:00+02:00</published><updated>2026-07-24T07:50:59.836413+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/crossfit-hyrox-powerlifting-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of crossfit, hyrox and powerlifting news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="crossfit-and-hyrox"&gt;
@@ -3037,7 +3309,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;/ul&gt;
 &lt;p&gt;This digest captures the latest developments in CrossFit, HYROX, and powerlifting, illustrating a vibrant landscape focused on competitive fitness and community engagement.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
+</content><category term="Fitness"/><category term="crossfit"/><category term="hyrox"/><category term="powerlifting"/><category term="digest"/></entry><entry><title>Embedded Linux Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/embedded-linux-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:58:00+02:00</published><updated>2026-07-24T07:50:59.837284+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/embedded-linux-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of embedded Linux news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="embedded-linux"&gt;
@@ -3080,7 +3352,7 @@ is available at the &lt;a class="reference external" href="https://docs.yoctopro
 &lt;li&gt;Catch up on community discussions within the &lt;a class="reference external" href="https://mender.io/blog/the-future-of-the-embedded-linux-ecosystem"&gt;Linux Plumbers Conference 2023&lt;/a&gt; focusing on the embedded Linux ecosystem.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-07-16T12:22:47.985003+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
+</content><category term="Linux"/><category term="embedded Linux"/><category term="embedded"/><category term="digest"/></entry><entry><title>Retrogaming Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/retrogaming-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T12:57:00+02:00</published><updated>2026-07-24T07:50:59.837414+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/retrogaming-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of retrogaming news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="retrogaming-digest"&gt;

@@ -298,6 +298,56 @@ still a rounding error against that, and visibly rounder on screen, for a
 target whose real constraint was never triangle count in the first
 place.</p>
 </div>
+<div class="section" id="update-the-tessellation-win-had-a-hidden-cost">
+<h2>Update: the tessellation win had a hidden cost</h2>
+<p>That &quot;visibly rounder on screen&quot; sphere from the section above had a
+cost this article didn't account for at the time. <tt class="docutils literal">examples/lighting</tt>
+quietly ran at exactly 30fps on real NDS timing (melonDS) rather than
+60, and the cause traced straight back to this same pass.</p>
+<p><tt class="docutils literal">nds_submit_tri()</tt> — the function issuing each triangle's vertices —
+was also where every triangle's <tt class="docutils literal">GL_AMBIENT</tt>/<tt class="docutils literal">GL_DIFFUSE</tt> material
+state got (re)computed, including the full ambient-reconstruction
+division this article spent three sections on above. For a single-color
+object that's pure waste: the material state is identical across every
+one of an object's triangles, so it only ever needs setting once per
+object, not once per triangle. A 12×6 (120-triangle) sphere issued 120
+redundant <tt class="docutils literal">glMaterialf()</tt> pairs into the GX FIFO every frame even
+before this article's own change; the same sphere at 20×10 (360
+triangles, the tessellation bump described above) issued 360. Combined
+with the lighting example's four active lights — each one re-triggering
+that same reconstruction math on every single one of those calls — frame
+time crept just past one VBlank period.</p>
+<p><tt class="docutils literal">swiWaitForVBlank()</tt> doesn't degrade gracefully when that happens. It
+waits for the <em>next</em> VBlank interrupt after the frame's work completes,
+full stop — there's no &quot;a little late&quot; state between VBlanks, only &quot;made
+it&quot; or &quot;missed it and now wait for the one after.&quot; Missing a single
+VBlank by any margin, even a fraction of a scanline's worth of GX FIFO
+backlog, halves the observed frame rate outright: 60fps to exactly
+30fps, not 59 or 58. The tessellation bump didn't cause a gradual
+slowdown that could be spotted incrementally — it silently sat under the
+VBlank deadline until it didn't, and the frame rate cut itself exactly
+in half the moment it crossed.</p>
+<p>The fix has nothing to do with tessellation, lighting, or the ambient
+math itself — all of that stays correct, unchanged. It's purely a matter
+of <em>when</em> the material state gets written: once per object (or once per
+face, only for the rare object whose faces genuinely have different
+colors), immediately before that object's triangles submit, instead of
+redundantly with every single triangle. The exact same
+<tt class="docutils literal">GL_AMBIENT</tt>/<tt class="docutils literal">GL_DIFFUSE</tt> values land on the GPU either way — this
+changes nothing about what gets drawn, only how many times the identical
+FIFO command gets issued to say so.</p>
+<p>This doesn't extend to the GBA backend: its software rasterizer computes
+each face's final color directly in <tt class="docutils literal">gba_lit_color_face()</tt>, with no
+separate material/normal GPU state to redundantly reissue in the first
+place — there's no equivalent waste to hoist out over there.</p>
+<p>Confirmed on real timing (melonDS): back to a solid 60fps. The
+underlying shape of the bug is the same one this whole article is
+about — a GPU that will happily do exactly what's asked of it, at
+whatever cost that actually carries, and won't warn you when two
+separately reasonable changes (a rounder sphere, correct per-object
+point-light falloff) compound into a cost neither one would have caused
+alone.</p>
+</div>
 <div class="section" id="verifying-a-change-with-nothing-to-count">
 <h2>Verifying a change with nothing to count</h2>
 <p>The GBA articles on this blog leaned on <tt class="docutils literal">cycle_probe.py</tt> for every
@@ -332,7 +382,7 @@ obvious thing first and actually looking at what came out the other end.</p>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/nds-point-light-falloff-fixed-function-gpu.html">posted at 21:14</a>
-                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;14 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/nds.html" class="tags selected">nds</a>
