@@ -59,7 +59,303 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Jul 07, 2026</h4>
+        <div id="content">            <h4 class="date">Aug 13, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/gba-dither-offset-separation.html" rel="bookmark" title="Permanent Link to &quot;Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency&quot;">Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The two previous GBA articles on this blog — one on <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">cycle-level
+optimization</a>, one on the <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">no-heap ECS</a> underneath it — were both about working around
+hardware that has no float unit and no polygon fill. This one is about a
+narrower, older constraint on the same hardware: the GBA's Mode 4
+framebuffer is 8bpp indexed, and its palette is a single, unbuffered,
+256-entry table with no double-buffering and no VBlank gating on writes.
+Reassigning a palette slot recolors every pixel already on screen using
+that slot, immediately, mid-frame if the timing is unlucky.</p>
+<p>That constraint alone rules out the obvious approach — blend per pixel,
+allocate the blended color a palette slot on the fly — but even without
+it, real blending wouldn't be affordable here. <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>'s GBA
+backend rasterizes 3D faces in software, on a 16.78MHz ARM7TDMI with no
+hardware alpha unit anywhere in this path: the <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">earlier article on cycle-
+level optimization</a> on this blog spent its
+entire length shaving individual cycles off this same rasterizer's inner
+loop. Blending would mean computing a source/destination color mix and
+resolving it back to a palette index, for every covered pixel of every
+translucent face, every frame — real per-pixel work on hardware that
+has none of it to spare. Dithering sidesteps the cost entirely: the
+per-pixel decision is a single threshold compare against a precomputed
+matrix, no blend math and no palette search, so <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> answers
+both constraints the same way plenty of retro-hardware renderers have —
+translucent 3D faces aren't blended, they're dithered, drawn to roughly
+the fraction of screen cells their alpha implies, using a fixed Bayer
+matrix, so the <em>density</em> of drawn pixels approximates the alpha instead
+of the color itself needing to change.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.</p>
+</div>
+<p>That part worked the first time. What didn't work — twice, in two
+different ways, both only visible on real hardware — was making more
+than one overlapping translucent object dither <em>differently enough</em> from
+its neighbors to stay visible. This article is about both bugs, why the
+second one is a quieter version of the first one, and why the fix that
+finally stuck came from building three ROMs and looking at them, not from
+finding a smarter formula.</p>
+</div>
+<div class="section" id="the-setup-one-matrix-one-offset-per-object">
+<h2>The setup: one matrix, one offset per object</h2>
+<p>The dithering itself is a small, pure function. Given a matrix of
+threshold values and a per-object &quot;level&quot; (roughly, alpha out of 16), a
+pixel draws if the matrix value at that screen coordinate is below the
+level:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">DITHER_BAYER_4X4</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w">  </span><span class="mi">6</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">  </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">9</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">  </span><span class="mi">5</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">dither_should_draw</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DITHER_BAYER_4X4</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">][</span><span class="n">x</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">level</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>That's enough for one translucent object. It isn't enough for two.
+<tt class="docutils literal">examples/translucent_cubes</tt> puts three overlapping cubes — red,
+green, blue — at the same alpha, drawn back to front. With no per-object
+variation, every one of them tests the <em>same</em> screen cells against the
+<em>same</em> level, which means they all draw to the exact same pixels — and
+since they're drawn back to front, the nearest one simply overwrites the
+farther ones wherever they overlap, instead of the three visually
+blending. Each object needs its own dithering <em>phase</em>: something that
+makes its own draw-set genuinely different from its neighbors', while
+each individual object still draws the right fraction of pixels.</p>
+</div>
+<div class="section" id="bug-1-shifting-the-coordinate-collapses-sixteen-phases-into-two">
+<h2>Bug 1: shifting the coordinate collapses sixteen phases into two</h2>
+<p>The obvious way to give each object a phase is to shift the sampled
+coordinate before indexing the matrix — object <em>i</em> looks up
+<tt class="docutils literal"><span class="pre">BAYER[(y</span> + py) &amp; <span class="pre">3][(x</span> + px) &amp; 3]</tt> instead of <tt class="docutils literal">BAYER[y &amp; <span class="pre">3][x</span> &amp; 3]</tt>,
+for some per-object <tt class="docutils literal">(px, py)</tt>. Sixteen possible <tt class="docutils literal">(px, py)</tt> pairs, one
+matrix, sixteen apparently different phases. It shipped, passed its own
+review, and looked right in the emulator during initial testing.</p>
+<p>It did not look right in front of the user's own screenshots. With three
+overlapping equal-alpha cubes, the middle one — green, sandwiched between
+red and blue in draw order — was almost entirely invisible everywhere it
+overlapped blue.</p>
+<div class="figure align-center">
+<img alt="examples/translucent_cubes running in mGBA with the coordinate-shift bug — only red and a dark, almost-black region are visible, no green or blue" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/bug-green-invisible.png" />
+<p class="caption"><tt class="docutils literal">examples/translucent_cubes</tt> at the commit that shipped the
+coordinate-shift phase — green and blue have collapsed into the same
+draw-set as another object and vanished.</p>
+</div>
+<p>Direct enumeration of all sixteen shifts against the 4x4 matrix at the
+alpha level in question found the cause immediately: only <strong>two</strong>
+distinct draw-sets exist among all sixteen coordinate shifts, not
+sixteen. The 4x4 Bayer matrix has its own translational symmetry — every
+shift is equivalent, cell-for-cell, to some other shift of the same
+<em>parity</em> of <tt class="docutils literal">(px + py)</tt>. Two objects landing in the same parity class
+draw to identical cells, and whichever is nearer in the back-to-front
+order simply erases the other. Three objects, two available parity
+classes: one collision was mathematically guaranteed, not a rare edge
+case.</p>
+</div>
+<div class="section" id="the-fix-rotate-the-compared-value-not-the-sampled-coordinate">
+<h2>The fix: rotate the compared value, not the sampled coordinate</h2>
+<p>The working version doesn't touch the coordinate at all. It rotates the
+<em>value read out of the matrix</em> by a per-object offset, before comparing
+it against the level:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">dither_should_draw</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">,</span>
+<span class="w">                                       </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)((</span><span class="n">DITHER_BAYER_4X4</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">][</span><span class="n">x</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span>
+<span class="w">           </span><span class="n">level</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>The difference isn't cosmetic. <tt class="docutils literal">DITHER_BAYER_4X4</tt> is a bijection —
+every one of its sixteen cells holds a distinct value from 0 to 15. &quot;Which
+cells have <tt class="docutils literal">(value + offset) mod 16 &lt; level</tt>&quot; selects a
+<tt class="docutils literal">level</tt>-sized <em>contiguous arc</em> of that value range, and as <tt class="docutils literal">offset</tt>
+sweeps 0 to 15, the arc's starting point sweeps every residue exactly
+once. Sixteen offsets, sixteen provably distinct draw-sets, at every
+level — not empirically distinct for the one alpha value that happened
+to get tested, but distinct by construction, for the same reason a
+Caesar cipher with sixteen different shift amounts produces sixteen
+different ciphertexts of the same plaintext. This shipped, the green cube
+reappeared, and the next report from real hardware was different in
+kind: not invisible, just rougher-looking than the other two.</p>
+<div class="figure align-center">
+<img alt="examples/translucent_cubes running in mGBA after the value-rotation fix — all three cubes visible, but the third one's dither pattern looks visibly rougher than the other two" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/fixed-rough-4x4.png" />
+<p class="caption">The same demo after the value-rotation fix — all three cubes are
+visible now, but the thinnest sliver (drawn last, forced onto a
+worse offset) already reads rougher than its neighbors.</p>
+</div>
+</div>
+<div class="section" id="bug-2-only-two-offsets-out-of-sixteen-are-actually-smooth">
+<h2>Bug 2: only two offsets out of sixteen are actually smooth</h2>
+<p>&quot;Rougher&quot; turned out to be exact, not impressionistic. At the alpha
+level <tt class="docutils literal">examples/translucent_cubes</tt> uses, offset 0 produces a perfect
+alternating checkerboard:</p>
+<div class="highlight"><pre><span></span>offset=0                     offset=1
+#.#.#.#.                     #.#.#.#.
+.#.#.#.#                     .#.#.#.#
+#.#.#.#.                     #.#.#.#.
+.#.#.#.#                     .#.#.#.#
+</pre></div>
+<p>Only one other offset (8, exactly half the matrix's sixteen values away)
+produces the <em>other</em> perfect checkerboard, disjoint from offset 0's.
+Every offset in between is a near-miss: the same pattern with a handful
+of cells flipped, visibly less regular the farther the offset sits from
+0 or 8. Three overlapping objects need three distinct offsets to stay
+correctly visible — that part was already fixed — but with only two
+&quot;perfect&quot; offsets available in a 16-value matrix, the third object is
+mathematically forced onto a visibly irregular one. Not a bug in the
+value-rotation fix; a structural property of a matrix this small
+combined with needing three simultaneously-distinct patterns.</p>
+</div>
+<div class="section" id="a-bigger-matrix-buys-a-finer-gradient-not-an-exemption">
+<h2>A bigger matrix buys a finer gradient, not an exemption</h2>
+<p>Growing the matrix to 8x8 (64 distinct values instead of 16) doesn't
+remove the &quot;only two perfect offsets&quot; property — it can't; the argument
+above doesn't care about matrix size. What it buys is a much finer
+<em>gradient</em> around those two perfect points, so a third offset near
+either one looks close to perfect instead of visibly broken. The
+external contract stayed untouched: callers still pass a level from 0
+to 16, unchanged, with the comparison internally rescaled by a factor of
+4 to land on the 8x8 matrix's 0-63 range:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">dither_should_draw</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">,</span>
+<span class="w">                                       </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)((</span><span class="n">DITHER_BAYER_8X8</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">7</span><span class="p">][</span><span class="n">x</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">7</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">63</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span>
+<span class="w">           </span><span class="n">level</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>This shipped as a real improvement — the third cube went from
+&quot;noticeably wrong&quot; to &quot;close to right.&quot; It was also, it turned out, not
+actually fixing the thing that mattered.</p>
+</div>
+<div class="section" id="the-bug-the-roughness-metric-couldn-t-see">
+<h2>The bug the roughness metric couldn't see</h2>
+<p>The offsets fed to each object weren't picked arbitrarily; they came from
+a 64-entry table, ranked by how close each individual offset's own
+pattern was to a perfect checkerboard — offset 0 first, offset 32
+(the 8x8 matrix's other perfect point) second, then the next-closest
+offsets after that. For three simultaneously-visible objects, that table
+handed out <tt class="docutils literal">0, 32, 1</tt>.</p>
+<p>Offset 1 is, individually, an excellent choice — its own pattern is
+almost perfectly checkerboarded, one flipped cell out of sixty-four. The
+ranking wasn't wrong about that. What it never asked is a different
+question: how much does offset 1's draw-set <em>overlap</em> offset 0's? The
+answer is 31 of 32 drawn cells, identical. The third object was, once
+again, drawing to almost exactly the same pixels as the first one — the
+original bug, wearing a much better disguise, because &quot;individually
+smooth&quot; and &quot;well separated from your neighbors&quot; turned out to be two
+different properties the same ranking had been quietly conflating.</p>
+</div>
+<div class="section" id="testing-three-sequences-instead-of-guessing">
+<h2>Testing three sequences instead of guessing</h2>
+<p>Fixing the separation problem analytically ran straight into a genuine
+trade-off, not a formula. Offsets chosen purely to <em>maximize</em> separation
+from each other — evenly spread around the matrix's 64-value range —
+land on values like 16 and 48, and those render as perfectly regular
+vertical or horizontal stripes instead of checkerboard noise:</p>
+<div class="highlight"><pre><span></span>offset=1 (roughness-ranked)      offset=16 (separation-first)
+#.#.#.#.                         #.#.#.#.
+.#.#.#.#                         #.#.#.#.
+#.#.#.#.                         #.#.#.#.
+.#.#.#.#                         #.#.#.#.
+#.#.#.#.                         #.#.#.#.
+.#.#.#.#                         #.#.#.#.
+#.#.#.#.                         #.#.#.#.
+#..#.#.#                         #.#.#.#.
+</pre></div>
+<p>The stripe pattern shares only 16 of 32 cells with its neighbors instead
+of 31 — a real, large improvement by the numbers — but axis-aligned
+stripes are a textbook example of a dither pattern that's <em>more</em>
+noticeable than diagonal checkerboard noise, not less, on real display
+hardware. Whether that trade-off actually looks better than the original
+near-miss checkerboard isn't something more computation could answer.</p>
+<p>So the answer came from building three complete 64-entry offset
+sequences — the original roughness-ranked table, a separation-maximizing
+one (a bit-reversal permutation, also known as a Van der Corput
+sequence: entry <em>i</em> is the 6-bit binary reversal of <em>i</em>, which
+guarantees every prefix of the sequence is evenly spread around the
+offset range), and a capped-overlap middle ground — compiling all three
+into real <tt class="docutils literal">translucent_cubes.gba</tt> ROMs, and testing them in mGBA. The
+separation-maximizing sequence won, stripes and all.</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">GBA_DITHER_OFFSET_SEQUENCE</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w"> </span><span class="mi">56</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">36</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">52</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">26</span><span class="p">,</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="mi">38</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="mi">54</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">46</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">62</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="mi">33</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">49</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="mi">41</span><span class="p">,</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">57</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="mi">37</span><span class="p">,</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w"> </span><span class="mi">53</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="mi">29</span><span class="p">,</span><span class="w"> </span><span class="mi">61</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="mi">35</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">43</span><span class="p">,</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"> </span><span class="mi">59</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="mi">39</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+<div class="figure align-center">
+<img alt="examples/translucent_cubes running in mGBA with the bit-reversal offset sequence — all three cubes visible, dither density looking even across all three" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/final-smooth-8x8-bitrev.png" />
+<p class="caption">The same demo with the bit-reversal sequence — three distinct,
+evenly-separated offsets, no object drawing to nearly the same
+cells as another.</p>
+</div>
+</div>
+<div class="section" id="verifying-a-change-with-nothing-to-count">
+<h2>Verifying a change with nothing to count</h2>
+<p>The GBA performance article on this blog leaned on <tt class="docutils literal">cycle_probe.py</tt> for
+every claim — a deterministic cycle count, diffed between builds. None of
+that applies here: this is a pure output-correctness question, not a
+performance one, and the actual measurable claims are combinatorial
+rather than empirical. Every mechanism change in this story — the
+value-rotation fix's sixteen-provably-distinct-draw-sets claim, the 8x8
+matrix's exact-count-at-every-level-and-offset property, the bit-reversal
+sequence's even-prefix-spread property — was verified by direct
+construction in Python before being written as C: enumerate every
+offset, every level, every pair, and check the property holds for all
+of them, not just the one case that happened to get tested by hand.
+Beyond that: the full desktop test suite, a GBA cross-compile, and a
+headless mGBA run of <tt class="docutils literal">examples/translucent_cubes</tt> on every change, plus
+— for the final offset-sequence choice specifically — actually looking
+at the rendered result, which is the only step in this whole chain that
+caught the thing the math couldn't.</p>
+</div>
+<div class="section" id="where-this-goes-next">
+<h2>Where this goes next</h2>
+<p>The bit-reversal sequence is still one fixed, precomputed table, shared
+across every scene — it optimizes pairwise separation for <em>a</em> sequence
+of offsets, not jointly for whichever specific set of objects happens to
+be simultaneously overlapping in a given frame. For the realistic case
+this backend actually renders — a small, fixed handful of translucent
+objects — that's enough. A scene with many more simultaneously-visible
+translucent objects than any current example has would eventually
+exhaust the sequence's best-separated entries and reach ones no better
+than the original bug. Jointly optimizing offset assignment across the
+actual in-use set, per frame, is the natural next piece if that ever
+stops being hypothetical — and, going by how this story went twice
+already, probably has its own hardware surprise waiting inside it.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">posted at 11:00</a>
+                    &nbsp;&middot;&nbsp;10 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rendering.html" class="tags">rendering</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/dithering.html" class="tags">dithering</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>            <h4 class="date">Jul 07, 2026</h4>
 
             <article class="post">
                 <h2 class="title">
