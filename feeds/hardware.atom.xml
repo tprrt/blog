@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-08-14T10:35:37.378391+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Open-Source Hardware Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:50:00+02:00</published><updated>2026-08-14T10:35:37.378391+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/open-source-hardware-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-09-05T14:29:52.747195+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Open-Source Hardware Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:52:00+02:00</published><updated>2026-09-05T14:29:52.747195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/open-source-hardware-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
+&lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
+&lt;div class="section" id="the-big-picture-open-source-hardware-s-growing-impact"&gt;
+&lt;h2&gt;The Big Picture: Open-Source Hardware's Growing Impact&lt;/h2&gt;
+&lt;p&gt;This week's coverage underscores how open-source hardware is moving from hobbyist curiosity to strategic disruption. From the origins of Arduino to predictions about datacenters, and an evolving catalog of projects, the ecosystem is broadening its reach.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://arshon.com/blog/the-rise-of-open-source-hardware-in-electronics-design-a-revolution-in-innovation"&gt;The Rise of Open-Source Hardware in Electronics Design: A Revolution in Innovation&lt;/a&gt; (Source: Tavily Search) — A look at Arduino's continued leadership and the expanding ecosystem of shields and libraries.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.informationweek.com/machine-learning-ai/open-source-hardware-prepare-for-disruption"&gt;Open-Source Hardware: Prepare For Disruption&lt;/a&gt; (Source: Tavily Search) — How open-source hardware could shake up the datacenter, much as Linux changed software.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/List_of_open-source_hardware_projects"&gt;List of open-source hardware projects - Wikipedia&lt;/a&gt; (Source: Tavily Search) — A useful reference point for the breadth of open-source hardware efforts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="hands-on-projects-and-guides"&gt;
+&lt;h2&gt;Hands-On Projects and Guides&lt;/h2&gt;
+&lt;p&gt;For makers and engineers, this week brings a fruitful mix of practical builds and updated reference material. A battery-free NFC business card shows what can be done with energy harvesting, a detailed ESP32 pinout guide saves endless forum digging, and Adafruit refreshes its audio amplifier guide.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/08/31/an-nfc-energy-harvesting-pcb-business-card-with-a-microcontroller/"&gt;An NFC energy-harvesting PCB business card with a microcontroller&lt;/a&gt; (Source: Adafruit Industries – Makers, hackers, artists, designers and engineers!) — Wilson Harper's KiCad project lights up 21 LEDs using only harvested NFC energy.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/08/31/building-an-energy-harvesting-business-card/"&gt;Building An Energy-Harvesting Business Card&lt;/a&gt; (Source: Hackaday) — A closer look at the same clever design from the build log perspective.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/08/31/esp32-wroom-32-pinout-gpios-strapping-pins-adc/"&gt;ESP32-WROOM-32 Pinout: GPIOs, strapping pins, ADC&lt;/a&gt; (Source: Adafruit Industries – Makers, hackers, artists, designers and engineers!) — Avoiding the boot-failure traps by knowing which GPIOs are safe to use.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/08/31/updated-guide-adafruit-max98357-i2s-class-d-amps-stereo-and-mono-adafruitlearningsystem-adafruit/"&gt;UPDATED GUIDE: Adafruit MAX98357 I2S Class-D Amps – Stereo and Mono #AdafruitLearningSystem &amp;#64;Adafruit&lt;/a&gt; (Source: Adafruit Industries – Makers, hackers, artists, designers and engineers!) — The refreshed guide now covers the new Adafruit Stereo I2S 3W Amplifier Breakout.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="simulation-and-system-design"&gt;
+&lt;h2&gt;Simulation and System Design&lt;/h2&gt;
+&lt;p&gt;Open-source principles are also advancing system-level engineering. This week's entries cover simulating UAVs in Unreal Engine and a heat exchanger design to defeat bacteria in hot water systems — both demonstrating how shared designs accelerate practical problem-solving.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/08/31/simulating-uavs-in-unreal-engine/"&gt;Simulating UAVs In Unreal Engine&lt;/a&gt; (Source: Hackaday) — Exploring drone behavior in a high-fidelity virtual environment.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/08/31/defeating-bacteria-in-hot-water-systems-with-a-heat-exchanger/"&gt;Defeating Bacteria In Hot Water Systems With A Heat Exchanger&lt;/a&gt; (Source: Hackaday) — An engineering approach to keeping water systems safe and efficient.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:50:00+02:00</published><updated>2026-09-05T14:29:52.746195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/open-source-hardware-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -46,7 +76,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-08-14T10:35:37.378391+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-09-05T14:29:52.746195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -86,7 +116,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-08-14T10:35:37.377119+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-09-05T14:29:52.746195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-overview"&gt;
@@ -122,7 +152,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/29/the-python-on-microcontrollers-newsletter-subscribe-for-free-6-29/"&gt;The Python on Microcontrollers Newsletter: subscribe for free&lt;/a&gt; – Adafruit Industries&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-08-14T10:35:37.377119+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-09-05T14:29:52.745195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-trends"&gt;
@@ -150,7 +180,7 @@
 &lt;li&gt;&lt;strong&gt;Top Ten Projects My Dad Would Like&lt;/strong&gt;: This article offers a light-hearted look at popular projects that could engage community members with hands-on open-source DIY fun. &lt;a class="reference external" href="https://makezine.com/article/home/top-ten-projects-my-dad-would-like/"&gt;Top Ten Projects My Dad Would Like&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-08-14T10:35:37.376119+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-09-05T14:29:52.745195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-initiatives"&gt;
@@ -188,7 +218,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/14/reviving-teletext-for-ham-radio-hamsunday-ieeespectrum/"&gt;Reviving Teletext for Ham Radio #HamSunday &amp;#64;IEEESpectrum&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-08-14T10:35:37.376119+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-09-05T14:29:52.745195+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-engagement"&gt;
@@ -212,7 +242,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com"&gt;Linux Hardware Reviews &amp;amp; Performance Benchmarks, Open-Source News - Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-08-14T10:35:37.376119+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-09-05T14:29:52.744910+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -244,7 +274,7 @@
 &lt;p&gt;As the open-source hardware movement continues to evolve, these articles serve as a testament to its vibrant community, innovative spirit, and the myriad possibilities that open-source design unlocks for makers worldwide.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-08-14T10:35:37.375558+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-09-05T14:29:52.744910+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -301,7 +331,7 @@
 &lt;/ul&gt;
 &lt;p&gt;The articles this week illustrate the dynamic and multifaceted world of open-source hardware, engaging the community and fostering innovation across various applications and discussions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-08-14T10:35:37.375558+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-09-05T14:29:52.744910+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;

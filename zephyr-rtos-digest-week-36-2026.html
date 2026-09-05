@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | Zephyr RTOS Digest — Week 36, 2026</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories Atom Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/embedded.rss.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Categories RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta name="author" content="Thomas Perrot" />
+    <style>
+        footer .license-info { margin-top: 0.5em; font-size: 0.9em; }
+    </style>
+    <script>
+    // Remove stale GA-era cookie consent key left in returning visitors' browsers
+    localStorage.removeItem('cookieConsent');
+    </script>
+<meta property="og:site_name" content="Tprrt's Blog" />
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Zephyr RTOS Digest — Week 36, 2026" />
+<meta property="og:description" content="Weekly roundup of Zephyr RTOS news." />
+<meta property="og:url" content="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" />
+<meta property="article:published_time" content="2026-08-31T21:55:00+02:00" />
+<meta property="article:modified_time" content="2026-09-05T14:29:52.747195+02:00" />
+<meta property="article:tag" content="zephyr" />
+<meta property="article:tag" content="rtos" />
+<meta property="article:tag" content="embedded" />
+<meta property="article:tag" content="digest" />
+<meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Zephyr RTOS Digest — Week 36, 2026" />
+<meta name="twitter:description" content="Weekly roundup of Zephyr RTOS news." />
+<meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+<link rel="canonical" href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Zephyr RTOS Digest \u2014 Week 36, 2026","description":"Weekly roundup of Zephyr RTOS news.","datePublished":"2026-08-31T21:55:00+02:00","dateModified":"2026-09-05T14:29:52.747195+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html"}
+</script>
+
+    <meta name="keywords" content="zephyr,rtos,embedded,digest" />
+
+<meta name="description" content="Weekly roundup of Zephyr RTOS news." />
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
+                <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/about.html">About</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Aug 31, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" rel="bookmark" title="Permanent Link to &quot;Zephyr RTOS Digest — Week 36, 2026&quot;">Zephyr RTOS Digest — Week 36, 2026</a>
+                </h2>
+
+
+
+                <!-- SPDX-FileCopyrightText: 2026 Thomas Perrot <thomas.perrot@tupi.fr> -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<div class="section" id="releases-and-development-momentum">
+<h2>Releases and Development Momentum</h2>
+<p>The Zephyr RTOS project continues to accelerate, delivering major feature releases, winning adoption from industry giants, and celebrating a growing commit history that underscores its long-term vitality. This week's highlights include the 2.4 release expanding commercial toolchain support for product makers, the 4.4 release adding WireGuard, Wi‑Fi Direct, and OpenRISC support, and a special podcast commemorating 150,000 commits.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.prnewswire.com/news-releases/google-and-facebook-select-zephyr-rtos-for-next-generation-products-301141973.html">Google and Facebook Select Zephyr RTOS for Next Generation Products</a> (Tavily Search) — Release 2.4 adds infrastructure for commercial toolchains, boosting support for product makers.</li>
+<li><a class="reference external" href="https://www.zephyrproject.org/community">Community – Zephyr Project</a> (Tavily Search) — Zephyr RTOS 4.4 arrives with WireGuard, Wi‑Fi Direct, OpenRISC, and more.</li>
+<li><a class="reference external" href="https://zephyrproject.org/150000-commits-later-zephyr-podcast-048/">150,000 Commits Later — Zephyr Podcast #048</a> (Zephyr Project) — A milestone episode marking 150k commits in main and 1,455 PRs merged in August.</li>
+</ul>
+</div>
+<div class="section" id="a-growing-industry-footprint">
+<h2>A Growing Industry Footprint</h2>
+<p>From opinion pieces to real-world robotics deployments, Zephyr's momentum across the embedded landscape is unmistakable. Industry commentators argue the RTOS is poised to dominate the embedded world, while hardware makers such as ST explore sensor-driven humanoid robots that increasingly rely on Zephyr foundations.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.designnews.com/embedded-systems/zephyr-rtos-5-reasons-why-it-will-dominate-the-embedded-world-transform-industry">5 Reasons Why Zephyr RTOS Will Rule the World</a> (Tavily Search) — Makes the case for Zephyr's dominance across the embedded industry.</li>
+<li><a class="reference external" href="https://blog.st.com/humanoid-robots-building-a-workforce/">Humanoid robots: building a workforce from the sensors up</a> (The ST Blog) — Explores how sensor-rich humanoid robots are built and where Zephyr fits into the stack.</li>
+</ul>
+</div>
+<div class="section" id="new-hardware-in-the-ecosystem">
+<h2>New Hardware in the Ecosystem</h2>
+<p>A wave of new boards and modules is expanding the Zephyr-ready hardware landscape, from NDAA-compliant drone carrier boards to high-performance AI alternatives to NVIDIA Jetson and budget-friendly single-board computers. CNX Software covered three notable arrivals this week.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.cnx-software.com/2026/08/31/ark-just-a-pi-a-tiny-ndaa-compliant-raspberry-pi-cm5-carrier-board-for-drones-and-robots/">ARK Just A Pi – A tiny NDAA-compliant Raspberry Pi CM5 carrier board for drones and robots</a> (CNX Software – Embedded Systems News)</li>
+<li><a class="reference external" href="https://www.cnx-software.com/2026/08/31/d-robotics-rdk-s100p-a-128-tops-alternative-to-nvidia-jetson-orin-nx-16gb-with-cortex-a78ae-r52-cores/">D-Robotics RDK S100P – A 128 TOPS alternative to NVIDIA Jetson Orin NX 16GB with Cortex-A78AE/R52+ cores</a> (CNX Software – Embedded Systems News)</li>
+<li><a class="reference external" href="https://www.cnx-software.com/2026/08/31/orange-pi-zero-4-allwinner-a733-sbc-offers-hdmi-usb-c-dp-gbe-wifi-6-pcie-ffc-connector/">Orange Pi Zero 4 – Compact Allwinner A733 SBC offers HDMI, USB-C DP, GbE, WiFI 6, PCIe FFC connector for $26.5 and up</a> (CNX Software – Embedded Systems News)</li>
+</ul>
+</div>
+<div class="section" id="community-and-global-events">
+<h2>Community and Global Events</h2>
+<p>The Zephyr community remains as active as ever, celebrating a decade of contribution with a new awards program and gathering developers internationally. A recent meetup recap from Sapporo, Japan showcases the project's global reach, while the <a class="reference external" href="https://www.zephyrproject.org/community">community page</a> (Tavily Search) announced the new Zephyr Community Awards marking 10 years of contribution.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-sapporo-japan-2026/">Recap: Zephyr Project Meetup – Sapporo, Japan 2026</a> (Zephyr Project) — Highlights from the project's meetup in Sapporo and the community momentum on display.</li>
+</ul>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html">posted at 21:55</a>
+                    &nbsp;&middot;&nbsp;2 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/zephyr.html" class="tags">zephyr</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rtos.html" class="tags">rtos</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/digest.html" class="tags">digest</a>
+                </div>
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+                </p>
+                <p class="license-info">Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></p>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+<script data-goatcounter="https://tperrot.goatcounter.com/count"
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
+</body>
+</html>
