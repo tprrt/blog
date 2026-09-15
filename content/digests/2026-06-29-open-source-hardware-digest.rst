@@ -20,7 +20,6 @@ Open-source hardware is experiencing a significant surge in popularity, driven b
 
 - `Open-source hardware - Wikipedia <https://en.wikipedia.org/wiki/Open-source_hardware>`_ – Tavily Search
 - `The Rise of Open-Source Hardware in Electronics Design: A Revolution in Innovation <https://arshon.com/blog/the-rise-of-open-source-hardware-in-electronics-design-a-revolution-in-innovation>`_ – Tavily Search
-- `Open Source Hardware <https://www.computer.org/csdl/magazine/co/2021/10/09548130/1x9THu53cNW>`_ – Tavily Search
 
 Creative Applications in Open-Source Hardware
 ---------------------------------------------
