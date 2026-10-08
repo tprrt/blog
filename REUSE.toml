@@ -1,0 +1,11 @@
+version = 1
+
+[[annotations]]
+path = ["**"]
+SPDX-FileCopyrightText = "2020-2026 Thomas Perrot <thomas.perrot@tupi.fr>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["content/articles/**", "content/pages/**", "content/static/images/**", "content/static/*.webp"]
+SPDX-FileCopyrightText = "2020-2026 Thomas Perrot <thomas.perrot@tupi.fr>"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
