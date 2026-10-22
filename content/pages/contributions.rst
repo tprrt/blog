@@ -53,6 +53,8 @@ Below, a non-exhaustive list of my last contributions to opensource projects.
     * `meta-ti patches <https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&q=thomas.perrot>`_
     * `openembedded-core patches <https://git.openembedded.org/openembedded-core/log/?qt=author&q=thomas.perrot>`_
     * `OP-TEE patches <https://github.com/OP-TEE/optee_os/commits?author=tprrt>`_
+    * `Recalbox patches <https://gitlab.com/recalbox/recalbox/-/merge_requests?scope=all&state=all&author_username=tprrt>`_
+    * `RetroArch patches <https://github.com/libretro/RetroArch/commits?author=tprrt>`_
     * `RIOT patches <https://github.com/RIOT-OS/RIOT/commits?author=tprrt>`_
     * `Snagboot patches <https://github.com/bootlin/snagboot/commits?author=tprrt>`_
     * `util-linux patches <https://github.com/mirror/util-linux/commits?author=tprrt>`_
