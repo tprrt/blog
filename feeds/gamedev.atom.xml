@@ -1,5 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-22T20:17:49.717538+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Dropping Sprites on Purpose: Flicker Rotation on GBA and NDS</title><link href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html" rel="alternate"/><published>2026-10-07T22:10:00+02:00</published><updated>2026-10-22T20:17:49.717538+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-07:/dropping-sprites-on-purpose-flicker-rotation.html</id><summary type="html">&lt;p class="first last"&gt;The Game Boy Advance and the Nintendo DS can show 128 sprites at
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T15:11:53.389493+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Floored Twice: Chasing a Soft-Float Tax in GBA Text Rendering</title><link href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html" rel="alternate"/><published>2026-10-15T22:50:00+02:00</published><updated>2026-10-30T15:11:53.389493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-15:/floored-twice-gba-text-soft-float.html</id><summary type="html">&lt;p class="first last"&gt;A GBA example with a lot of on-screen text ran at 18 FPS, idle,
+no input needed. The cost turned out to be screen-space projection
+math running through the ARM7TDMI's software float library once per
+text entity and once per line. Two fixes that looked obviously
+correct made it worse before the one that actually helped, and a
+debugger told the difference each time, not intuition.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html"&gt;earlier article on cycle-level GBA optimization&lt;/a&gt;
+covered the software 3D rasterizer: two &amp;quot;obviously correct&amp;quot; changes that
+measured as regressions once link-time optimization's own inlining
+decisions got factored in. This article is the same lesson applied to a
+completely different part of the renderer — the one that draws text — and
+it took two more wrong turns to get there, for reasons that had nothing to
+do with LTO this time.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;framer-engine&lt;/span&gt;&lt;/tt&gt; is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Two &lt;a class="reference external" href="https://github.com/tprrt/framer-engine"&gt;framer-engine&lt;/a&gt; examples with a lot of on-screen text ran far below
+the 60 Hz target, both idle, nothing moving, no input needed to reproduce:
+&lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; (76 of a 96-slot text sprite budget active) at roughly
+18 FPS, and &lt;tt class="docutils literal"&gt;wordle&lt;/tt&gt;, a word cloud of rotated labels, at roughly 14.5.
+&lt;tt class="docutils literal"&gt;phase_probe.py&lt;/tt&gt;, the gdbstub cycle-bracketing script this blog has used
+before, had already put about 69% of a frame's cost inside one function,
+&lt;tt class="docutils literal"&gt;gba_text_render_system&lt;/tt&gt;. The question this article answers is which
+part of that function, and what fixing it actually took.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="finding-where-the-cost-lives"&gt;
+&lt;h2&gt;Finding where the cost lives&lt;/h2&gt;
+&lt;p&gt;The function processes a handful of text entities, each with one or more
+lines, each line made of several hardware sprites (one GBA OAM entry per
+glyph group). Three plausible places for the cost to hide: the glyph
+layout math, the screen-space projection that turns a world position into
+a pixel coordinate, or the OAM attribute writes themselves, once per
+glyph and so the most frequent of the three.&lt;/p&gt;
+&lt;p&gt;A quick static pass with &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;arm-none-eabi-objdump&lt;/span&gt; &lt;span class="pre"&gt;-dS&lt;/span&gt;&lt;/tt&gt; ruled the OAM
+writes out early — they're fully inlined integer stores, no library calls
+at all. The projection math was a different story: &lt;tt class="docutils literal"&gt;cx&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;cy&lt;/tt&gt; (an
+entity's anchor in screen space) and &lt;tt class="docutils literal"&gt;py_base&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;px&lt;/tt&gt; (where each line
+starts) were float, and the ARM7TDMI has no FPU, so every subtract, add,
+multiply and the two &lt;tt class="docutils literal"&gt;floorf()&lt;/tt&gt;/float-to-int calls on top of them go
+through software float library routines.&lt;/p&gt;
+&lt;p&gt;Static inspection only tells you a call exists, not how often the
+hardware actually takes it. Two breakpoints settled that: one at the
+function's entry, one at the first line of the innermost per-sprite loop
+body. The delta between consecutive hits of the second breakpoint is one
+sprite's own cost when it stays on the same line as the sprite before it,
+and the same delta plus a line's or entity's own setup when it doesn't.
+In a steady frame of &lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt;, a same-line sprite-to-sprite step
+cost about 515 cycles. A step that also crossed into a new line or a new
+entity cost 7400 to 17000 — roughly fifteen times as much, for a
+transition that happens far less often than every sprite does, but still
+often enough across a frame to dominate. The per-entity/per-line
+projection math was the cost, not the per-sprite work multiplied by a
+large sprite count.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="war-story-1-fixed-point-that-rounded-the-wrong-way"&gt;
+&lt;h2&gt;War story 1: fixed-point that rounded the wrong way&lt;/h2&gt;
+&lt;p&gt;The ARM7TDMI projection code the engine already runs for its software 3D
+pipeline uses &lt;tt class="docutils literal"&gt;fix_t&lt;/tt&gt;, a Q12 fixed-point type — one hardware multiply
+(&lt;tt class="docutils literal"&gt;fix_mul&lt;/tt&gt;) instead of a chain of soft-float calls. Reusing it for text
+looked like the obvious fix: convert the camera position, the ortho
+extent, the scale and the entity's own position to &lt;tt class="docutils literal"&gt;fix_t&lt;/tt&gt; and do the
+whole projection in integer math.&lt;/p&gt;
+&lt;p&gt;It passed every example I ran it against, by eye. Before trusting that, I
+wrote a host-side sweep test comparing the fixed-point result against the
+plain float one across a grid of realistic camera/ortho/scale/position
+combinations — the same discipline the &lt;a class="reference external" href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html"&gt;article on sprite flicker&lt;/a&gt; used an emulator sampler for, just on the host this
+time, because the thing being checked was arithmetic, not hardware state.
+16 of 192 combinations disagreed, and
+every one disagreed by exactly one, in the same direction:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mismatch: cam=0.0 ortho=5.0 scale=28.8 pos=0.0 expected=144 actual=143
+mismatch: cam=0.0 ortho=5.0 scale=28.8 pos=2.5 expected=72  actual=71
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The existing &lt;tt class="docutils literal"&gt;fix_from_float()&lt;/tt&gt; helper (shared with the 3D rasterizer,
+which depends on its exact behavior) truncates toward zero. Four
+conversions chained together — camera, ortho extent, scale, position —
+each truncate a little short, and on values that land exactly on an
+integer in true float math, the accumulated shortfall is enough to floor
+to one below the real answer. 144.0 pixels of text would have shifted up
+by a pixel, silently, on specific camera positions. The test caught it
+before a single frame of it ran on an emulator, let alone hardware.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="war-story-2-the-float-path-that-measured-slower"&gt;
+&lt;h2&gt;War story 2: the float path that measured slower&lt;/h2&gt;
+&lt;p&gt;Rather than fix the rounding, I tried avoiding fixed-point arithmetic
+altogether: keep everything in float, but replace &lt;tt class="docutils literal"&gt;(int)floorf(x)&lt;/tt&gt; with
+a hand-rolled equivalent that skips &lt;tt class="docutils literal"&gt;floorf()&lt;/tt&gt;'s general body.
+&lt;tt class="docutils literal"&gt;objdump&lt;/tt&gt; showed that body at 74 instructions — handling NaN, infinity
+and subnormals this call site's bounded screen-space input never
+produces. A truncate-then-adjust version is exact for any finite value
+and looks a lot cheaper:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;inline&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;gba_fast_floor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Exact, verified the same way as the first attempt, and obviously less
+code. &lt;tt class="docutils literal"&gt;cycle_probe.py&lt;/tt&gt; said otherwise: the steady-state average on
+&lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; went from 727556 to 748028 cycles/frame, a ~2.8%
+&lt;em&gt;regression&lt;/em&gt;. The original &lt;tt class="docutils literal"&gt;(int)floorf(x)&lt;/tt&gt; is two soft-float library
+calls (&lt;tt class="docutils literal"&gt;floorf&lt;/tt&gt; itself, then the float-to-int conversion on its
+result). The replacement is three (truncate, convert back to float to
+compare, compare) — one more, and each one pays its own fixed
+call/return/Thumb-interworking overhead on top of whatever its body
+actually does. &lt;tt class="docutils literal"&gt;floorf()&lt;/tt&gt;'s large body turned out to be cheaper than
+the fast version's extra dispatch. A smaller instruction count on paper
+said nothing about the measured cost.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-actually-worked"&gt;
+&lt;h2&gt;What actually worked&lt;/h2&gt;
+&lt;p&gt;Fixed-point, with the rounding fixed rather than abandoned: a local
+&lt;tt class="docutils literal"&gt;gba_fix_from_float_rounded()&lt;/tt&gt; (not a change to the shared, truncating
+&lt;tt class="docutils literal"&gt;fix_from_float()&lt;/tt&gt;, since the 3D rasterizer depends on that one's exact
+behavior) that rounds to nearest instead of truncating. The sweep test
+that caught the first attempt now passes, including the exact-integer
+cases it failed before and the narrowest possible margin around an
+integer boundary a float can represent.&lt;/p&gt;
+&lt;p&gt;The second change mattered as much as the rounding fix: every
+frame-constant term — camera position, ortho extent, the screen-space
+scale — gets converted to &lt;tt class="docutils literal"&gt;fix_t&lt;/tt&gt; once per function call, not once per
+entity. Only the entity's own position still needs converting per entity.
+Downstream, &lt;tt class="docutils literal"&gt;fix_mul&lt;/tt&gt; is a single hardware multiply, and flooring a
+&lt;tt class="docutils literal"&gt;fix_t&lt;/tt&gt; back to a pixel coordinate is a plain arithmetic right shift —
+no library call at all, unlike either of the two float attempts above.&lt;/p&gt;
+&lt;p&gt;One more wrinkle: a rotated text entity still needs a plain float
+&lt;tt class="docutils literal"&gt;cx&lt;/tt&gt;/&lt;tt class="docutils literal"&gt;cy&lt;/tt&gt; for the sprite-rotation math downstream, which takes float
+arguments. Computing that from scratch, alongside the new fixed-point
+version every entity now also computes, meant a rotated entity paid for
+both — net worse than before the change for exactly that case, confirmed
+by re-running &lt;tt class="docutils literal"&gt;cycle_probe.py&lt;/tt&gt; against &lt;tt class="docutils literal"&gt;wordle&lt;/tt&gt;'s word cloud, the one
+example here with heavily rotated text. Deriving the float version from
+the already-computed &lt;tt class="docutils literal"&gt;fix_t&lt;/tt&gt; one instead (one int-to-float conversion
+and a multiply by a compile-time constant, rather than the full
+subtract/add/multiply chain again) cut that overhead roughly in half.
+Not to zero — a rotated entity still computes both representations, just
+a cheaper version of the second one.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="checking-it"&gt;
+&lt;h2&gt;Checking it&lt;/h2&gt;
+&lt;p&gt;Cycle counts say a change is faster. They say nothing about whether it's
+still correct, and a screen-space projection rewrite is exactly the kind
+of change that can be wrong by one pixel and still look fine in a casual
+glance at an emulator window. The check was the same shape as the
+&lt;a class="reference external" href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html"&gt;flicker article's&lt;/a&gt; OAM sampling, but byte-exact
+instead of statistical: connect to the emulator's GDB stub, let a handful
+of frames pass so
+startup settles, read the full 1 KB of hardware sprite memory, and
+compare it against the same read from the unmodified ROM.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;IDENTICAL: 1024 bytes of OAM match exactly
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;...for both &lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; (plain, unrotated text, the common case)
+and &lt;tt class="docutils literal"&gt;wordle&lt;/tt&gt; (the rotated one). All 128 hardware sprite entries, same
+position, same tile, same palette bank, same affine flags, in both ROMs.
+The fixed-point rewrite changes how the pixel coordinate gets computed; it
+is not allowed to change what the coordinate is.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-numbers"&gt;
+&lt;h2&gt;The numbers&lt;/h2&gt;
+&lt;p&gt;Steady-state averages, &lt;tt class="docutils literal"&gt;cycle_probe.py&lt;/tt&gt; against &lt;tt class="docutils literal"&gt;framer_gba_wait_vblank&lt;/tt&gt;:&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="25%" /&gt;
+&lt;col width="25%" /&gt;
+&lt;col width="25%" /&gt;
+&lt;col width="25%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Example&lt;/th&gt;
+&lt;th class="head"&gt;Before&lt;/th&gt;
+&lt;th class="head"&gt;After&lt;/th&gt;
+&lt;th class="head"&gt;Change&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; (unrotated text)&lt;/td&gt;
+&lt;td&gt;~684800 cycles/frame&lt;/td&gt;
+&lt;td&gt;~660650 cycles/frame&lt;/td&gt;
+&lt;td&gt;~3.5% faster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt class="docutils literal"&gt;wordle&lt;/tt&gt; (rotated word cloud)&lt;/td&gt;
+&lt;td&gt;~810400 cycles/frame&lt;/td&gt;
+&lt;td&gt;~814470 cycles/frame&lt;/td&gt;
+&lt;td&gt;~0.5% slower&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; is the representative case: a HUD-style scene with
+static, unrotated labels, which is what most of a game's own on-screen
+text actually looks like. &lt;tt class="docutils literal"&gt;wordle&lt;/tt&gt;'s word cloud is a rotation showcase,
+not representative of that, and it is the one case where this change
+gives a little back. Closing that gap too would mean two separate code
+paths — fixed-point only when nothing is rotated, float only when it is —
+instead of one computed and the other derived from it. I didn't take it:
+more branching in an already-dense function, for a demo scene rather than
+the 18 FPS HUD/UI case this work was for.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-is-left"&gt;
+&lt;h2&gt;What is left&lt;/h2&gt;
+&lt;p&gt;~3.5% is real and it is not the fix for an 18 FPS scene. The per-entity
+layout call and &lt;tt class="docutils literal"&gt;framer_color_bank_acquire()&lt;/tt&gt; were never bracketed the
+way the projection math was, and either could be sitting on cost of its
+own. The method that found this one generalizes directly: two
+breakpoints, a steady frame, and the delta between them — not a guess
+about which function looks expensive.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="gamedev"/><category term="gba"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="fixed-point"/><category term="c"/><category term="article"/></entry><entry><title>Dropping Sprites on Purpose: Flicker Rotation on GBA and NDS</title><link href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html" rel="alternate"/><published>2026-10-07T22:10:00+02:00</published><updated>2026-10-30T15:11:53.389493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-07:/dropping-sprites-on-purpose-flicker-rotation.html</id><summary type="html">&lt;p class="first last"&gt;The Game Boy Advance and the Nintendo DS can show 128 sprites at
 once, so a bullet pattern bigger than that has to lose some. Losing
 the same ones every frame makes them disappear for good; losing a
 different set each frame makes them flicker, which is what the
@@ -217,7 +427,7 @@ many sprites a frame used, so a game can see its budget without a
 debugger, and a priority for single sprite entities and text, which today
 are always drawn before every batch.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="sprites"/><category term="oam"/><category term="gba"/><category term="nds"/><category term="flicker"/><category term="shmup"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Wireframe Ran at 20 FPS, Solid at 60: Counting ARM9 Cycles to Find Out Why</title><link href="https://tprrt.tupi.fr/nds-wireframe-display-lists-cycle-counting.html" rel="alternate"/><published>2026-10-02T21:30:00+02:00</published><updated>2026-10-22T20:17:49.717538+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-02:/nds-wireframe-display-lists-cycle-counting.html</id><summary type="html">&lt;p class="first last"&gt;A demo with three spinning shapes ran at 60 FPS in solid and
+</content><category term="gamedev"/><category term="sprites"/><category term="oam"/><category term="gba"/><category term="nds"/><category term="flicker"/><category term="shmup"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Wireframe Ran at 20 FPS, Solid at 60: Counting ARM9 Cycles to Find Out Why</title><link href="https://tprrt.tupi.fr/nds-wireframe-display-lists-cycle-counting.html" rel="alternate"/><published>2026-10-02T21:30:00+02:00</published><updated>2026-10-30T15:11:53.389056+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-02:/nds-wireframe-display-lists-cycle-counting.html</id><summary type="html">&lt;p class="first last"&gt;A demo with three spinning shapes ran at 60 FPS in solid and
 about 20 in wireframe on the Nintendo DS. The emulator's own frame rate
 was no help in finding out why, so the cost got measured in hardware
 timer ticks read over a debugger, which pointed at a few million
@@ -505,7 +715,7 @@ colour run for the face-coloured one. They are the next candidates, and
 the same method applies: measure the render system's ticks first, in the
 mode that looks slowest, and let the number say where the frame went.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>One Entity, Many Bullets: Fitting a Projectile Pool Into the ECS</title><link href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html" rel="alternate"/><published>2026-09-25T21:40:00+02:00</published><updated>2026-10-22T20:17:49.716538+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-25:/one-entity-many-bullets-sprite-batch-ecs.html</id><summary type="html">&lt;p class="first last"&gt;A shoot-'em-up's bullet pool doesn't fit the ECS's entity budget,
+</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>One Entity, Many Bullets: Fitting a Projectile Pool Into the ECS</title><link href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html" rel="alternate"/><published>2026-09-25T21:40:00+02:00</published><updated>2026-10-30T15:11:53.389056+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-25:/one-entity-many-bullets-sprite-batch-ecs.html</id><summary type="html">&lt;p class="first last"&gt;A shoot-'em-up's bullet pool doesn't fit the ECS's entity budget,
 and the first fix that shipped solved that by quietly stepping outside
 the ECS entirely. The redesign that replaced it went on to expose
 three unrelated bugs, one per rendering backend, none of which had
@@ -780,7 +990,7 @@ bullet ceiling, rather than the two capacity constants
 (&lt;tt class="docutils literal"&gt;examples/bullets&lt;/tt&gt; currently uses 128 on GBA/NDS, 1024 on desktop)
 picked ahead of having real numbers to size them against.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="ecs"/><category term="rendering"/><category term="vulkan"/><category term="opengl"/><category term="gba"/><category term="nds"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency</title><link href="https://tprrt.tupi.fr/gba-dither-offset-separation.html" rel="alternate"/><published>2026-08-13T11:00:00+02:00</published><updated>2026-10-22T20:17:49.716538+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-13:/gba-dither-offset-separation.html</id><summary type="html">&lt;p class="first last"&gt;A per-object dithering offset that looked obviously correct
+</content><category term="gamedev"/><category term="ecs"/><category term="rendering"/><category term="vulkan"/><category term="opengl"/><category term="gba"/><category term="nds"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency</title><link href="https://tprrt.tupi.fr/gba-dither-offset-separation.html" rel="alternate"/><published>2026-08-13T11:00:00+02:00</published><updated>2026-10-30T15:11:53.389056+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-13:/gba-dither-offset-separation.html</id><summary type="html">&lt;p class="first last"&gt;A per-object dithering offset that looked obviously correct
 collapsed sixteen possible values down to two on real hardware. The
 fix that followed shipped, then turned out to have a second, subtler
 version of the exact same bug — and the thing that finally solved it
