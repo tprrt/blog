@@ -73,12 +73,9 @@ visible at 121 of them, and on the Nintendo DS at 126. Both consoles have
 128 hardware sprite entries (OAM), and a few of them always go to the
 player, the target and the text. Past that number, the renderer runs out
 of entries and has to stop drawing.</p>
-<p>That raises the question the first article left open: <em>which</em> bullets stop
-being drawn? The first answer the engine gave was the dull one, the last
-ones in the array, and it was wrong for a reason that has nothing to do
-with performance. This article is about the second answer, the cheaper
-and older one, and about how to check on an emulator that it does what it
-claims.</p>
+<p>Which bullets stop being drawn? The engine's first answer was the last ones
+in the array, which is wrong for a reason unrelated to performance. The second
+answer is cheaper and older, and an emulator can check that it works.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
@@ -91,10 +88,8 @@ maturity.</p>
 <p>A sprite batch is drawn in array order, and the loop stops as soon as there
 is no OAM entry left. With 200 bullets and room for 121, the same 79
 bullets, the ones at the end of the pool, are skipped in every frame. They
-are not drawn late or drawn thin. They are never drawn, and for a bullet
-that is a worse failure than it sounds: a bullet that is not drawn still
-moves, and still hits the player. A pattern ends with the player dying to
-something that was never on the screen.</p>
+are never drawn, and a bullet that is not drawn still moves and still hits
+the player. The player dies to something that was never on the screen.</p>
 <p>The engine already had one tool for this, and it is the right one for
 most of the problem: a priority per batch. A batch with a lower priority
 number is drawn first and so gets its OAM entries first; the batches that
@@ -116,13 +111,12 @@ off at the same element every frame.</p>
 <p>The consoles' own games had this problem first. A Famicom can draw eight
 sprites on a scanline and sixty-four in all, and the shoot-'em-ups of that
 era did not pretend otherwise: when a boss made of many segments crossed a
-line, some of its sprites were missing. The fix that players know as <em>flicker</em> is that the
-missing ones are not the same ones from one frame to the next. Every
-sprite is on screen on some frames, none is gone for good, and at 60
-frames a second the eye reads a dim, busy sprite rather than a hole.
-<a class="reference external" href="https://en.wikipedia.org/wiki/Recca">Recca</a> is the example people
-remember. The hardware did not do this; the games did, by rotating the
-order they wrote their sprites in.</p>
+line, some of its sprites were missing. Players know the fix as <em>flicker</em>:
+the missing sprites change from one frame to the next. Every sprite is on
+screen on some frames, and at 60 frames a second the eye reads a dim sprite
+rather than a hole. <a class="reference external" href="https://en.wikipedia.org/wiki/Recca">Recca</a> is a
+well-known example. The hardware did not do this; the games did, by rotating
+the order they wrote their sprites in.</p>
 <p>The same rotation fits a batch in a few lines. Each frame, a batch that
 has opted in starts drawing at the element where the previous frame
 stopped, and wraps around to the front when it reaches the end:</p>
@@ -181,12 +175,11 @@ easy to get wrong.</p>
 <div class="section" id="checking-it">
 <h2>Checking it</h2>
 <p>The claim to test is narrow: with flicker on, every bullet is drawn on some
-frame, and with it off, the same bullets never are. Taking screenshots of
-an emulator window does not show that, because a single screenshot looks
-like any other, so the check reads the OAM instead.</p>
+frame, and with it off, the same bullets never are. A screenshot cannot show that, since one frame looks like any
+other, so the check reads the OAM.</p>
 <p>The test program is the bullets example with a pool of 200 stationary
-bullets laid out in a grid of 20 by 10, which never move. A script connects to the emulator's GDB stub, lets the program
-run for a random fraction of a second, stops it, reads the 1 KB of OAM,
+bullets laid out in a grid of 20 by 10, which never move. A script connects to
+the emulator's GDB stub, lets the program run for a random fraction of a second, stops it, reads the 1 KB of OAM,
 and picks out the bullets, which are the 8 by 8 sprites that share the most
 common tile. It does that dozens of times and counts how many different
 positions it ever saw.</p>
@@ -218,10 +211,10 @@ positions it ever saw.</p>
 </tr>
 </tbody>
 </table>
-<p>The &quot;off&quot; row is noisier than it should be: the per-sample count ran up to
-128 and 122 positions were seen, where 121 is the most that fits. I did not
-track down the difference. It is small next to 122 against 200, but it means
-the sampler is not exact on the GBA.</p>
+<p>The &quot;off&quot; row is noisier than it should be: the per-sample count reached 128
+and 122 positions were seen, where 121 is the most that fits. I did not track
+down the difference. It is small next to 122 against 200, but the sampler is
+not exact on the GBA.</p>
 <p>On the DS, in melonDS 1.1, with room for 126, the program toggles the flag
 itself every 180 frames, so one launch gives both rows, and the script
 reads the current flag from a global at each stop:</p>
@@ -252,30 +245,27 @@ reads the current flag from a global at each stop:</p>
 </tr>
 </tbody>
 </table>
-<p>In both cases the number drawn at any one moment does not change. Flicker
-does not draw more sprites; it changes which ones. The figure below puts
-the samples on the grid they were laid out in: three samples for each
-setting from a GBA run, taken a second or so apart (the positions come from
-the OAM dumps, mapped back onto the 20 by 10 layout):</p>
+<p>In both cases the number drawn at any moment is unchanged: flicker changes
+which sprites are drawn, not how many. The figure shows three GBA samples per
+setting, taken a second or so apart, with OAM positions mapped back onto the
+20 by 10 grid:</p>
 <div class="figure align-center">
 <img alt="Two rows of three 20 by 10 grids of dots. In the top row, labelled flicker off, the same rows of dots are filled in all three samples and the top three and a half rows are always empty. In the bottom row, labelled flicker on, a different block of dots is empty in each of the three samples." src="https://tprrt.tupi.fr/static/images/dropping-sprites-on-purpose-flicker-rotation/gba-oam-drawn-and-dropped.png" />
 <p class="caption">Filled dots are bullets present in OAM, hollow ones are bullets that were
 not drawn. With flicker off, the same 79 are missing in every sample.
 With it on, the gap moves.</p>
 </div>
-<p>The method has the limits of an emulator: melonDS and mGBA are not a
-console, and none of this has been run on hardware. The per-scanline limits
-were not checked at all.</p>
+<p>All of this ran on emulators (mGBA, melonDS), none on hardware, and the
+per-scanline limits were not checked.</p>
 </div>
 <div class="section" id="what-is-left">
 <h2>What is left</h2>
 <p>The rotation only deals with the whole-OAM limit, the 128 entries. Both
 consoles also limit how many sprites can be on one scanline, and that
-limit can be hit by a wide row of bullets before the 128 total is, so it is
-the next thing to check. Two other items sit next to it in the roadmap: a way to report how
-many sprites a frame used, so a game can see its budget without a
-debugger, and a priority for single sprite entities and text, which today
-are always drawn before every batch.</p>
+limit can be hit by a wide row of bullets before the 128 total, so it is next.
+Also planned: a way to report how many sprites a frame used, so a game can see
+its budget without a debugger, and a priority for single sprite entities and
+text, which today are always drawn before every batch.</p>
 </div>
 
                 <div class="clear"></div>

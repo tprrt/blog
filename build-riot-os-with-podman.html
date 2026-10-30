@@ -27,7 +27,7 @@
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Build RIOT-OS with Podman" />
-<meta property="og:description" content="This article is a tip that explains how it is possible to build a RIOT-OS application with Podman." />
+<meta property="og:description" content="How to build a RIOT-OS application with Podman and the official build container." />
 <meta property="og:url" content="https://tprrt.tupi.fr/build-riot-os-with-podman.html" />
 <meta property="article:published_time" content="2020-09-27T13:01:00+02:00" />
 <meta property="article:modified_time" content="2025-06-11T14:53:00+02:00" />
@@ -38,16 +38,16 @@
 <meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Build RIOT-OS with Podman" />
-<meta name="twitter:description" content="This article is a tip that explains how it is possible to build a RIOT-OS application with Podman." />
+<meta name="twitter:description" content="How to build a RIOT-OS application with Podman and the official build container." />
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/build-riot-os-with-podman.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Build RIOT-OS with Podman","description":"This article is a tip that explains how it is possible to build a RIOT-OS application with Podman.","datePublished":"2020-09-27T13:01:00+02:00","dateModified":"2025-06-11T14:53:00+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/build-riot-os-with-podman.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Build RIOT-OS with Podman","description":"How to build a RIOT-OS application with Podman and the official build container.","datePublished":"2020-09-27T13:01:00+02:00","dateModified":"2025-06-11T14:53:00+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/build-riot-os-with-podman.html"}
 </script>
 
     <meta name="keywords" content="container,podman,riot-os,article" />
 
-<meta name="description" content="This article is a tip that explains how it is possible to build a RIOT-OS application with Podman." />
+<meta name="description" content="How to build a RIOT-OS application with Podman and the official build container." />
 </head>
 <body>
     <header>
@@ -79,14 +79,13 @@
 
                 <div class="section" id="summary">
 <h2>Summary</h2>
-<p>This article is a tip that explains how it is possible to build a <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>
-application with <a class="reference external" href="https://podman.io">Podman</a> and the official build container. And I would like to
-take this opportunity to introduce you to <a class="reference external" href="https://podman.io">Podman</a> and <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a>.</p>
+<p>This tip shows how to build a <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> application with <a class="reference external" href="https://podman.io">Podman</a> and the
+official build container, with a short introduction to both.</p>
 </div>
 <div class="section" id="podman">
 <h2>Podman</h2>
-<p>Some Linux distribution, like <a class="reference external" href="https://getfedora.org">Fedora</a> chosen to officially support only
-<a class="reference external" href="https://podman.io">Podman</a> instead of <a class="reference external" href="https://www.docker.com">Docker</a> for several reasons:</p>
+<p>Some Linux distributions, like <a class="reference external" href="https://getfedora.org">Fedora</a>, officially support only <a class="reference external" href="https://podman.io">Podman</a>
+instead of <a class="reference external" href="https://www.docker.com">Docker</a>, for several reasons:</p>
 <ul class="simple">
 <li>It is daemonless container engine.</li>
 <li>It is rootless.</li>
@@ -95,21 +94,19 @@ take this opportunity to introduce you to <a class="reference external" href="ht
 <li>It introduces the notion of <a class="reference external" href="https://kubernetes.io/docs/concepts/workloads/pods">Pods</a>: a group of container(s) that share storage
 or network resources.</li>
 </ul>
-<p>Moreover, <a class="reference external" href="https://podman.io">Podman</a> is able to use the images built by the <a class="reference external" href="https://www.docker.com">Docker</a> engine and
-has been stored in <a class="reference external" href="https://www.docker.com">Docker</a> registry.</p>
-<p>However, most of the time the <a class="reference external" href="https://podman.io">Podman</a> commands are identical to that of
-<a class="reference external" href="https://www.docker.com">Docker</a>, then a simple alias is enough to be misleading:
-<em>alias docker=podman</em>.</p>
-<p>But as <a class="reference external" href="https://podman.io">Podman</a> is rootless and safer than <a class="reference external" href="https://www.docker.com">Docker</a>, then sometimes it is
-necessary to specify additional security parameters.</p>
+<p><a class="reference external" href="https://podman.io">Podman</a> can also use images built by the <a class="reference external" href="https://www.docker.com">Docker</a> engine and stored in a
+<a class="reference external" href="https://www.docker.com">Docker</a> registry.</p>
+<p>Most <a class="reference external" href="https://podman.io">Podman</a> commands are identical to <a class="reference external" href="https://www.docker.com">Docker</a>'s, so <em>alias docker=podman</em>
+is often enough. But because <a class="reference external" href="https://podman.io">Podman</a> is rootless, additional security
+parameters are sometimes needed.</p>
 </div>
 <div class="section" id="riot-os">
 <h2>RIOT-OS</h2>
 <p><a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> is a memory-constrained <a class="reference external" href="https://en.wikipedia.org/wiki/Real-time_operating_system">RTOS</a>, such as <a class="reference external" href="https://en.wikipedia.org/wiki/Contiki">Contiki</a>, that provides
 real-time and multithreading abilities, and it runs on processors from 8bits to
 32bits.</p>
-<p>It was designed for <a class="reference external" href="https://en.wikipedia.org/wiki/Internet_of_things">IoT</a> devices then to be low power consumption and it
-provides three very complete network stacks including some protocols as:</p>
+<p>It was designed for <a class="reference external" href="https://en.wikipedia.org/wiki/Internet_of_things">IoT</a> devices with low power consumption in mind, and
+provides three network stacks supporting protocols such as:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/IPv6">IPv6</a></li>
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/6LoWPAN">6LoWPAN</a></li>
@@ -118,19 +115,15 @@ provides three very complete network stacks including some protocols as:</p>
 </ul>
 <p>The <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> project also provides some useful tools including a build
 container (<a class="reference external" href="https://github.com/RIOT-OS/riotdocker">riotdocker</a>).</p>
-<p>And the build environment of <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> offers a <a class="reference external" href="https://en.wikipedia.org/wiki/Makefile">Makefile</a> to build an
-application with this container simply by setting the variable <em>BUILD_IN_DOCKER</em>
-to  <em>1</em>. Then the prebuilt image is downloaded and instantiated to execute the
-<a class="reference external" href="https://en.wikipedia.org/wiki/Make_(software)">make</a> command.</p>
-<p>By default, this feature is configured to be used with the <a class="reference external" href="https://www.docker.com">Docker</a> engine,
-but it is possible to override some variables from the build environment
-either to use a custom prebuilt image, either use another engine or to use
-custom engine parameters.</p>
-<p>Then here, we will use these environments variable to instantiate a container
-with <a class="reference external" href="https://podman.io">Podman</a> (instead of <a class="reference external" href="https://www.docker.com">Docker</a>) and with the required parameters.</p>
+<p>The <a class="reference external" href="https://github.com/RIOT-OS/RIOT">RIOT-OS</a> <a class="reference external" href="https://en.wikipedia.org/wiki/Makefile">Makefile</a> builds an application in this container when the
+variable <em>BUILD_IN_DOCKER</em> is set to <em>1</em>: the prebuilt image is downloaded and
+instantiated to run the <a class="reference external" href="https://en.wikipedia.org/wiki/Make_(software)">make</a> command.</p>
+<p>By default it uses the <a class="reference external" href="https://www.docker.com">Docker</a> engine, but variables in the build environment
+can be overridden to use a custom prebuilt image, another engine or custom
+engine parameters. Here they select <a class="reference external" href="https://podman.io">Podman</a> with the required parameters.</p>
 </div>
-<div class="section" id="tip-of-the-day">
-<h2>Tip of the day</h2>
+<div class="section" id="example">
+<h2>Example</h2>
 <p>In the following example, we build the Helloworld application for a STM32
 Discovery board.
 To do that we specify the engine by setting the variable <em>DOCKER</em> to the value

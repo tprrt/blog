@@ -67,67 +67,51 @@
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>The <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">previous article on this blog</a> was about the
-static, no-heap Entity Component System <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> runs on GBA and
-NDS: a fixed table of component slots and a fixed table of entities,
-sized to fit in a machine with no <tt class="docutils literal">malloc()</tt>. That fixed sizing has a
-consequence the article didn't need to dwell on at the time: with today's
-component set, the table has room for 64 real entities. A caravan-style
-vertical shoot-'em-up, the first playable milestone this engine is
-building toward, wants several hundred bullets on screen during a dense
-pattern. Neither number moves to meet the other — the entity table isn't
-growing to fit a bullet count, and a bullet pattern isn't capping itself
-at 64 shots to fit the table.</p>
+<p>The <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">previous article</a> described the static, no-heap
+Entity Component System <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> runs on GBA and NDS: fixed tables of
+component slots and entities, sized for a machine with no <tt class="docutils literal">malloc()</tt>. With
+today's component set the table has room for 64 real entities. A caravan-style
+vertical shoot-'em-up, the engine's first playable milestone, wants several
+hundred bullets on screen in a dense pattern. The entity table cannot grow to
+fit that, and the pattern cannot cap itself at 64 shots.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
 made publicly available once the engine reaches a sufficient level of
 maturity.</p>
 </div>
-<p>The tension is old and the usual answer is old too: don't make every
-bullet an entity. What took two attempts wasn't the bullet simulation
-itself — a flat array of structs, advanced by one system, is not a hard
-problem — it was deciding how that array gets drawn without quietly
-opening a second, ECS-shaped hole in the renderer. The first answer
-shipped, worked, and was wrong in a way no test had a reason to catch.
-The second answer was smaller, matched a pattern the engine already had,
-and went on to surface three real bugs across three different rendering
-backends, none of which were about bullets at all.</p>
+<p>The usual answer is not to make every bullet an entity. The simulation, a flat
+array of structs advanced by one system, was easy. Drawing that array without
+opening a second path in the renderer took two attempts. The first shipped,
+worked, and was wrong in a way no test would catch. The second was smaller,
+matched a pattern the engine already had, and surfaced three bugs across three
+rendering backends, none about bullets.</p>
 </div>
 <div class="section" id="the-first-answer-a-queue-that-isn-t-an-entity">
 <h2>The first answer: a queue that isn't an entity</h2>
-<p>The obvious shape for &quot;hundreds of short-lived things, updated every
-frame, drawn every frame, never touched individually by name&quot; is a
-per-frame queue: a flat array of draw commands (position, sprite, frame),
-reset at the start of each frame, appended to by whatever wants something
-drawn, and consumed once by the renderer at the end of it. A bullet pool
-fits that shape exactly — push one entry per live bullet, once, after the
-physics step — and it required nothing new from the ECS at all, since
-nothing about it touched an entity, a component, or a query.</p>
-<p>That was also exactly the problem. Every other thing this engine draws —
-a sprite, a tilemap, a HUD label — is an entity carrying a component, and
-every renderer's draw phase is systems iterating queries. A queue fed
-directly by application code and drained directly by the renderer is a
-second path with none of that: it isn't visible to the entity-inspection
-API a previous milestone added, it isn't something a capability query
-knows exists, and it isn't something any of the debugging tooling built
-around &quot;the ECS is the whole scene&quot; has any way to see. It worked, in the
-narrow sense that bullets appeared on screen in the right place moving
-at the right speed. It didn't survive being looked at as architecture:
-elements without an entity, bypassing the engine's own core model,
-aren't a smaller version of the real design — they're a different
-design that happens to render the same pixels.</p>
+<p>Hundreds of short-lived things, updated and drawn every frame and never
+addressed individually, suggest a per-frame queue: a flat array of draw
+commands (position, sprite, frame), reset each frame, appended to by whatever
+wants something drawn and consumed once by the renderer. A bullet pool fits
+exactly, pushing one entry per live bullet after the physics step, and needs
+nothing from the ECS: no entity, component or query.</p>
+<p>That was the problem. Everything else the engine draws (a sprite, a tilemap, a
+HUD label) is an entity with a component, and every renderer's draw phase is
+systems iterating queries. A queue fed by application code and drained by the
+renderer is a second path. The entity-inspection API cannot see it, capability
+queries do not know it exists, and the debugging tools built on &quot;the ECS is the
+whole scene&quot; miss it. Bullets appeared in the right place at the right speed,
+but elements without an entity bypass the engine's core model. It is a
+different design that happens to render the same pixels.</p>
 </div>
 <div class="section" id="the-second-answer-an-entity-that-stands-for-many">
 <h2>The second answer: an entity that stands for many</h2>
-<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> already had a component that solves this exact
-class of problem, for a different feature: a <tt class="docutils literal">Tilemap</tt> is one entity
-whose component points at a grid the owner keeps, and the renderer draws
-the whole grid from that one entity every frame. Nothing about &quot;many
-drawn things, one piece of external memory, one component pointing at
-it&quot; is specific to tiles. The rewrite generalizes that shape and gives it
-a name — <tt class="docutils literal">SpriteBatch</tt> — and the bullet pool becomes one more caller
-of it instead of a bespoke path of its own:</p>
+<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> already had a component for this class of problem: a
+<tt class="docutils literal">Tilemap</tt> is one entity whose component points at a grid the owner keeps,
+and the renderer draws the whole grid from that entity. Nothing in &quot;many drawn
+things, one external memory, one component pointing at it&quot; is specific to
+tiles. The rewrite generalizes it as <tt class="docutils literal">SpriteBatch</tt>, and the bullet pool
+becomes one more caller instead of a bespoke path:</p>
 <div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">framer_batch_sprite</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">       </span><span class="cm">/* center, world units, fixed point */</span>
 <span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">texture</span><span class="p">;</span>
@@ -141,70 +125,55 @@ of it instead of a bespoke path of its own:</p>
 <span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">stride</span><span class="p">;</span><span class="w">      </span><span class="cm">/* bytes between elements */</span>
 <span class="p">};</span>
 </pre></div>
-<p>A <tt class="docutils literal">framer_bullet</tt> places its own <tt class="docutils literal">struct framer_batch_sprite</tt> as its
-first field, so the bullet pool's own storage array <em>is</em> the
-<tt class="docutils literal">SpriteBatch</tt>'s element array — no copy, no second buffer kept in sync.
-<tt class="docutils literal">framer_bullet_pool_entity_create()</tt> gives the pool's one entity both a
-<tt class="docutils literal">BulletPool</tt> component, stepped every frame by a physics system, and a
-<tt class="docutils literal">SpriteBatch</tt> component built from the same array, drawn every frame by
-the renderer. Every renderer's draw phase still only ever does one thing:
-iterate a query and draw what it finds. Hundreds of bullets stay out of
-the 64-slot entity table; nothing draws that isn't reachable from an
-entity.</p>
-<p>That much is a straightforward generalization of an existing pattern, and
-it's also where the interesting bugs started, because a component that
-every renderer backend has to independently learn to draw is a component
-that gives every renderer backend its own chance to get it wrong.</p>
+<p>A <tt class="docutils literal">framer_bullet</tt> has its own <tt class="docutils literal">struct framer_batch_sprite</tt> as its first
+field, so the pool's storage array <em>is</em> the <tt class="docutils literal">SpriteBatch</tt> element array, with
+no copy and no second buffer to keep in sync.
+<tt class="docutils literal">framer_bullet_pool_entity_create()</tt> gives the pool's one entity a
+<tt class="docutils literal">BulletPool</tt> component, stepped each frame by a physics system, and a
+<tt class="docutils literal">SpriteBatch</tt> component built from the same array, drawn each frame by the
+renderer. Every draw phase still iterates a query and draws what it finds.
+The bullets stay out of the 64-slot entity table, and everything drawn is
+reachable from an entity.</p>
+<p>Every renderer backend has to learn to draw the new component independently,
+which gave each one a chance to get it wrong.</p>
 </div>
 <div class="section" id="bug-1-vulkan-a-guard-that-was-checking-the-wrong-component">
 <h2>Bug 1 (Vulkan): a guard that was checking the wrong component</h2>
-<p>Every renderer backend's sprite system is imported once per world, and
-every one of them has to answer the same small design question: how do
-you know &quot;once&quot; has already happened? The naive answer, comparing the
-stored world pointer against the one you were just called with, breaks
-the moment a <em>different</em> world gets allocated at the <em>same</em> address —
-which is exactly what every test in this codebase does, tearing a world
-down and creating a fresh one for the next case. The existing convention
-across this codebase's renderer imports is therefore to also check that
-some component the import function itself registers is actually present
-on the world in front of you, not just that the pointer matches.</p>
-<p>The version of this check written for <tt class="docutils literal">SpriteBatch</tt> picked the wrong
-component to check:</p>
+<p>Each backend's sprite system is imported once per world, so it needs a guard
+against importing twice. Comparing the stored world pointer with the current
+one breaks when a <em>different</em> world is allocated at the <em>same</em> address, which
+every test here does by tearing a world down and creating a fresh one. The
+convention in the renderer imports is to also check that a component the
+import function itself registers is present on the world.</p>
+<p>The check written for <tt class="docutils literal">SpriteBatch</tt> tested the wrong component:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Wrong: Sprite is registered by the renderer&#39;s own import, before</span>
 <span class="cm"> * this function ever runs -- it says nothing about whether THIS</span>
 <span class="cm"> * function has run on this particular world. */</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s_world</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">FRAMER_COMPONENT_IS_REGISTERED</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">Sprite</span><span class="p">))</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 </pre></div>
-<p>On a fresh world reusing a previous world's address, <tt class="docutils literal">Sprite</tt> is
-already registered — by the caller, earlier in the same
-<tt class="docutils literal">framer_sprite_system_import()</tt> — before this guard is ever reached.
-The check reports &quot;already set up&quot; on the very first call, every time,
-and the function returns without ever registering <tt class="docutils literal">SpriteBatch</tt> or its
-draw system. Sprites drew fine; batches never did.</p>
-<p>This one didn't need staring at code to find — it failed exactly where a
-test already existed to catch it. The new pixel-readback test for
-<tt class="docutils literal">SpriteBatch</tt> (draw an element, read the pixel back, expect it filled)
-passed against the software and OpenGL backends and failed against
-Vulkan specifically, because Vulkan's test suite happened to run a batch
-test on a world whose address a prior test had already used. Fixing the
-guard to check the component this function actually registers —</p>
+<p>On a fresh world reusing a previous world's address, <tt class="docutils literal">Sprite</tt> is already
+registered by the caller, earlier in the same
+<tt class="docutils literal">framer_sprite_system_import()</tt>, before the guard runs. The check reports
+&quot;already set up&quot; on the first call and the function returns without
+registering <tt class="docutils literal">SpriteBatch</tt> or its draw system. Sprites drew; batches never
+did.</p>
+<p>A test caught it. The new pixel-readback test for <tt class="docutils literal">SpriteBatch</tt> (draw an
+element, read the pixel back, expect it filled) passed on the software and
+OpenGL backends and failed on Vulkan, whose suite happened to run a batch test
+on a world at an address a prior test had used. The fix checks the component
+this function registers:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s_world</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">FRAMER_COMPONENT_IS_REGISTERED</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">SpriteBatch</span><span class="p">))</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 </pre></div>
-<p>— was a one-line change once the failing test pointed at exactly which
-world-reuse case was wrong. The same wrong-component shape was checked
-for, by inspection, in the OpenGL and software backends before either
-one had actually failed a test; both had the identical guard, both got
-the identical fix, and both were then verified rather than assumed
-fixed.</p>
+<p>The OpenGL and software backends had the identical guard, found by
+inspection before either failed a test. Both got the same fix and were
+verified.</p>
 </div>
 <div class="section" id="bug-2-opengl-reading-back-a-write-that-hasn-t-happened-yet">
 <h2>Bug 2 (OpenGL): reading back a write that hasn't happened yet</h2>
-<p>The OpenGL backend's default shaders are compiled lazily, the first time
-anything asks for one, and cached in the world's own <tt class="docutils literal">Shader</tt>
-singleton component so the next thousand callers don't recompile
-anything:</p>
+<p>The OpenGL backend compiles its default shaders lazily, on first request, and
+caches them in the world's <tt class="docutils literal">Shader</tt> singleton component:</p>
 <div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shader</span><span class="w"> </span><span class="o">*</span><span class="n">shaders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FRAMER_GET</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="n">Shader</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">shaders</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">framer_shader_create</span><span class="p">(...);</span>
@@ -221,28 +190,19 @@ anything:</p>
 <span class="cm">/* ... */</span>
 <span class="p">}</span>
 </pre></div>
-<p>This is correct exactly as long as a component write, from the caller's
-point of view, takes effect immediately. It doesn't, unconditionally: a
-write issued from inside a running system is staged and only merged once
-every system scheduled for that step has finished, so a <em>second</em> system
-in the same step can already see it, but the <em>same</em> call that just made
-the write cannot read it back synchronously. That's an ordinary property
-of this ECS, not a bug in it — every other caller of
-<tt class="docutils literal">framer_shader_get_default()</tt> had always been either the very first
-mesh or sprite draw of an existing scene, where something upstream
-(loading a level, spawning a player) had already asked for a shader on
-some earlier frame, so the singleton already existed by the time this
-function's fast path ran.</p>
-<p>The <tt class="docutils literal">SpriteBatch</tt> draw system is the first thing in a brand-new scene
-that has <em>nothing</em> upstream of it — no mesh, no plain sprite entity, just
-a bullet pool's one entity. On that scene's very first frame, its render
-system is the very first caller of <tt class="docutils literal">framer_shader_get_default()</tt> ever,
-from inside a system, in a world where nothing has asked before. The
-write lands; the read-back in the same call finds nothing; the function
-returns 0; that frame renders every batch element with no shader bound at
-all. The fix doesn't touch the ECS's timing at all, because there's
-nothing wrong with it — it stops asking the world to hand back something
-it was just told, seconds from now, to go store:</p>
+<p>This assumes a component write takes effect immediately. It does not: a write
+issued inside a running system is staged and merged once every system in that
+step has finished. A second system in the same step can see it, but the call
+that made the write cannot read it back. That is an ordinary property of this
+ECS. Every other caller of <tt class="docutils literal">framer_shader_get_default()</tt> came after something
+upstream (loading a level, spawning a player) had already asked for a shader on
+an earlier frame, so the singleton existed.</p>
+<p>The <tt class="docutils literal">SpriteBatch</tt> draw system is the first thing in a new scene with nothing
+upstream: no mesh, no plain sprite, just a bullet pool's entity. On the first
+frame its render system is the first caller of <tt class="docutils literal">framer_shader_get_default()</tt>.
+The write lands, the read-back in the same call finds nothing, the function
+returns 0, and that frame renders every batch element with no shader bound.
+The ECS timing is fine; the fix stops reading back what was just staged:</p>
 <div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">shader</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">sprite_shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sprite</span><span class="p">,</span><span class="w"> </span><span class="cm">/* ... */</span><span class="p">};</span>
 
 <span class="n">framer_component_set</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">created</span><span class="p">);</span>
@@ -251,43 +211,36 @@ it was just told, seconds from now, to go store:</p>
 </div>
 <div class="section" id="bug-3-all-three-desktop-backends-drawn-correctly-in-the-wrong-order">
 <h2>Bug 3 (all three desktop backends): drawn correctly, in the wrong order</h2>
-<p>The first two bugs were both &quot;nothing drew.&quot; The third one was quieter:
-every bullet drew, at the right position, the right size, the right
-texture — and the entity that fired them disappeared behind its own
-bullets the moment enough of them piled up at its position.</p>
-<p><tt class="docutils literal">SpriteBatch</tt> and the ordinary per-entity <tt class="docutils literal">Sprite</tt> draw are two
-separate systems in the same ECS phase, and nothing had ever said which
-one goes first. On GBA and NDS this was never a question worth asking,
-because the hardware answers it structurally: OAM sprites carry an
-explicit priority value, and entity sprites are deliberately drawn at a
+<p>The first two bugs were &quot;nothing drew&quot;. In the third, every bullet drew at the
+right position, size and texture, but the entity that fired them disappeared
+behind its own bullets once enough piled up at its position.</p>
+<p><tt class="docutils literal">SpriteBatch</tt> and the per-entity <tt class="docutils literal">Sprite</tt> draw are separate systems in the
+same ECS phase, and nothing said which goes first. On GBA and NDS the hardware
+settles it: OAM sprites carry a priority, and entity sprites are drawn at a
 higher priority than batch elements, so an entity is in front of a batch
-by construction, regardless of which system happened to run first that
-frame. Sampling the actual OAM contents through mGBA's debug stub, mid-run,
-confirms it — the emitter (the round blue sprite at the center) sits
-visibly in front of the spiral of bullets it just fired:</p>
+whatever the system order. Sampling the OAM through mGBA's debug stub mid-run
+confirms it: the emitter (the round blue sprite at the center) sits in front of
+the spiral it fired:</p>
 <div class="figure align-center">
 <img alt="The bullets example running under mGBA, OAM contents captured over its debug stub -- a blue emitter sprite is clearly visible on top of a spiral of orange bullet sprites radiating from it" src="https://tprrt.tupi.fr/static/images/one-entity-many-bullets-sprite-batch-ecs/gba-oam-emitter-in-front.png" />
 <p class="caption">The bullets example's spiral pattern, OAM contents read directly off a
 running GBA — the emitter draws in front of every bullet it fires, by
 hardware priority, regardless of draw order.</p>
 </div>
-<p>The three desktop backends (OpenGL, Vulkan, software) have no equivalent
-hardware guarantee — draw order <em>is</em> the only ordering mechanism they
-have — and the two systems simply registered in whatever order their
-import code happened to call them, which put <tt class="docutils literal">SpriteBatch</tt> after the
-entity sprite system. Sampling actual framebuffer pixels at the emitter's
-screen position, once every fifty frames of a real Vulkan run, shows
-exactly the moment it stops working: the emitter's own blue for hundreds
-of frames, then — once the bullet pool has enough live bullets to reach
-that exact pixel — the pixel starts reading back as whatever bullet is
-currently passing through it instead:</p>
+<p>The three desktop backends (OpenGL, Vulkan, software) have no such guarantee:
+draw order is their only ordering mechanism, and the two systems registered in
+whatever order the import code called them, which put <tt class="docutils literal">SpriteBatch</tt> after the
+entity sprite system. Sampling framebuffer pixels at the emitter's position
+every fifty frames of a Vulkan run shows the failure: the emitter's blue for
+hundreds of frames, then, once enough live bullets reach that pixel, whatever
+bullet is passing through it:</p>
 <div class="highlight"><pre><span></span>frame  350: 2850c8 5a96ff 5a96ff 5a96ff 2850c8   (emitter blue)
 frame  750: 2850c8 5a96ff 5a96ff 5a96ff 2850c8   (emitter blue)
 frame  800: c81e28 ff7828 ffdc50 ff7828 c81e28   (bullet red/orange)
 frame 1200: c81e28 ffdc50 fffff0 ff7828 c81e28   (bullet, still)
 </pre></div>
-<p>The fix is the same one line of intent, spelled out explicitly instead of
-left to registration order, on every desktop backend:</p>
+<p>The fix declares the order explicitly instead of relying on registration
+order, on every desktop backend:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">framer_system_dep</span><span class="w"> </span><span class="n">batch_deps</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">{.</span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sprite_render_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">}};</span>
 
@@ -295,52 +248,38 @@ left to registration order, on every desktop backend:</p>
 <span class="w">                        </span><span class="n">FRAMER_PHASE_ON_UPDATE</span><span class="p">,</span>
 <span class="w">                        </span><span class="n">sprite_batch_render_system</span><span class="p">,</span><span class="w"> </span><span class="n">bq</span><span class="p">,</span><span class="w"> </span><span class="n">batch_deps</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
-<p>A new renderer test pins this down the same way the fix does — a red
-entity sprite and a white batch element occupying the same pixels, one
-assertion that the pixel reads back red — so the ordering is now a
-property the test suite checks rather than an accident of import order.</p>
+<p>A new renderer test pins it down: a red entity sprite and a white batch
+element on the same pixels, asserting the pixel reads back red.</p>
 </div>
 <div class="section" id="verification-one-bug-per-backend-so-one-check-per-backend">
 <h2>Verification: one bug per backend, so one check per backend</h2>
-<p>Nothing about the design change itself is backend-specific, so the actual
-proof that the redesign works had to be, backend by backend, rather than
-inferred from any one of them: the desktop pixel-readback tests
-(software, OpenGL, Vulkan) each got their own pass through the same three
-scenes, <tt class="docutils literal">examples/bullets</tt> was cross-compiled for both GBA and NDS and
-the resulting ROM's OAM contents were sampled through mGBA's debug stub —
-the same technique the <a class="reference external" href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">previous dithering article</a>
-used to catch its own hardware-only bug — and every GBA example ROM in
-the tree was booted headlessly to confirm the pooled component-storage
-change underneath all of this (a separate, smaller fix the redesign also
-needed, since one more component pushed the fixed-stride storage layout
-past EWRAM) didn't regress startup on anything else.</p>
-<p>One number came out the same on every target it was checked on, which
-wasn't the point of the exercise but is a reassuring sign the redesign is
-actually target-neutral: with the pool's rotating spiral pattern running
-continuously, the live bullet count settles in roughly the high 90s on
-GBA, OpenGL and Vulkan alike, all three converging on the same rough
-capacity for the same pattern despite three completely different drawing
-paths underneath.</p>
+<p>The design is not backend-specific, but each backend had its own bug, so each
+was checked separately. The desktop pixel-readback tests (software, OpenGL,
+Vulkan) ran the same three scenes. <tt class="docutils literal">examples/bullets</tt> was cross-compiled for
+GBA and NDS and its OAM sampled through mGBA's debug stub, the technique the
+<a class="reference external" href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">dithering article</a> used to catch a hardware-only bug. Every
+GBA example ROM was booted headlessly to check that a related fix did not
+regress startup: one more component pushed the fixed-stride storage layout past
+EWRAM, so component storage is now pooled.</p>
+<p>One result was the same everywhere I checked: with the spiral pattern running
+continuously, the live bullet count settles in the high 90s on GBA, OpenGL and
+Vulkan alike.</p>
 </div>
 <div class="section" id="where-this-goes-next">
 <h2>Where this goes next</h2>
-<p><tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt> (40) and <tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt>
-(104, leaving 64 for actual game use) both grew slightly to make room for
-the new component without pushing the pooled storage past EWRAM on GBA —
-a two-line configuration change today, in a codebase where each of those
-numbers has moved before and will again. The bullet-pool roadmap item
-itself narrows to what's left once &quot;draws correctly, everywhere&quot; is no
-longer the open question: measuring and documenting the actual per-target
-bullet ceiling, rather than the two capacity constants
-(<tt class="docutils literal">examples/bullets</tt> currently uses 128 on GBA/NDS, 1024 on desktop)
-picked ahead of having real numbers to size them against.</p>
+<p><tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt> (40) and <tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt> (104,
+leaving 64 for game use) both grew slightly to fit the new component without
+pushing the pooled storage past EWRAM on GBA. What remains for the bullet pool
+is measuring and documenting the per-target bullet ceiling. The capacity
+constants (<tt class="docutils literal">examples/bullets</tt> uses 128 on GBA/NDS, 1024 on desktop) were
+picked before there were numbers to size them against.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html">posted at 21:40</a>
-                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;8 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/ecs.html" class="tags">ecs</a>
@@ -366,52 +305,42 @@ picked ahead of having real numbers to size them against.</p>
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>The two previous GBA articles on this blog — one on <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">cycle-level
-optimization</a>, one on the <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">no-heap ECS</a> underneath it — were both about working around
-hardware that has no float unit and no polygon fill. This one is about a
-narrower, older constraint on the same hardware: the GBA's Mode 4
-framebuffer is 8bpp indexed, and its palette is a single, unbuffered,
-256-entry table with no double-buffering and no VBlank gating on writes.
-Reassigning a palette slot recolors every pixel already on screen using
-that slot, immediately, mid-frame if the timing is unlucky.</p>
-<p>That constraint alone rules out the obvious approach — blend per pixel,
-allocate the blended color a palette slot on the fly — but even without
-it, real blending wouldn't be affordable here. <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>'s GBA
-backend rasterizes 3D faces in software, on a 16.78MHz ARM7TDMI with no
-hardware alpha unit anywhere in this path: the <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">earlier article on cycle-
-level optimization</a> on this blog spent its
-entire length shaving individual cycles off this same rasterizer's inner
-loop. Blending would mean computing a source/destination color mix and
-resolving it back to a palette index, for every covered pixel of every
-translucent face, every frame — real per-pixel work on hardware that
-has none of it to spare. Dithering sidesteps the cost entirely: the
-per-pixel decision is a single threshold compare against a precomputed
-matrix, no blend math and no palette search, so <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> answers
-both constraints the same way plenty of retro-hardware renderers have —
-translucent 3D faces aren't blended, they're dithered, drawn to roughly
-the fraction of screen cells their alpha implies, using a fixed Bayer
-matrix, so the <em>density</em> of drawn pixels approximates the alpha instead
-of the color itself needing to change.</p>
+<p>The two previous GBA articles, on <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">cycle-level optimization</a> and the <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">no-heap ECS</a>
+underneath it, were about working around hardware with no float unit and no
+polygon fill. This one is about an older constraint on the same hardware: the
+GBA's Mode 4 framebuffer is 8bpp indexed, and its palette is a single
+unbuffered 256-entry table with no double-buffering and no VBlank gating on
+writes. Reassigning a palette slot recolors every pixel already on screen that
+uses it, immediately, mid-frame if the timing is unlucky.</p>
+<p>That rules out blending per pixel and allocating the result a palette slot on
+the fly. Blending would also be too slow. <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>'s GBA backend
+rasterizes 3D faces in software on a 16.78 MHz ARM7TDMI with no hardware alpha
+unit, and the <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">earlier optimization article</a> spent
+its length shaving cycles off this rasterizer's inner loop. Blending means
+mixing source and destination colors and resolving the result to a palette
+index for every covered pixel of every translucent face, every frame.
+Dithering avoids that: the per-pixel decision is one threshold compare against
+a precomputed matrix, with no blend math and no palette search. Translucent
+faces are drawn to roughly the fraction of screen cells their alpha implies,
+using a fixed Bayer matrix, so the <em>density</em> of drawn pixels approximates the
+alpha.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
 made publicly available once the engine reaches a sufficient level of
 maturity.</p>
 </div>
-<p>That part worked the first time. What didn't work — twice, in two
-different ways, both only visible on real hardware — was making more
-than one overlapping translucent object dither <em>differently enough</em> from
-its neighbors to stay visible. This article is about both bugs, why the
-second one is a quieter version of the first one, and why the fix that
-finally stuck came from building three ROMs and looking at them, not from
-finding a smarter formula.</p>
+<p>That part worked the first time. What failed, twice and in two different ways,
+both visible only on real hardware, was making overlapping translucent objects
+dither differently enough from each other to stay visible. The second bug is a
+quieter version of the first, and the fix that stuck came from building three
+ROMs and looking at them, not from a smarter formula.</p>
 </div>
 <div class="section" id="the-setup-one-matrix-one-offset-per-object">
 <h2>The setup: one matrix, one offset per object</h2>
-<p>The dithering itself is a small, pure function. Given a matrix of
-threshold values and a per-object &quot;level&quot; (roughly, alpha out of 16), a
-pixel draws if the matrix value at that screen coordinate is below the
-level:</p>
+<p>The dithering is a small pure function. Given a matrix of thresholds and a
+per-object level (roughly alpha out of 16), a pixel draws if the matrix value
+at its screen coordinate is below the level:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">DITHER_BAYER_4X4</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w">  </span><span class="mi">6</span><span class="p">},</span>
@@ -424,51 +353,42 @@ level:</p>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DITHER_BAYER_4X4</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">][</span><span class="n">x</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">level</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-<p>That's enough for one translucent object. It isn't enough for two.
-<tt class="docutils literal">examples/translucent_cubes</tt> puts three overlapping cubes — red,
-green, blue — at the same alpha, drawn back to front. With no per-object
-variation, every one of them tests the <em>same</em> screen cells against the
-<em>same</em> level, which means they all draw to the exact same pixels — and
-since they're drawn back to front, the nearest one simply overwrites the
-farther ones wherever they overlap, instead of the three visually
-blending. Each object needs its own dithering <em>phase</em>: something that
-makes its own draw-set genuinely different from its neighbors', while
-each individual object still draws the right fraction of pixels.</p>
+<p>That is enough for one translucent object, not for two.
+<tt class="docutils literal">examples/translucent_cubes</tt> draws three overlapping cubes (red, green, blue)
+at the same alpha, back to front. With no per-object variation they test the
+same screen cells against the same level, so they draw to the same pixels, and
+the nearest cube overwrites the farther ones where they overlap instead of
+blending with them. Each object needs its own dithering <em>phase</em>: a draw-set
+that differs from its neighbors' while still covering the right fraction of
+pixels.</p>
 </div>
 <div class="section" id="bug-1-shifting-the-coordinate-collapses-sixteen-phases-into-two">
 <h2>Bug 1: shifting the coordinate collapses sixteen phases into two</h2>
-<p>The obvious way to give each object a phase is to shift the sampled
-coordinate before indexing the matrix — object <em>i</em> looks up
-<tt class="docutils literal"><span class="pre">BAYER[(y</span> + py) &amp; <span class="pre">3][(x</span> + px) &amp; 3]</tt> instead of <tt class="docutils literal">BAYER[y &amp; <span class="pre">3][x</span> &amp; 3]</tt>,
-for some per-object <tt class="docutils literal">(px, py)</tt>. Sixteen possible <tt class="docutils literal">(px, py)</tt> pairs, one
-matrix, sixteen apparently different phases. It shipped, passed its own
-review, and looked right in the emulator during initial testing.</p>
-<p>It did not look right in front of the user's own screenshots. With three
-overlapping equal-alpha cubes, the middle one — green, sandwiched between
-red and blue in draw order — was almost entirely invisible everywhere it
-overlapped blue.</p>
+<p>The obvious way to give each object a phase is to shift the sampled coordinate
+before indexing the matrix: object <em>i</em> looks up
+<tt class="docutils literal"><span class="pre">BAYER[(y</span> + py) &amp; <span class="pre">3][(x</span> + px) &amp; 3]</tt> for some per-object <tt class="docutils literal">(px, py)</tt>. That
+gives sixteen <tt class="docutils literal">(px, py)</tt> pairs and, apparently, sixteen phases. It passed
+review and looked right in the emulator.</p>
+<p>It did not look right in the screenshots from hardware. With three overlapping equal-alpha
+cubes, the middle one, green, was almost invisible wherever it overlapped blue.</p>
 <div class="figure align-center">
 <img alt="examples/translucent_cubes running in mGBA with the coordinate-shift bug — only red and a dark, almost-black region are visible, no green or blue" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/bug-green-invisible.png" />
 <p class="caption"><tt class="docutils literal">examples/translucent_cubes</tt> at the commit that shipped the
-coordinate-shift phase — green and blue have collapsed into the same
+coordinate-shift phase. Green and blue have collapsed into the same
 draw-set as another object and vanished.</p>
 </div>
-<p>Direct enumeration of all sixteen shifts against the 4x4 matrix at the
-alpha level in question found the cause immediately: only <strong>two</strong>
-distinct draw-sets exist among all sixteen coordinate shifts, not
-sixteen. The 4x4 Bayer matrix has its own translational symmetry — every
-shift is equivalent, cell-for-cell, to some other shift of the same
-<em>parity</em> of <tt class="docutils literal">(px + py)</tt>. Two objects landing in the same parity class
-draw to identical cells, and whichever is nearer in the back-to-front
-order simply erases the other. Three objects, two available parity
-classes: one collision was mathematically guaranteed, not a rare edge
-case.</p>
+<p>Enumerating all sixteen shifts against the 4x4 matrix at that alpha level
+showed the cause: only <strong>two</strong> distinct draw-sets exist among the sixteen
+shifts. The 4x4 Bayer matrix has translational symmetry, so every shift is
+equivalent, cell for cell, to another shift with the same parity of
+<tt class="docutils literal">(px + py)</tt>. Two objects in the same parity class draw to identical cells,
+and the nearer one erases the other. Three objects and two parity classes
+guarantee a collision.</p>
 </div>
 <div class="section" id="the-fix-rotate-the-compared-value-not-the-sampled-coordinate">
 <h2>The fix: rotate the compared value, not the sampled coordinate</h2>
-<p>The working version doesn't touch the coordinate at all. It rotates the
-<em>value read out of the matrix</em> by a per-object offset, before comparing
-it against the level:</p>
+<p>The working version leaves the coordinate alone and rotates the <em>value read
+from the matrix</em> by a per-object offset before comparing it with the level:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">dither_should_draw</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">,</span>
 <span class="w">                                       </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span>
 <span class="p">{</span>
@@ -476,57 +396,47 @@ it against the level:</p>
 <span class="w">           </span><span class="n">level</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-<p>The difference isn't cosmetic. <tt class="docutils literal">DITHER_BAYER_4X4</tt> is a bijection —
-every one of its sixteen cells holds a distinct value from 0 to 15. &quot;Which
-cells have <tt class="docutils literal">(value + offset) mod 16 &lt; level</tt>&quot; selects a
-<tt class="docutils literal">level</tt>-sized <em>contiguous arc</em> of that value range, and as <tt class="docutils literal">offset</tt>
-sweeps 0 to 15, the arc's starting point sweeps every residue exactly
-once. Sixteen offsets, sixteen provably distinct draw-sets, at every
-level — not empirically distinct for the one alpha value that happened
-to get tested, but distinct by construction, for the same reason a
-Caesar cipher with sixteen different shift amounts produces sixteen
-different ciphertexts of the same plaintext. This shipped, the green cube
-reappeared, and the next report from real hardware was different in
-kind: not invisible, just rougher-looking than the other two.</p>
+<p><tt class="docutils literal">DITHER_BAYER_4X4</tt> is a bijection: its sixteen cells hold the values 0 to 15
+once each. The cells with <tt class="docutils literal">(value + offset) mod 16 &lt; level</tt> form a
+<tt class="docutils literal">level</tt>-sized contiguous arc of that range, and as <tt class="docutils literal">offset</tt> goes from 0 to
+15 the arc's start visits every residue once. Sixteen offsets give sixteen
+distinct draw-sets at every level, by construction and not just for the alpha I
+tested, as sixteen Caesar shifts give sixteen distinct ciphertexts. This
+shipped and the green cube reappeared. The next report from hardware was
+different: not invisible, but rougher than the other two.</p>
 <div class="figure align-center">
 <img alt="examples/translucent_cubes running in mGBA after the value-rotation fix — all three cubes visible, but the third one's dither pattern looks visibly rougher than the other two" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/fixed-rough-4x4.png" />
-<p class="caption">The same demo after the value-rotation fix — all three cubes are
-visible now, but the thinnest sliver (drawn last, forced onto a
-worse offset) already reads rougher than its neighbors.</p>
+<p class="caption">The demo after the value-rotation fix. All three cubes are visible, but the
+thinnest sliver, drawn last and forced onto a worse offset, already reads
+rougher than its neighbors.</p>
 </div>
 </div>
-<div class="section" id="bug-2-only-two-offsets-out-of-sixteen-are-actually-smooth">
-<h2>Bug 2: only two offsets out of sixteen are actually smooth</h2>
-<p>&quot;Rougher&quot; turned out to be exact, not impressionistic. At the alpha
-level <tt class="docutils literal">examples/translucent_cubes</tt> uses, offset 0 produces a perfect
-alternating checkerboard:</p>
+<div class="section" id="bug-2-only-two-offsets-out-of-sixteen-are-smooth">
+<h2>Bug 2: only two offsets out of sixteen are smooth</h2>
+<p>&quot;Rougher&quot; was exact. At the alpha level <tt class="docutils literal">examples/translucent_cubes</tt> uses,
+offset 0 produces a perfect alternating checkerboard:</p>
 <div class="highlight"><pre><span></span>offset=0                     offset=1
 #.#.#.#.                     #.#.#.#.
 .#.#.#.#                     .#.#.#.#
 #.#.#.#.                     #.#.#.#.
 .#.#.#.#                     .#.#.#.#
 </pre></div>
-<p>Only one other offset (8, exactly half the matrix's sixteen values away)
-produces the <em>other</em> perfect checkerboard, disjoint from offset 0's.
-Every offset in between is a near-miss: the same pattern with a handful
-of cells flipped, visibly less regular the farther the offset sits from
-0 or 8. Three overlapping objects need three distinct offsets to stay
-correctly visible — that part was already fixed — but with only two
-&quot;perfect&quot; offsets available in a 16-value matrix, the third object is
-mathematically forced onto a visibly irregular one. Not a bug in the
-value-rotation fix; a structural property of a matrix this small
-combined with needing three simultaneously-distinct patterns.</p>
+<p>Only one other offset (8, half the matrix's sixteen values away) produces the
+<em>other</em> perfect checkerboard, disjoint from offset 0's. Every offset in between
+is the same pattern with a few cells flipped, less regular the farther it sits
+from 0 or 8. Three overlapping objects need three distinct offsets, which the
+previous fix gave, but with only two perfect offsets in a 16-value matrix the
+third object is forced onto an irregular one. That is a structural property of
+a small matrix, not a bug in the value rotation.</p>
 </div>
 <div class="section" id="a-bigger-matrix-buys-a-finer-gradient-not-an-exemption">
 <h2>A bigger matrix buys a finer gradient, not an exemption</h2>
-<p>Growing the matrix to 8x8 (64 distinct values instead of 16) doesn't
-remove the &quot;only two perfect offsets&quot; property — it can't; the argument
-above doesn't care about matrix size. What it buys is a much finer
-<em>gradient</em> around those two perfect points, so a third offset near
-either one looks close to perfect instead of visibly broken. The
-external contract stayed untouched: callers still pass a level from 0
-to 16, unchanged, with the comparison internally rescaled by a factor of
-4 to land on the 8x8 matrix's 0-63 range:</p>
+<p>An 8x8 matrix (64 distinct values) does not remove the &quot;only two perfect
+offsets&quot; property; the argument above does not depend on matrix size. It gives
+a much finer gradient around the two perfect points, so a third offset near
+either one looks close to perfect. The caller contract is unchanged: levels
+still run from 0 to 16, and the comparison is rescaled by 4 to match the 8x8
+matrix's 0-63 range:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">dither_should_draw</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">,</span>
 <span class="w">                                       </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span>
 <span class="p">{</span>
@@ -534,35 +444,28 @@ to 16, unchanged, with the comparison internally rescaled by a factor of
 <span class="w">           </span><span class="n">level</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-<p>This shipped as a real improvement — the third cube went from
-&quot;noticeably wrong&quot; to &quot;close to right.&quot; It was also, it turned out, not
-actually fixing the thing that mattered.</p>
+<p>The third cube went from &quot;noticeably wrong&quot; to &quot;close to right&quot;. That still did
+not fix the problem that mattered.</p>
 </div>
 <div class="section" id="the-bug-the-roughness-metric-couldn-t-see">
 <h2>The bug the roughness metric couldn't see</h2>
-<p>The offsets fed to each object weren't picked arbitrarily; they came from
-a 64-entry table, ranked by how close each individual offset's own
-pattern was to a perfect checkerboard — offset 0 first, offset 32
-(the 8x8 matrix's other perfect point) second, then the next-closest
-offsets after that. For three simultaneously-visible objects, that table
-handed out <tt class="docutils literal">0, 32, 1</tt>.</p>
-<p>Offset 1 is, individually, an excellent choice — its own pattern is
-almost perfectly checkerboarded, one flipped cell out of sixty-four. The
-ranking wasn't wrong about that. What it never asked is a different
-question: how much does offset 1's draw-set <em>overlap</em> offset 0's? The
-answer is 31 of 32 drawn cells, identical. The third object was, once
-again, drawing to almost exactly the same pixels as the first one — the
-original bug, wearing a much better disguise, because &quot;individually
-smooth&quot; and &quot;well separated from your neighbors&quot; turned out to be two
-different properties the same ranking had been quietly conflating.</p>
+<p>The offsets came from a 64-entry table ranked by how close each offset's own
+pattern is to a perfect checkerboard: offset 0 first, offset 32 (the 8x8
+matrix's other perfect point) second, then the next closest. For three visible
+objects the table handed out <tt class="docutils literal">0, 32, 1</tt>.</p>
+<p>Offset 1 is individually an excellent choice: one flipped cell out of
+sixty-four. The ranking never asked how much offset 1's draw-set <em>overlaps</em>
+offset 0's. The answer is 31 of 32 drawn cells identical. The third object was
+again drawing to almost the same pixels as the first, which is the original bug
+in a better disguise: &quot;individually smooth&quot; and &quot;well separated from
+neighbors&quot; are different properties, and the ranking had conflated them.</p>
 </div>
 <div class="section" id="testing-three-sequences-instead-of-guessing">
 <h2>Testing three sequences instead of guessing</h2>
-<p>Fixing the separation problem analytically ran straight into a genuine
-trade-off, not a formula. Offsets chosen purely to <em>maximize</em> separation
-from each other — evenly spread around the matrix's 64-value range —
-land on values like 16 and 48, and those render as perfectly regular
-vertical or horizontal stripes instead of checkerboard noise:</p>
+<p>Fixing the separation analytically hit a trade-off. Offsets chosen only to
+maximize separation, spread evenly over the 64-value range, land on values like
+16 and 48, which render as regular vertical or horizontal stripes instead of
+checkerboard noise:</p>
 <div class="highlight"><pre><span></span>offset=1 (roughness-ranked)      offset=16 (separation-first)
 #.#.#.#.                         #.#.#.#.
 .#.#.#.#                         #.#.#.#.
@@ -573,20 +476,17 @@ vertical or horizontal stripes instead of checkerboard noise:</p>
 #.#.#.#.                         #.#.#.#.
 #..#.#.#                         #.#.#.#.
 </pre></div>
-<p>The stripe pattern shares only 16 of 32 cells with its neighbors instead
-of 31 — a real, large improvement by the numbers — but axis-aligned
-stripes are a textbook example of a dither pattern that's <em>more</em>
-noticeable than diagonal checkerboard noise, not less, on real display
-hardware. Whether that trade-off actually looks better than the original
-near-miss checkerboard isn't something more computation could answer.</p>
-<p>So the answer came from building three complete 64-entry offset
-sequences — the original roughness-ranked table, a separation-maximizing
-one (a bit-reversal permutation, also known as a Van der Corput
-sequence: entry <em>i</em> is the 6-bit binary reversal of <em>i</em>, which
-guarantees every prefix of the sequence is evenly spread around the
-offset range), and a capped-overlap middle ground — compiling all three
-into real <tt class="docutils literal">translucent_cubes.gba</tt> ROMs, and testing them in mGBA. The
-separation-maximizing sequence won, stripes and all.</p>
+<p>The stripe pattern shares 16 of 32 cells with its neighbors instead of 31, a
+large improvement by the numbers. But axis-aligned stripes are a textbook case
+of a dither that is <em>more</em> noticeable than diagonal checkerboard noise. More
+computation could not say whether that trade looks better than the near-miss
+checkerboard.</p>
+<p>So I built three complete 64-entry offset sequences: the original
+roughness-ranked table; a separation-maximizing one, a bit-reversal permutation
+(a Van der Corput sequence, where entry <em>i</em> is the 6-bit binary reversal of <em>i</em>
+and every prefix is evenly spread over the offset range); and a capped-overlap
+middle ground. I compiled each into a <tt class="docutils literal">translucent_cubes.gba</tt> ROM and ran
+them in mGBA. The separation-maximizing sequence won, stripes included.</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">GBA_DITHER_OFFSET_SEQUENCE</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w"> </span><span class="mi">56</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="mi">36</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">52</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
 <span class="w">    </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">26</span><span class="p">,</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="mi">38</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="mi">54</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">46</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">62</span><span class="p">,</span>
@@ -596,51 +496,38 @@ separation-maximizing sequence won, stripes and all.</p>
 </pre></div>
 <div class="figure align-center">
 <img alt="examples/translucent_cubes running in mGBA with the bit-reversal offset sequence — all three cubes visible, dither density looking even across all three" src="https://tprrt.tupi.fr/static/images/gba-dither-offset-separation/final-smooth-8x8-bitrev.png" />
-<p class="caption">The same demo with the bit-reversal sequence — three distinct,
-evenly-separated offsets, no object drawing to nearly the same
-cells as another.</p>
+<p class="caption">The demo with the bit-reversal sequence: three distinct, evenly separated
+offsets, with no object drawing to nearly the same cells as another.</p>
 </div>
 </div>
 <div class="section" id="verifying-a-change-with-nothing-to-count">
 <h2>Verifying a change with nothing to count</h2>
-<p>The GBA performance article on this blog leaned on <tt class="docutils literal">cycle_probe.py</tt> for
-every claim — a deterministic cycle count, diffed between builds. None of
-that applies here: this is a pure output-correctness question, not a
-performance one, and the actual measurable claims are combinatorial
-rather than empirical. Every mechanism change in this story — the
-value-rotation fix's sixteen-provably-distinct-draw-sets claim, the 8x8
-matrix's exact-count-at-every-level-and-offset property, the bit-reversal
-sequence's even-prefix-spread property — was verified by direct
-construction in Python before being written as C: enumerate every
-offset, every level, every pair, and check the property holds for all
-of them, not just the one case that happened to get tested by hand.
-Beyond that: the full desktop test suite, a GBA cross-compile, and a
-headless mGBA run of <tt class="docutils literal">examples/translucent_cubes</tt> on every change, plus
-— for the final offset-sequence choice specifically — actually looking
-at the rendered result, which is the only step in this whole chain that
-caught the thing the math couldn't.</p>
+<p>The GBA performance article relied on <tt class="docutils literal">cycle_probe.py</tt>, a deterministic cycle
+count diffed between builds. It does not apply here: this is an output
+correctness question, and the claims are combinatorial. I checked each of them
+by construction in Python before writing the C: the sixteen distinct draw-sets
+of the value rotation, the exact pixel count at every level and offset of the
+8x8 matrix, and the even prefix spread of the bit-reversal sequence. Each check
+enumerated every offset, level and pair. Every change also got the full desktop
+test suite, a GBA cross-compile and a headless mGBA run of
+<tt class="docutils literal">examples/translucent_cubes</tt>. For the final sequence choice I looked at the
+rendered result, the only step that caught what the math could not.</p>
 </div>
 <div class="section" id="where-this-goes-next">
 <h2>Where this goes next</h2>
-<p>The bit-reversal sequence is still one fixed, precomputed table, shared
-across every scene — it optimizes pairwise separation for <em>a</em> sequence
-of offsets, not jointly for whichever specific set of objects happens to
-be simultaneously overlapping in a given frame. For the realistic case
-this backend actually renders — a small, fixed handful of translucent
-objects — that's enough. A scene with many more simultaneously-visible
-translucent objects than any current example has would eventually
-exhaust the sequence's best-separated entries and reach ones no better
-than the original bug. Jointly optimizing offset assignment across the
-actual in-use set, per frame, is the natural next piece if that ever
-stops being hypothetical — and, going by how this story went twice
-already, probably has its own hardware surprise waiting inside it.</p>
+<p>The bit-reversal sequence is one fixed table shared across every scene. It
+optimizes pairwise separation along the sequence, not for the specific set of
+objects overlapping in a given frame. For a small, fixed handful of translucent
+objects that is enough. A scene with many more would exhaust the best-separated
+entries and reach ones no better than the original bug. Assigning offsets
+jointly across the objects in use each frame is the next step if that happens.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">posted at 11:00</a>
-                    &nbsp;&middot;&nbsp;10 min read
+                    &nbsp;&middot;&nbsp;8 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>

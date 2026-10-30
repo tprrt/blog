@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T15:11:53.392493+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T14:13:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/zephyr-rtos-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T16:11:40.337206+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T14:13:00+02:00</published><updated>2026-10-30T16:11:40.337206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/zephyr-rtos-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="community-and-governance"&gt;
@@ -18,7 +18,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.st.com/smart-power-distribution/"&gt;Smart power distribution in cars, it’s much more than a numbers game, it’s how the future takes shape&lt;/a&gt; (The ST Blog)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:55:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/zephyr-rtos-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:55:00+02:00</published><updated>2026-10-30T16:11:40.336205+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/zephyr-rtos-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="releases-and-development-momentum"&gt;
@@ -54,7 +54,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-sapporo-japan-2026/"&gt;Recap: Zephyr Project Meetup – Sapporo, Japan 2026&lt;/a&gt; (Zephyr Project) — Highlights from the project's meetup in Sapporo and the community momentum on display.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:56:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/zephyr-rtos-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:56:00+02:00</published><updated>2026-10-30T16:11:40.336205+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/zephyr-rtos-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-growth"&gt;
@@ -88,7 +88,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/07/23/99-xteink-x4-pro-4-3-inch-touchscreen-ereader-to-support-crosspoint-reader-open-source-firmware/"&gt;$99 Xteink X4 Pro 4.3-inch touchscreen eReader to support CrossPoint Reader open-source firmware&lt;/a&gt; — CNX Software – Embedded Systems News&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-10-30T16:11:40.336205+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="ecosystem-expansion-and-membership-growth"&gt;
@@ -115,7 +115,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://interrupt.memfault.com/blog/march-through-june-2026-roundup"&gt;What we've been reading this Spring/Early Summer (2026)&lt;/a&gt; — Interrupt&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates-and-expansions"&gt;
@@ -157,7 +157,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.golioth.io/cra-compliance-for-embedded-devices-webinar/"&gt;CRA Compliance for Embedded Devices Webinar&lt;/a&gt; — The Golioth Developer Blog&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-expansion"&gt;
@@ -190,7 +190,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org"&gt;Zephyr Project&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos"&gt;
@@ -230,7 +230,7 @@
 &lt;p&gt;This digest encapsulates the vibrant developments within the Zephyr RTOS community and highlights resources for both potential and seasoned developers within the ecosystem.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates"&gt;
@@ -258,31 +258,29 @@
 &lt;li&gt;&lt;strong&gt;A Brief History of Zephyr RTOS&lt;/strong&gt;: This article chronicles the evolution of Zephyr RTOS, highlighting its origins in earlier commercial systems and its development into an open-source powerhouse. For a deep dive into its history, click here: &lt;a class="reference external" href="https://shawnhymel.com/2791/a-brief-history-of-zephyr-rtos"&gt;A Brief History of Zephyr RTOS&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-10-30T15:11:53.389056+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-10-30T16:11:40.333051+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. The notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04"&gt;RIOT-OS 2026.04&lt;/a&gt;, codenamed &lt;strong&gt;Fire Rizzlease&lt;/strong&gt;, was released on May 6, 2026.
 RIOT is a multi-threading operating system targeting microcontrollers found in the
 Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
 with a focus on energy-efficiency, soft real-time capabilities, and a small memory
 footprint.&lt;/p&gt;
 &lt;p&gt;This release spans 84 days of development, 125 merged pull requests composed of 229
-commits, and contributions from 27 people. A notable stat: &lt;strong&gt;1,141,523 lines were
-deleted&lt;/strong&gt; against only 25,007 inserted, largely thanks to a major vendor code cleanup.&lt;/p&gt;
+commits, and contributions from 27 people. &lt;strong&gt;1,141,523 lines were deleted&lt;/strong&gt; against 25,007
+inserted, mostly from a vendor code cleanup.&lt;/p&gt;
 &lt;div class="section" id="codeberg-mirror"&gt;
 &lt;h2&gt;Codeberg mirror&lt;/h2&gt;
-&lt;p&gt;RIOT is now synced to &lt;a class="reference external" href="https://codeberg.org/riot/riot"&gt;Codeberg&lt;/a&gt; (#21997). This gives the project a home on a
-non-profit, community-driven forge alongside its GitHub presence, a welcome step
-for an independent open-source project.&lt;/p&gt;
+&lt;p&gt;RIOT is now synced to &lt;a class="reference external" href="https://codeberg.org/riot/riot"&gt;Codeberg&lt;/a&gt; (#21997), a non-profit community forge,
+alongside GitHub.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="massive-efm32-vendor-code-removal"&gt;
 &lt;h2&gt;Massive EFM32 vendor code removal&lt;/h2&gt;
 &lt;p&gt;Over &lt;strong&gt;one million lines of vendor code&lt;/strong&gt; have been removed from the EFM32 family,
-replaced by a &lt;tt class="docutils literal"&gt;pkg/gecko_sdk&lt;/tt&gt; dependency (#22040). This is the single biggest
-contributor to the impressive deletion count and results in a much leaner and more
-maintainable codebase for Silicon Labs EFM32-based boards.&lt;/p&gt;
+replaced by a &lt;tt class="docutils literal"&gt;pkg/gecko_sdk&lt;/tt&gt; dependency (#22040). This accounts for most of
+the deletions and shrinks the codebase for Silicon Labs EFM32-based boards.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="raspberry-pi-pico-2-rp2350-improvements"&gt;
 &lt;h2&gt;Raspberry Pi Pico 2 / RP2350 improvements&lt;/h2&gt;
-&lt;p&gt;The RP2350 support received a thorough overhaul (#21753):&lt;/p&gt;
+&lt;p&gt;RP2350 support was reworked (#21753):&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Unified abstractions between the RISC-V and ARM cores of the RP2350.&lt;/li&gt;
 &lt;li&gt;Added the XH3IRQ interrupt controller.&lt;/li&gt;
@@ -311,8 +309,8 @@ support for the nucleo-h753zi (#22076).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="guide-site-and-documentation"&gt;
 &lt;h2&gt;Guide site and documentation&lt;/h2&gt;
-&lt;p&gt;The &lt;a class="reference external" href="https://guide.riot-os.org/"&gt;RIOT Guide Site&lt;/a&gt; continues to grow as the default entry point for new users,
-progressively replacing Doxygen for prose documentation. This release adds:&lt;/p&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://guide.riot-os.org/"&gt;RIOT Guide Site&lt;/a&gt; is the entry point for new users and is replacing Doxygen
+for prose documentation. This release adds:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;More tutorials.&lt;/li&gt;
 &lt;li&gt;An experimental &lt;a class="reference external" href="https://guide.riot-os.org/boards/"&gt;Supported Boards&lt;/a&gt; section.&lt;/li&gt;
@@ -342,7 +340,7 @@ progressively replacing Doxygen for prose documentation. This release adds:&lt;/
 &lt;li&gt;LVGL configuration and SDL issues on native (#22005, #22139).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -362,7 +360,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 - &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -392,7 +390,7 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -436,31 +434,26 @@ Recent meetups and discussions reflect the active community surrounding Zephyr, 
 &lt;li&gt;&lt;a class="reference external" href="https://www.silabs.com/software-and-tools/zephyr-rtos"&gt;Zephyr RTOS on Silicon Labs platforms&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr Device Tree Guide</title><link href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html" rel="alternate"/><published>2022-07-29T20:32:00+02:00</published><updated>2022-07-29T20:32:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2022-07-29:/zephyr-device-tree-guide.html</id><summary type="html"/><content type="html">&lt;div class="section" id="introduction"&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr Device Tree Guide</title><link href="https://tprrt.tupi.fr/zephyr-device-tree-guide.html" rel="alternate"/><published>2022-07-29T20:32:00+02:00</published><updated>2022-07-29T20:32:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2022-07-29:/zephyr-device-tree-guide.html</id><summary type="html">&lt;p class="first last"&gt;How Zephyr uses devicetree: sources, the generated header, bindings and drivers.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;The goal of the &lt;a class="reference external" href="https://zephyrproject.org/"&gt;Zephyr project&lt;/a&gt;, hosted by the Linux foundation, since 2016, is to provide a safe and secured real time operating system (RTOS) for connected devices that are too small for Linux, or for core companion, through the Apache 2.0 open source license.&lt;/p&gt;
-&lt;p&gt;It is designed for resource-constrained devices such as microcontrollers and Internet of Things (IoT) devices, to be modular and scalable. This makes it ideal for a wide range of devices, from simple sensors to complex systems. The operating system is written in C and is fully compatible with the C11 and C++17 standards.&lt;/p&gt;
-&lt;p&gt;One of the key benefits of the Zephyr device model is its small footprint, it can be configured to run on devices with as little as 10 KB of memory.&lt;/p&gt;
-&lt;p&gt;It supports multiple 32 bits and 64 bits architectures: Cortex-A, Cortex-M, Cortex-R, RISC-V, x86-64, etc.
-But it also support several boards and extensions: Feather, nRF52840, ST Discovery, ST Nucleo, ESP-32, etc.
-It is able to manage several kinds of connectivity: Bluetooth, ethernet, wifi, LoRa.
-And it support some network protocols: IPv4, IPv6,UDP, TCP, CoAP, LWM2M, MQTT, DNS, etc.&lt;/p&gt;
-&lt;p&gt;As Linux, Zephyr use &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html"&gt;Kconfig&lt;/a&gt;, and its device model is mainly based on &lt;a class="reference external" href="https://www.devicetree.org/"&gt;device tree&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://zephyrproject.org/"&gt;Zephyr project&lt;/a&gt;, hosted by the Linux Foundation since 2016, provides a real-time operating system (RTOS), under the Apache 2.0 license, for connected devices too small for Linux or acting as companions to a Linux core. It targets microcontrollers and IoT devices, is modular, and is written in C (C11, with C++17 supported).&lt;/p&gt;
+&lt;p&gt;It can be configured to run on devices with as little as 10 KB of memory. It supports 32-bit and 64-bit architectures (Cortex-A, Cortex-M, Cortex-R, RISC-V, x86-64, etc.), many boards (Feather, nRF52840, ST Discovery, ST Nucleo, ESP32, etc.), connectivity such as Bluetooth, Ethernet, Wi-Fi and LoRa, and network protocols including IPv4, IPv6, UDP, TCP, CoAP, LWM2M, MQTT and DNS.&lt;/p&gt;
+&lt;p&gt;Like Linux, Zephyr uses &lt;a class="reference external" href="https://www.kernel.org/doc/html/latest/kbuild/kconfig-language.html"&gt;Kconfig&lt;/a&gt;, and its device model is mainly based on &lt;a class="reference external" href="https://www.devicetree.org/"&gt;device tree&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="device-tree"&gt;
 &lt;h2&gt;Device tree&lt;/h2&gt;
 &lt;p&gt;Device trees are tree data structures that describe the hardware components and their relationships in a system.
-They are stored in a text file, named device tree sources (*.dts), and they written by developers to describe hardware architectures of SoCs and boards.
-And they are used by the operating system to determine how to initialize and interact with the hardware.&lt;/p&gt;
-&lt;p&gt;Each node describe a device of the system, has its own properties that describe their characteristics, and they have only one parent (except for the root node).&lt;/p&gt;
+They are stored in text files, the device tree sources (*.dts), which developers write to describe the hardware of SoCs and boards. The operating system uses them to determine how to initialize and interact with the hardware.&lt;/p&gt;
+&lt;p&gt;Each node describes a device of the system, has properties that describe its characteristics, and has exactly one parent (except the root node).&lt;/p&gt;
 &lt;p&gt;Each device driver is associated with a specific device tree node, which represents a hardware component in the system. The device driver provides the necessary code and data to control the behavior of the hardware component.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nl"&gt;test_i2c_bme280&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bme280&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;compatible&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bosch,bme280&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;reg&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="mh"&gt;0x6&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;In the Linux kernel, device tree sources are compiled to device tree binaries (dtb) that are parsed, at boot, by bootloader stages (U-Boot, TF-A...) and the kernel to allow support several hardware configuration with same binaries.&lt;/p&gt;
-&lt;p&gt;But in Zephyr, device tree sources are transformed to a &amp;quot;devicetree_generated.h&amp;quot; C header file at build, that contains macro definitions and data structures allowing device drivers to access information about the hardware components in the system, such as the memory mapping of a device, its pin assignments, and its IRQ numbers:&lt;/p&gt;
+&lt;p&gt;In the Linux kernel, device tree sources are compiled to device tree binaries (dtb) that the bootloader stages (U-Boot, TF-A...) and the kernel parse at boot, so the same binaries can support several hardware configurations.&lt;/p&gt;
+&lt;p&gt;In Zephyr, device tree sources are instead turned at build time into a &lt;tt class="docutils literal"&gt;devicetree_generated.h&lt;/tt&gt; C header. It contains the macros and data structures that let drivers read the hardware description, such as a device's memory mapping, pin assignments and IRQ numbers:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define DT_COMPAT_HAS_OKAY_bosch_bme280 1&lt;/span&gt;
 &lt;span class="cp"&gt;#define DT_N_INST_bosch_bme280_NUM_OKAY 1&lt;/span&gt;
 &lt;span class="cp"&gt;#define DT_FOREACH_OKAY_bosch_bme280(fn) fn(DT_N_S_soc_S_i2c_40005400_S_bme280_77)&lt;/span&gt;
@@ -502,8 +495,7 @@ And they are used by the operating system to determine how to initialize and int
 &lt;/div&gt;
 &lt;div class="section" id="binding"&gt;
 &lt;h2&gt;Binding&lt;/h2&gt;
-&lt;p&gt;Content of device tree sources is described in binding files, that are written in human readable and easy to parse YAML.
-Binding files can be also used to validate device tree sources by comparing the information in the YAML file with the information in the device tree sources.&lt;/p&gt;
+&lt;p&gt;The content of device tree sources is described in binding files, written in YAML. They are also used to validate device tree sources against the YAML description.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;description&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;BME280 integrated environmental sensor&lt;/span&gt;
 
 &lt;span class="nt"&gt;compatible&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bosch,bme280&amp;quot;&lt;/span&gt;
@@ -513,8 +505,7 @@ Binding files can be also used to validate device tree sources by comparing the 
 &lt;/div&gt;
 &lt;div class="section" id="device-driver"&gt;
 &lt;h2&gt;Device driver&lt;/h2&gt;
-&lt;p&gt;In Zephyr, a device driver can access the properties of an associated node in the device tree using the macro that are defined in C header files.
-For example, the following code can be used to initialize a BME280 sensor using properties defined in the device tree:&lt;/p&gt;
+&lt;p&gt;A Zephyr driver reads the properties of its device tree node through macros defined in C headers. For example, this code initializes a BME280 sensor using properties from the device tree:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;device.h&amp;gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;drivers/i2c.h&amp;gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;lt;devicetree.h&amp;gt;&lt;/span&gt;
@@ -552,6 +543,6 @@ For example, the following code can be used to initialize a BME280 sensor using 
 &lt;/div&gt;
 &lt;div class="section" id="conclusion"&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;Those who have already implemented BSP or driver on Linux shouldn't encounter too much difficulty, but on the other hand, the step is a little higher for people coming from the world of micro-controllers.&lt;/p&gt;
+&lt;p&gt;Anyone who has written a BSP or driver for Linux will find this familiar. It is a steeper step for people coming from bare microcontroller development.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="Embedded"/><category term="zephyr"/><category term="device-tree"/><category term="rtos"/><category term="embedded"/><category term="article"/></entry></feed>

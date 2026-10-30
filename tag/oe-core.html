@@ -66,14 +66,13 @@
 
 
                 <p>The <a class="reference external" href="https://www.yoctoproject.org/software-overview/downloads/">Yocto Project 6.0</a>, codenamed <strong>wrynose</strong>, was released on May 13, 2026. This
-is the new <strong>Long-Term Support (LTS)</strong> release, succeeding 5.0 &quot;scarthgap&quot;. I am
-happy to have my name in the contributors list for this release, and I wanted to
-take the opportunity to write a short overview of what is new.</p>
+is the new <strong>Long-Term Support (LTS)</strong> release, succeeding 5.0 &quot;scarthgap&quot;. My
+name is in the contributors list for this release.</p>
 <p>If you are migrating from 5.0, make sure to read the migration guides for the
 intermediate releases: <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.1.html">5.1 (styhead)</a>, <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.2.html">5.2 (walnascar)</a>, and <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-5.3.html">5.3 (whinlatter)</a>.</p>
 <div class="section" id="major-component-upgrades">
 <h2>Major component upgrades</h2>
-<p>The toolchain and core components received significant version bumps:</p>
+<p>Toolchain and core component versions:</p>
 <ul class="simple">
 <li><strong>Linux kernel 6.18</strong></li>
 <li><strong>GCC 15.2</strong></li>
@@ -114,7 +113,7 @@ also enabled by default now.</li>
 </div>
 <div class="section" id="new-sbom-and-cve-tooling">
 <h2>New SBOM and CVE tooling</h2>
-<p>The CVE analysis and SBOM generation story got a major overhaul:</p>
+<p>CVE analysis and SBOM generation changed substantially:</p>
 <ul class="simple">
 <li>A new <tt class="docutils literal"><span class="pre">sbom-cve-check</span></tt> class replaces the old <tt class="docutils literal"><span class="pre">cve-check</span></tt> class for
 post-build CVE analysis of images. It uses the new <tt class="docutils literal"><span class="pre">python3-sbom-cve-check</span></tt>
@@ -128,7 +127,7 @@ allow exporting richer metadata into SPDX documents.</li>
 </div>
 <div class="section" id="bitbake-and-tooling-improvements">
 <h2>BitBake and tooling improvements</h2>
-<p><tt class="docutils literal"><span class="pre">bitbake-setup</span></tt> received a lot of love in this release:</p>
+<p><tt class="docutils literal"><span class="pre">bitbake-setup</span></tt> changes:</p>
 <ul class="simple">
 <li>Non-destructive update behavior: local commits and modifications are preserved
 during <tt class="docutils literal"><span class="pre">bitbake-setup</span> update</tt>.</li>
@@ -146,7 +145,7 @@ this external source. A new <tt class="docutils literal">wicenv</tt> image type 
 </div>
 <div class="section" id="devtool-ide-integration">
 <h2>devtool IDE integration</h2>
-<p>The <tt class="docutils literal">devtool <span class="pre">ide-sdk</span></tt> command saw several improvements:</p>
+<p><tt class="docutils literal">devtool <span class="pre">ide-sdk</span></tt> improvements:</p>
 <ul class="simple">
 <li><tt class="docutils literal">gdbserver</tt> attach mode support.</li>
 <li>GDB pretty-printing for C++ STL types.</li>
@@ -155,9 +154,8 @@ this external source. A new <tt class="docutils literal">wicenv</tt> image type 
 </div>
 <div class="section" id="what-s-next">
 <h2>What's next</h2>
-<p>As an LTS release, wrynose will receive long-term maintenance. If you are on
-scarthgap (5.0), now is a good time to plan your migration. The migration guide
-is available at the <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html">Yocto Project documentation</a>.</p>
+<p>Wrynose will receive long-term maintenance. If you are on scarthgap (5.0), plan
+your migration with the <a class="reference external" href="https://docs.yoctoproject.org/dev/migration-guides/migration-6.0.html">Yocto Project documentation</a>.</p>
 </div>
 
                 <div class="clear"></div>

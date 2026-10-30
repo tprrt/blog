@@ -2,8 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - busybox</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/busybox.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2025-06-11T14:53:00+02:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>How the Busybox's chrt applet works</title><link href="https://tprrt.tupi.fr/busybox-chrt-dissection.html" rel="alternate"/><published>2020-09-08T19:20:00+02:00</published><updated>2025-06-11T14:53:00+02:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2020-09-08:/busybox-chrt-dissection.html</id><summary type="html">&lt;p class="first last"&gt;This article details the implementation of the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;In this article, I will dissect how the &lt;em&gt;chrt&lt;/em&gt; applet from the release 1.32.0 of &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; works, what it does, etc.&lt;/p&gt;
-&lt;p&gt;This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.&lt;/p&gt;
+&lt;p&gt;This article dissects the &lt;em&gt;chrt&lt;/em&gt; applet from &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; 1.32.0. The command reads or modifies the scheduling attributes of a process.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chrt&lt;span class="w"&gt; &lt;/span&gt;-m
 SCHED_OTHER&lt;span class="w"&gt; &lt;/span&gt;min/max&lt;span class="w"&gt; &lt;/span&gt;priority&lt;span class="w"&gt;    &lt;/span&gt;:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;/0
 SCHED_FIFO&lt;span class="w"&gt; &lt;/span&gt;min/max&lt;span class="w"&gt; &lt;/span&gt;priority&lt;span class="w"&gt;     &lt;/span&gt;:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;/99
@@ -24,17 +23,16 @@ chrt&lt;span class="w"&gt; &lt;/span&gt;-p&lt;span class="w"&gt; &lt;/span&gt;&l
 pid&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;6987&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;s current scheduling policy: SCHED_FIFO&lt;/span&gt;
 &lt;span class="s1"&gt;pid 6987&amp;#39;&lt;/span&gt;s&lt;span class="w"&gt; &lt;/span&gt;current&lt;span class="w"&gt; &lt;/span&gt;scheduling&lt;span class="w"&gt; &lt;/span&gt;priority:&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
-and with some limitations.&lt;/p&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://www.busybox.net"&gt;Busybox&lt;/a&gt; applet is ten times smaller once compiled than the util-linux binary, with some limitations.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="the-dissection"&gt;
 &lt;h2&gt;The dissection&lt;/h2&gt;
-&lt;p&gt;The implementation of the &lt;em&gt;chrt&lt;/em&gt; applet is in the file &lt;a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c"&gt;util-linux/chrt.c&lt;/a&gt; that containing several functions which are
-called in the main function of this applet.&lt;/p&gt;
-&lt;p&gt;The main function of this applet is divided into three main parts:
-- the first parses the command options
-- the second prints the scheduler's information
-- the last one, to apply scheduler changes in case of a set&lt;/p&gt;
+&lt;p&gt;The applet is implemented in &lt;a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c"&gt;util-linux/chrt.c&lt;/a&gt;, whose main function calls several helpers and has three parts:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;the first parses the command options&lt;/li&gt;
+&lt;li&gt;the second prints the scheduler's information&lt;/li&gt;
+&lt;li&gt;the last one, to apply scheduler changes in case of a set&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;opt&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;getopt32&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;^&amp;quot;&lt;/span&gt;
 &lt;span class="w"&gt;                &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;mprfobi&amp;quot;&lt;/span&gt;
@@ -95,7 +93,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pol&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;bb_perror_msg_and_die&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;can&amp;#39;t %cet pid %u&amp;#39;s policy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;g&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Finally, when the &lt;em&gt;chrt&lt;/em&gt; applet is used to modify scheduling attributes then the Posix function &lt;em&gt;sched_getscheduler&lt;/em&gt; is used and the new scheduling attributes are showed:&lt;/p&gt;
+&lt;p&gt;Finally, when &lt;em&gt;chrt&lt;/em&gt; modifies scheduling attributes, the Posix function &lt;em&gt;sched_setscheduler&lt;/em&gt; applies them and the new attributes are shown:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sched_setscheduler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;policy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;bb_perror_msg_and_die&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;can&amp;#39;t %cet pid %u&amp;#39;s policy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;s&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
@@ -138,7 +136,7 @@ numa_faults&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;node&lt;/s
 &lt;/div&gt;
 &lt;div class="section" id="limitations"&gt;
 &lt;h2&gt;Limitations&lt;/h2&gt;
-&lt;p&gt;Below a short list of limitations that I observed during my analysis of this applet.&lt;/p&gt;
+&lt;p&gt;Limitations I observed in this applet:&lt;/p&gt;
 &lt;div class="section" id="resetting-scheduling-policy"&gt;
 &lt;h3&gt;Resetting scheduling policy&lt;/h3&gt;
 &lt;p&gt;The &lt;em&gt;chrt&lt;/em&gt; applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a

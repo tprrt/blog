@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Tprrt's Blog | llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant</title>
+    <title>Tprrt's Blog | llm-companion: A Self-Hosted AI Coding Assistant</title>
     <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
     <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
@@ -26,8 +26,8 @@
 <meta property="og:site_name" content="Tprrt's Blog" />
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant" />
-<meta property="og:description" content="A look at llm-companion, a rootless Podman Kubernetes Pod stack that turns a spare Fedora or Debian box into a private, hardware-aware Ollama server for OpenCode — with a practical guide to deploying it." />
+<meta property="og:title" content="llm-companion: A Self-Hosted AI Coding Assistant" />
+<meta property="og:description" content="llm-companion is a rootless Podman Kubernetes Pod stack that runs Ollama on a spare Fedora or Debian box and serves it to OpenCode. Design choices and deployment steps." />
 <meta property="og:url" content="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html" />
 <meta property="article:published_time" content="2026-06-23T21:00:00+02:00" />
 <meta property="article:modified_time" content="2026-06-23T21:00:00+02:00" />
@@ -42,17 +42,17 @@
 <meta property="article:tag" content="article" />
 <meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant" />
-<meta name="twitter:description" content="A look at llm-companion, a rootless Podman Kubernetes Pod stack that turns a spare Fedora or Debian box into a private, hardware-aware Ollama server for OpenCode — with a practical guide to deploying it." />
+<meta name="twitter:title" content="llm-companion: A Self-Hosted AI Coding Assistant" />
+<meta name="twitter:description" content="llm-companion is a rootless Podman Kubernetes Pod stack that runs Ollama on a spare Fedora or Debian box and serves it to OpenCode. Design choices and deployment steps." />
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant","description":"A look at llm-companion, a rootless Podman Kubernetes Pod stack that turns a spare Fedora or Debian box into a private, hardware-aware Ollama server for OpenCode \u2014 with a practical guide to deploying it.","datePublished":"2026-06-23T21:00:00+02:00","dateModified":"2026-06-23T21:00:00+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"llm-companion: A Self-Hosted AI Coding Assistant","description":"llm-companion is a rootless Podman Kubernetes Pod stack that runs Ollama on a spare Fedora or Debian box and serves it to OpenCode. Design choices and deployment steps.","datePublished":"2026-06-23T21:00:00+02:00","dateModified":"2026-06-23T21:00:00+02:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html"}
 </script>
 
     <meta name="keywords" content="self-hosting,llm,ollama,podman,kubernetes,ansible,opencode,privacy,article" />
 
-<meta name="description" content="A look at llm-companion, a rootless Podman Kubernetes Pod stack that turns a spare Fedora or Debian box into a private, hardware-aware Ollama server for..." />
+<meta name="description" content="llm-companion is a rootless Podman Kubernetes Pod stack that runs Ollama on a spare Fedora or Debian box and serves it to OpenCode. Design choices and..." />
 </head>
 <body>
     <header>
@@ -77,23 +77,19 @@
 
             <article class="post">
                 <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html" rel="bookmark" title="Permanent Link to &quot;llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant&quot;">llm-companion: A Self-Hosted, Privacy-First AI Coding Assistant</a>
+                    <a href="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html" rel="bookmark" title="Permanent Link to &quot;llm-companion: A Self-Hosted AI Coding Assistant&quot;">llm-companion: A Self-Hosted AI Coding Assistant</a>
                 </h2>
 
 
 
-                <p><strong>I did not want my code to leave my network.</strong> Every agentic coding session
-sends a stream of file contents, project structure, and half-finished thoughts
-to whatever model answers the prompts. Routing all of that through a third-party
-API felt like the wrong default, even when the provider is trustworthy: it is
-recurring cost for routine work, it stops working the moment the LAN or VPN
-does not reach the internet, and it teaches me nothing about how the serving
-side of an LLM stack actually behaves under constrained hardware. So I built
-<a class="reference external" href="https://github.com/tprrt/llm-companion">llm-companion</a>, a rootless Ollama stack for Fedora Server and Debian that I
-can run on a spare machine at home and point <a class="reference external" href="https://opencode.ai">OpenCode</a> at, with cloud
-providers wired in only as an explicit fallback rather than the default path.</p>
-<p>This article walks through what the stack looks like, why it is built the way
-it is, and how to deploy it yourself.</p>
+                <p><strong>I did not want my code to leave my network.</strong> An agentic coding session
+sends file contents, project structure and half-finished thoughts to whatever
+model answers the prompts. I did not want that going to a third-party API by
+default: it costs money for routine work, it stops when the LAN or VPN has no
+route to the internet, and it teaches me nothing about serving an LLM on
+constrained hardware. So I built <a class="reference external" href="https://github.com/tprrt/llm-companion">llm-companion</a>, a rootless Ollama stack for
+Fedora Server and Debian. It runs on a spare machine at home, <a class="reference external" href="https://opencode.ai">OpenCode</a>
+points at it, and cloud providers are only an explicit fallback.</p>
 <div class="section" id="what-llm-companion-is">
 <h2>What llm-companion Is</h2>
 <p>At its core, <a class="reference external" href="https://github.com/tprrt/llm-companion">llm-companion</a> is a single Kubernetes Pod manifest
@@ -124,64 +120,45 @@ one network namespace:</p>
 │                              └─────────┘  └───────────┘│
 └────────────────────────────────────────────────────────┘
 </pre></div>
-<p><a class="reference external" href="https://ollama.com">Ollama</a> serves the models, <a class="reference external" href="https://github.com/open-webui/open-webui">Open WebUI</a> provides a chat interface with
-document/RAG support, <a class="reference external" href="https://github.com/searxng/searxng">SearXNG</a> gives the chat agent web search without
-sending queries to a third party, and Open Terminal gives the agent a sandboxed
-shell. <a class="reference external" href="https://caddyserver.com">Caddy</a> is the only container exposed to the host network, and it
-enforces a Bearer token on every API route.</p>
-<p><a class="reference external" href="https://github.com/open-webui/open-webui">Open WebUI</a> is the browser-facing piece: besides the chat interface, it
-keeps its own user accounts and conversation history, and lets you upload
-documents for retrieval-augmented generation without standing up a separate
-vector store just for that.</p>
-<p><a class="reference external" href="https://github.com/searxng/searxng">SearXNG</a> is a self-hosted metasearch engine — it aggregates results from
-other search engines and returns them without forwarding the query to any
-single one of them, which is what lets the agent's web-search tool stay
-consistent with the rest of the stack's no-third-party-by-default stance.</p>
-<p><a class="reference external" href="https://caddyserver.com">Caddy</a> is the reverse proxy and, as noted above, the only place auth is
-enforced — it is also the only container that would need to know about TLS,
-so adding HTTPS later (if this ever leaves the LAN) is a Caddyfile change,
-not a new container.</p>
-<p>Open Terminal gives a sandboxed shell on the pod, reachable from the
-browser — useful for checking logs or restarting a service without opening
-a separate SSH session.</p>
-<p>The whole thing targets two use cases: chatting through Open WebUI from a
-browser, and routing <a class="reference external" href="https://opencode.ai">OpenCode</a>'s agentic coding sessions through Ollama's
-OpenAI-compatible API — the same workflow you would normally point at Claude
-or GPT-4o, but served from hardware you control.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://ollama.com">Ollama</a> serves the models.</li>
+<li><a class="reference external" href="https://github.com/open-webui/open-webui">Open WebUI</a> is the browser chat interface. It keeps its own user
+accounts and history, and takes document uploads for RAG without a
+separate vector store.</li>
+<li><a class="reference external" href="https://github.com/searxng/searxng">SearXNG</a> is a metasearch engine that gives the chat agent web search
+without sending the query to a single third party.</li>
+<li>Open Terminal gives the agent a sandboxed shell, reachable from the
+browser.</li>
+<li><a class="reference external" href="https://caddyserver.com">Caddy</a> is the reverse proxy, the only container exposed to the host
+network, and the only place a Bearer token is enforced. It is also the only
+one that would need TLS, so adding HTTPS later is a Caddyfile change.</li>
+</ul>
+<p>Two use cases: chatting through Open WebUI, and routing <a class="reference external" href="https://opencode.ai">OpenCode</a> sessions
+through Ollama's OpenAI-compatible API.</p>
 </div>
 <div class="section" id="why-it-is-built-this-way">
 <h2>Why It Is Built This Way</h2>
-<p>A few decisions in the stack are not obvious from the README's quick-start, but
-they are the part I actually learned something from.</p>
 <p><strong>One Pod, one exposed port.</strong> All five containers share a single network
 namespace and talk to each other over <tt class="docutils literal">localhost</tt>, not DNS names. Only Caddy
-publishes a <tt class="docutils literal">hostPort</tt>. This means the firewall rule is one line
-(<tt class="docutils literal">8080/tcp</tt>), and there is exactly one place — the Caddyfile — where
-authentication is enforced. Open WebUI and Open Terminal are never reachable
-directly, even from the LAN.</p>
+publishes a <tt class="docutils literal">hostPort</tt>. The firewall rule is one line (<tt class="docutils literal">8080/tcp</tt>) and
+authentication lives in one place, the Caddyfile. Open WebUI and Open Terminal
+are never reachable directly, even from the LAN.</p>
 <p><strong>Bearer auth at the proxy, not in each service.</strong> Ollama and SearXNG have no
-authentication of their own. Caddy terminates every request and checks a
-Bearer token before forwarding to <tt class="docutils literal">/ollama/api/*</tt>, <tt class="docutils literal">/ollama/v1/*</tt>, or
-<tt class="docutils literal">/searxng/*</tt>. Open WebUI keeps its own login, since it already has user
-accounts. Centralizing auth in the proxy means rotating the key
-(<tt class="docutils literal"><span class="pre">generate-api-key.sh</span></tt>) only touches one Kubernetes Secret, not three
-services' configs.</p>
-<p><strong>A hardware-aware model picker instead of a fixed model list.</strong> Self-hosted
-LLM advice tends to assume either a beefy GPU or hand-picking quantizations
-yourself. <tt class="docutils literal"><span class="pre">pull-models.sh</span></tt> detects architecture (x86_64/aarch64), accelerator
-(CPU, AMD ROCm, NVIDIA CUDA), and available RAM/VRAM, then selects the best
-model per category (coding, vision, general, embedding) that actually fits —
-down to a 1.5B coding model and 1.7B reasoning model on a 2 GB ARM64 board, up
-to Devstral Small 2 24B on a 16 GB+ GPU. <tt class="docutils literal"><span class="pre">--list</span></tt> shows the plan before
-pulling anything.</p>
-<p><strong>Quadlet over a bare ``podman run``.</strong> The pod is managed by a Quadlet
-<tt class="docutils literal">.kube</tt> unit, which gives it normal systemd semantics — <tt class="docutils literal">systemctl <span class="pre">--user</span>
-restart <span class="pre">llm-companion</span></tt>, automatic restart on failure, and
-<tt class="docutils literal">AutoUpdate=registry</tt> so a <tt class="docutils literal">podman <span class="pre">auto-update</span></tt> timer can pull newer
-pinned images without manual intervention. Rootless throughout, with
-<tt class="docutils literal">loginctl linger</tt> so the user service survives without an active login
-session — important for a box that is meant to just sit there and serve
-requests.</p>
+authentication of their own. Caddy checks a Bearer token before forwarding to
+<tt class="docutils literal">/ollama/api/*</tt>, <tt class="docutils literal">/ollama/v1/*</tt> or <tt class="docutils literal">/searxng/*</tt>. Open WebUI keeps its own
+login. Rotating the key (<tt class="docutils literal"><span class="pre">generate-api-key.sh</span></tt>) touches one Kubernetes
+Secret, not three services' configs.</p>
+<p><strong>A hardware-aware model picker instead of a fixed model list.</strong>
+<tt class="docutils literal"><span class="pre">pull-models.sh</span></tt> detects architecture (x86_64/aarch64), accelerator (CPU,
+AMD ROCm, NVIDIA CUDA) and available RAM/VRAM, then picks the best model that
+fits for each category (coding, vision, general, embedding). That is a 1.5B
+coding model and a 1.7B reasoning model on a 2 GB ARM64 board, Devstral Small 2
+24B on a 16 GB+ GPU. <tt class="docutils literal"><span class="pre">--list</span></tt> shows the plan before pulling anything.</p>
+<p><strong>Quadlet over a bare ``podman run``.</strong> A Quadlet <tt class="docutils literal">.kube</tt> unit gives the pod
+normal systemd semantics: <tt class="docutils literal">systemctl <span class="pre">--user</span> restart <span class="pre">llm-companion</span></tt>, restart
+on failure, and <tt class="docutils literal">AutoUpdate=registry</tt> so a <tt class="docutils literal">podman <span class="pre">auto-update</span></tt> timer pulls
+newer pinned images. It runs rootless, with <tt class="docutils literal">loginctl linger</tt> so the user
+service survives without a login session.</p>
 </div>
 <div class="section" id="deploying-it">
 <h2>Deploying It</h2>
@@ -197,8 +174,8 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tprrt
 ./scripts/vm.sh<span class="w"> </span>build<span class="w">           </span><span class="c1"># one-time provisioning (~golden image)</span>
 ./scripts/vm.sh<span class="w"> </span>start<span class="w">           </span><span class="c1"># boots in ~2 minutes from there on</span>
 </pre></div>
-<p>This is how I iterate on the stack itself — rebuild the golden image after a
-change, boot, check the services, tear down — without touching real hardware.</p>
+<p>I iterate on the stack this way: rebuild the golden image, boot, check the
+services, tear down.</p>
 <p>For an actual deployment, copy the example inventory and point it at your
 server:</p>
 <div class="highlight"><pre><span></span>cp<span class="w"> </span>ansible/inventory/hosts.yml.example<span class="w"> </span>ansible/inventory/hosts.yml
@@ -216,13 +193,13 @@ server:</p>
 <p>Then run the playbook:</p>
 <div class="highlight"><pre><span></span>ansible-playbook<span class="w"> </span>-i<span class="w"> </span>ansible/inventory/hosts.yml<span class="w"> </span>ansible/site.yml
 </pre></div>
-<p>It handles, in order: required directories and linger (<tt class="docutils literal">common</tt>), opening
-port 8080 via firewalld or ufw (<tt class="docutils literal">firewall</tt>), installing Podman and building
-the Ollama image (<tt class="docutils literal">podman</tt>), and generating the API key, installing
-<tt class="docutils literal">stack.yml</tt>, and starting the systemd service (<tt class="docutils literal"><span class="pre">llm-stack</span></tt>). It is
-idempotent — re-run it any time you change the inventory or pull new code.</p>
+<p>In order, it creates the directories and enables linger (<tt class="docutils literal">common</tt>), opens
+port 8080 via firewalld or ufw (<tt class="docutils literal">firewall</tt>), installs Podman and builds the
+Ollama image (<tt class="docutils literal">podman</tt>), then generates the API key, installs <tt class="docutils literal">stack.yml</tt>
+and starts the systemd service (<tt class="docutils literal"><span class="pre">llm-stack</span></tt>). It is idempotent: re-run it
+after changing the inventory or pulling new code.</p>
 <p>Pull models sized to your hardware:</p>
-<div class="highlight"><pre><span></span>./scripts/pull-models.sh<span class="w"> </span>--list<span class="w">    </span><span class="c1"># dry run — see what would be pulled</span>
+<div class="highlight"><pre><span></span>./scripts/pull-models.sh<span class="w"> </span>--list<span class="w">    </span><span class="c1"># dry run: show what would be pulled</span>
 ./scripts/pull-models.sh<span class="w">           </span><span class="c1"># pull the best model per category</span>
 </pre></div>
 <p>On an AMD GPU host, re-run Ansible with <tt class="docutils literal"><span class="pre">-e</span> &quot;ollama_build_target=rocm&quot;</tt> first
@@ -255,40 +232,30 @@ OpenAI-compatible provider config (<tt class="docutils literal"><span class="pre
 <tt class="docutils literal"><span class="pre">~/.config/ollama/api-key.env</span></tt> on the server. Switch models at any time with
 <tt class="docutils literal">/models</tt> inside OpenCode — no restart needed.</p>
 <p>Cloud providers (Anthropic, GitHub Copilot) can sit alongside the <tt class="docutils literal">ollama</tt>
-provider in the same config, switched to with the same <tt class="docutils literal">/models</tt> command.
-That is the fallback path I mentioned earlier: the local stack is the default,
-and the cloud is one keystroke away when the network or the hardware cannot
-keep up — travelling, a model too large for the box, or the service simply
-being down.</p>
+provider in the same config and are selected with the same <tt class="docutils literal">/models</tt>
+command. That is the fallback: local by default, cloud when I am travelling,
+the model is too large for the box, or the service is down.</p>
 </div>
 <div class="section" id="lessons-learned">
 <h2>Lessons Learned</h2>
-<p>Rootless GPU access was the part that fought back the most. ROCm needs
-<tt class="docutils literal">/dev/kfd</tt> and <tt class="docutils literal">/dev/dri</tt> inside the container, which in turn needs
-<tt class="docutils literal">securityContext.privileged: true</tt> — there is no narrower rootless path to
-those device nodes today, so the ROCm variant trades some of the isolation
-the CPU variant gets for free. That trade-off is explicit in the stack
-(<tt class="docutils literal"><span class="pre">stack-rocm.yml</span></tt> is a separate manifest, not a flag on the default one),
-and it is documented as a host that should be dedicated rather than shared.</p>
-<p>The hardware-aware model picker turned out to matter more than I expected.
-Hand-picking a quantization for &quot;your&quot; machine works fine for one machine; it
-falls apart the moment the same playbook needs to run unchanged on a 2 GB
-ARM64 board, an 8 GB CPU-only Fedora box, and a 16 GB GPU desktop. Encoding the
-RAM/VRAM gates once, in one script, meant the rest of the stack — Ansible role,
-Quadlet unit, Caddy config — never needed to know which tier it was running
-on.</p>
-<p>The other recurring theme: most of the actual engineering here is not in
-Ollama at all, it is in the boring infrastructure around it — one auth
-boundary, one exposed port, one systemd unit, one script that adapts to
-whatever box it lands on. That boring part is also what makes me comfortable
-leaving it running unattended.</p>
+<p>Rootless GPU access was the hard part. ROCm needs <tt class="docutils literal">/dev/kfd</tt> and
+<tt class="docutils literal">/dev/dri</tt> inside the container, which needs <tt class="docutils literal">securityContext.privileged:
+true</tt>; I found no narrower rootless path to those device nodes. The ROCm
+variant therefore gives up some of the isolation the CPU variant has. It is a
+separate manifest (<tt class="docutils literal"><span class="pre">stack-rocm.yml</span></tt>), not a flag on the default one, and the
+host should be dedicated to it.</p>
+<p>The model picker mattered more than I expected. Picking a quantization by hand
+works for one machine. It breaks when the same playbook must run unchanged on a
+2 GB ARM64 board, an 8 GB CPU-only Fedora box and a 16 GB GPU desktop. With the
+RAM/VRAM gates in one script, the Ansible roles, the Quadlet unit and the Caddy
+config do not need to know which tier they run on.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/llm-companion-self-hosted-ai-coding-assistant.html">posted at 21:00</a>
-                    &nbsp;&middot;&nbsp;7 min read
+                    &nbsp;&middot;&nbsp;5 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/self-hosting.html" rel="tag">Self-Hosting</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/self-hosting.html" class="tags">self-hosting</a>

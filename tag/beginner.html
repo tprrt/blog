@@ -67,8 +67,7 @@
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>In this article, I will dissect how the <em>chrt</em> applet from the release 1.32.0 of <a class="reference external" href="https://www.busybox.net">Busybox</a> works, what it does, etc.</p>
-<p>This command is a Linux utils allowing to consult or to modify the scheduling attributes of a process.</p>
+<p>This article dissects the <em>chrt</em> applet from <a class="reference external" href="https://www.busybox.net">Busybox</a> 1.32.0. The command reads or modifies the scheduling attributes of a process.</p>
 <div class="highlight"><pre><span></span>chrt<span class="w"> </span>-m
 SCHED_OTHER<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">    </span>:<span class="w"> </span><span class="m">0</span>/0
 SCHED_FIFO<span class="w"> </span>min/max<span class="w"> </span>priority<span class="w">     </span>:<span class="w"> </span><span class="m">1</span>/99
@@ -89,17 +88,16 @@ chrt<span class="w"> </span>-p<span class="w"> </span><span class="m">6987</span
 pid<span class="w"> </span><span class="m">6987</span><span class="s1">&#39;s current scheduling policy: SCHED_FIFO</span>
 <span class="s1">pid 6987&#39;</span>s<span class="w"> </span>current<span class="w"> </span>scheduling<span class="w"> </span>priority:<span class="w"> </span><span class="m">1</span>
 </pre></div>
-<p><a class="reference external" href="https://www.busybox.net">Busybox</a> provides an applet whose size, once compiled, is ten times smaller than that of the binary implementation
-and with some limitations.</p>
+<p>The <a class="reference external" href="https://www.busybox.net">Busybox</a> applet is ten times smaller once compiled than the util-linux binary, with some limitations.</p>
 </div>
 <div class="section" id="the-dissection">
 <h2>The dissection</h2>
-<p>The implementation of the <em>chrt</em> applet is in the file <a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c">util-linux/chrt.c</a> that containing several functions which are
-called in the main function of this applet.</p>
-<p>The main function of this applet is divided into three main parts:
-- the first parses the command options
-- the second prints the scheduler's information
-- the last one, to apply scheduler changes in case of a set</p>
+<p>The applet is implemented in <a class="reference external" href="https://elixir.bootlin.com/busybox/1.32.0/source/util-linux/chrt.c">util-linux/chrt.c</a>, whose main function calls several helpers and has three parts:</p>
+<ul class="simple">
+<li>the first parses the command options</li>
+<li>the second prints the scheduler's information</li>
+<li>the last one, to apply scheduler changes in case of a set</li>
+</ul>
 <p>At start of main, the character string containing the options are parsed to obtain a bitfield easier to use:</p>
 <div class="highlight"><pre><span></span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt32</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;^&quot;</span>
 <span class="w">                </span><span class="s">&quot;+&quot;</span><span class="w"> </span><span class="s">&quot;mprfobi&quot;</span>
@@ -160,7 +158,7 @@ standard C library to send a syscall to the kernel in order to obtain the min an
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pol</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">            </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;g&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
 </pre></div>
-<p>Finally, when the <em>chrt</em> applet is used to modify scheduling attributes then the Posix function <em>sched_getscheduler</em> is used and the new scheduling attributes are showed:</p>
+<p>Finally, when <em>chrt</em> modifies scheduling attributes, the Posix function <em>sched_setscheduler</em> applies them and the new attributes are shown:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sched_setscheduler</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">    </span><span class="n">bb_perror_msg_and_die</span><span class="p">(</span><span class="s">&quot;can&#39;t %cet pid %u&#39;s policy&quot;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;s&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">pid</span><span class="p">);</span>
 
@@ -203,7 +201,7 @@ numa_faults<span class="w"> </span><span class="nv">node</span><span class="o">=
 </div>
 <div class="section" id="limitations">
 <h2>Limitations</h2>
-<p>Below a short list of limitations that I observed during my analysis of this applet.</p>
+<p>Limitations I observed in this applet:</p>
 <div class="section" id="resetting-scheduling-policy">
 <h3>Resetting scheduling policy</h3>
 <p>The <em>chrt</em> applet doesn't offer an option (-R) to specify if the scheduling policy should be applied or reset when a

@@ -30,7 +30,7 @@
 <meta property="og:description" content="A GBA example with a lot of on-screen text ran at 18 FPS, idle, no input needed. The cost turned out to be screen-space projection math running through the ARM7TDMI's software float library once..." />
 <meta property="og:url" content="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html" />
 <meta property="article:published_time" content="2026-10-15T22:50:00+02:00" />
-<meta property="article:modified_time" content="2026-10-30T15:11:53.389493+01:00" />
+<meta property="article:modified_time" content="2026-10-30T16:11:40.333300+01:00" />
 <meta property="article:tag" content="gba" />
 <meta property="article:tag" content="performance" />
 <meta property="article:tag" content="optimization" />
@@ -47,7 +47,7 @@
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"Floored Twice: Chasing a Soft-Float Tax in GBA Text Rendering","description":"A GBA example with a lot of on-screen text ran at 18 FPS, idle, no input needed. The cost turned out to be screen-space projection math running through the ARM7TDMI\u0027s software float library once...","datePublished":"2026-10-15T22:50:00+02:00","dateModified":"2026-10-30T15:11:53.389493+01:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Floored Twice: Chasing a Soft-Float Tax in GBA Text Rendering","description":"A GBA example with a lot of on-screen text ran at 18 FPS, idle, no input needed. The cost turned out to be screen-space projection math running through the ARM7TDMI\u0027s software float library once...","datePublished":"2026-10-15T22:50:00+02:00","dateModified":"2026-10-30T16:11:40.333300+01:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html"}
 </script>
 
     <meta name="keywords" content="gba,performance,optimization,embedded,retro,gamedev,fixed-point,c,article" />
@@ -85,12 +85,10 @@
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
 <p>The <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">earlier article on cycle-level GBA optimization</a>
-covered the software 3D rasterizer: two &quot;obviously correct&quot; changes that
-measured as regressions once link-time optimization's own inlining
-decisions got factored in. This article is the same lesson applied to a
-completely different part of the renderer — the one that draws text — and
-it took two more wrong turns to get there, for reasons that had nothing to
-do with LTO this time.</p>
+covered the software 3D rasterizer, where two &quot;obviously correct&quot; changes
+measured as regressions once link-time optimization's inlining was counted.
+Here the same thing happens in the text renderer, with two more wrong turns
+that have nothing to do with LTO.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
@@ -101,10 +99,9 @@ maturity.</p>
 the 60 Hz target, both idle, nothing moving, no input needed to reproduce:
 <tt class="docutils literal">input_tester</tt> (76 of a 96-slot text sprite budget active) at roughly
 18 FPS, and <tt class="docutils literal">wordle</tt>, a word cloud of rotated labels, at roughly 14.5.
-<tt class="docutils literal">phase_probe.py</tt>, the gdbstub cycle-bracketing script this blog has used
-before, had already put about 69% of a frame's cost inside one function,
-<tt class="docutils literal">gba_text_render_system</tt>. The question this article answers is which
-part of that function, and what fixing it actually took.</p>
+<tt class="docutils literal">phase_probe.py</tt>, the gdbstub cycle-bracketing script used in earlier
+articles, put about 69% of a frame's cost inside one function,
+<tt class="docutils literal">gba_text_render_system</tt>. Which part of it?</p>
 </div>
 <div class="section" id="finding-where-the-cost-lives">
 <h2>Finding where the cost lives</h2>
@@ -114,42 +111,34 @@ glyph group). Three plausible places for the cost to hide: the glyph
 layout math, the screen-space projection that turns a world position into
 a pixel coordinate, or the OAM attribute writes themselves, once per
 glyph and so the most frequent of the three.</p>
-<p>A quick static pass with <tt class="docutils literal"><span class="pre">arm-none-eabi-objdump</span> <span class="pre">-dS</span></tt> ruled the OAM
-writes out early — they're fully inlined integer stores, no library calls
-at all. The projection math was a different story: <tt class="docutils literal">cx</tt>/<tt class="docutils literal">cy</tt> (an
-entity's anchor in screen space) and <tt class="docutils literal">py_base</tt>/<tt class="docutils literal">px</tt> (where each line
-starts) were float, and the ARM7TDMI has no FPU, so every subtract, add,
-multiply and the two <tt class="docutils literal">floorf()</tt>/float-to-int calls on top of them go
-through software float library routines.</p>
-<p>Static inspection only tells you a call exists, not how often the
-hardware actually takes it. Two breakpoints settled that: one at the
-function's entry, one at the first line of the innermost per-sprite loop
-body. The delta between consecutive hits of the second breakpoint is one
+<p><tt class="docutils literal"><span class="pre">arm-none-eabi-objdump</span> <span class="pre">-dS</span></tt> ruled out the OAM writes: they are inlined
+integer stores with no library calls. The projection math was different:
+<tt class="docutils literal">cx</tt>/<tt class="docutils literal">cy</tt> (an entity's anchor in screen space) and <tt class="docutils literal">py_base</tt>/<tt class="docutils literal">px</tt>
+(where each line starts) were float, and the ARM7TDMI has no FPU, so every
+subtract, add, multiply, <tt class="docutils literal">floorf()</tt> and float-to-int conversion goes
+through a software float routine.</p>
+<p>Static inspection shows that a call exists, not how often it runs. Two
+breakpoints measured that: one at the function's entry, one at the first line
+of the innermost per-sprite loop body. The delta between consecutive hits of the second breakpoint is one
 sprite's own cost when it stays on the same line as the sprite before it,
 and the same delta plus a line's or entity's own setup when it doesn't.
 In a steady frame of <tt class="docutils literal">input_tester</tt>, a same-line sprite-to-sprite step
 cost about 515 cycles. A step that also crossed into a new line or a new
-entity cost 7400 to 17000 — roughly fifteen times as much, for a
-transition that happens far less often than every sprite does, but still
-often enough across a frame to dominate. The per-entity/per-line
-projection math was the cost, not the per-sprite work multiplied by a
-large sprite count.</p>
+entity cost 7400 to 17000, roughly fifteen times as much. Those transitions are
+rarer than sprites but frequent enough to dominate a frame. The per-entity and
+per-line projection math was the cost, not the per-sprite work.</p>
 </div>
-<div class="section" id="war-story-1-fixed-point-that-rounded-the-wrong-way">
-<h2>War story 1: fixed-point that rounded the wrong way</h2>
-<p>The ARM7TDMI projection code the engine already runs for its software 3D
-pipeline uses <tt class="docutils literal">fix_t</tt>, a Q12 fixed-point type — one hardware multiply
-(<tt class="docutils literal">fix_mul</tt>) instead of a chain of soft-float calls. Reusing it for text
-looked like the obvious fix: convert the camera position, the ortho
-extent, the scale and the entity's own position to <tt class="docutils literal">fix_t</tt> and do the
-whole projection in integer math.</p>
-<p>It passed every example I ran it against, by eye. Before trusting that, I
-wrote a host-side sweep test comparing the fixed-point result against the
-plain float one across a grid of realistic camera/ortho/scale/position
-combinations — the same discipline the <a class="reference external" href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html">article on sprite flicker</a> used an emulator sampler for, just on the host this
-time, because the thing being checked was arithmetic, not hardware state.
-16 of 192 combinations disagreed, and
-every one disagreed by exactly one, in the same direction:</p>
+<div class="section" id="attempt-1-fixed-point-that-rounded-the-wrong-way">
+<h2>Attempt 1: fixed-point that rounded the wrong way</h2>
+<p>The engine's software 3D pipeline already uses <tt class="docutils literal">fix_t</tt>, a Q12 fixed-point
+type, where one hardware multiply (<tt class="docutils literal">fix_mul</tt>) replaces a chain of soft-float
+calls. Reusing it for text looked like the obvious fix: convert the camera
+position, ortho extent, scale and entity position to <tt class="docutils literal">fix_t</tt> and project in
+integer math.</p>
+<p>It looked right in every example. Before trusting that, I wrote a host-side
+sweep test comparing the fixed-point result with the float one across a grid
+of realistic camera, ortho, scale and position values. 16 of 192 combinations
+disagreed, every one by exactly one, in the same direction:</p>
 <div class="highlight"><pre><span></span>mismatch: cam=0.0 ortho=5.0 scale=28.8 pos=0.0 expected=144 actual=143
 mismatch: cam=0.0 ortho=5.0 scale=28.8 pos=2.5 expected=72  actual=71
 </pre></div>
@@ -157,85 +146,61 @@ mismatch: cam=0.0 ortho=5.0 scale=28.8 pos=2.5 expected=72  actual=71
 which depends on its exact behavior) truncates toward zero. Four
 conversions chained together — camera, ortho extent, scale, position —
 each truncate a little short, and on values that land exactly on an
-integer in true float math, the accumulated shortfall is enough to floor
-to one below the real answer. 144.0 pixels of text would have shifted up
-by a pixel, silently, on specific camera positions. The test caught it
-before a single frame of it ran on an emulator, let alone hardware.</p>
+integer in float math, the accumulated shortfall floors to one below the
+right answer. Text at 144.0 pixels would have shifted by a pixel on specific
+camera positions, with no visible sign.</p>
 </div>
-<div class="section" id="war-story-2-the-float-path-that-measured-slower">
-<h2>War story 2: the float path that measured slower</h2>
-<p>Rather than fix the rounding, I tried avoiding fixed-point arithmetic
-altogether: keep everything in float, but replace <tt class="docutils literal">(int)floorf(x)</tt> with
-a hand-rolled equivalent that skips <tt class="docutils literal">floorf()</tt>'s general body.
-<tt class="docutils literal">objdump</tt> showed that body at 74 instructions — handling NaN, infinity
-and subnormals this call site's bounded screen-space input never
-produces. A truncate-then-adjust version is exact for any finite value
-and looks a lot cheaper:</p>
+<div class="section" id="attempt-2-the-float-path-that-measured-slower">
+<h2>Attempt 2: the float path that measured slower</h2>
+<p>Instead of fixing the rounding, I kept everything in float and replaced
+<tt class="docutils literal">(int)floorf(x)</tt> with a hand-rolled version. <tt class="docutils literal">objdump</tt> showed the
+<tt class="docutils literal">floorf()</tt> body at 74 instructions, handling NaN, infinity and subnormals
+that bounded screen-space input never produces. A truncate-then-adjust
+version is exact for any finite value and looks much cheaper:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">gba_fast_floor</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">x</span><span class="p">;</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-<p>Exact, verified the same way as the first attempt, and obviously less
-code. <tt class="docutils literal">cycle_probe.py</tt> said otherwise: the steady-state average on
-<tt class="docutils literal">input_tester</tt> went from 727556 to 748028 cycles/frame, a ~2.8%
-<em>regression</em>. The original <tt class="docutils literal">(int)floorf(x)</tt> is two soft-float library
-calls (<tt class="docutils literal">floorf</tt> itself, then the float-to-int conversion on its
-result). The replacement is three (truncate, convert back to float to
-compare, compare) — one more, and each one pays its own fixed
-call/return/Thumb-interworking overhead on top of whatever its body
-actually does. <tt class="docutils literal">floorf()</tt>'s large body turned out to be cheaper than
-the fast version's extra dispatch. A smaller instruction count on paper
-said nothing about the measured cost.</p>
+<p>It is exact, verified like the first attempt, and shorter. <tt class="docutils literal">cycle_probe.py</tt>
+disagreed: the steady-state average on <tt class="docutils literal">input_tester</tt> went from 727556 to
+748028 cycles/frame, a ~2.8% <em>regression</em>. The original <tt class="docutils literal">(int)floorf(x)</tt> is
+two soft-float calls (<tt class="docutils literal">floorf</tt>, then the float-to-int conversion). The
+replacement is three (truncate, convert back to float, compare), and each call
+pays its own call/return/Thumb-interworking overhead. <tt class="docutils literal">floorf()</tt>'s large
+body is cheaper than one extra call.</p>
 </div>
 <div class="section" id="what-actually-worked">
 <h2>What actually worked</h2>
-<p>Fixed-point, with the rounding fixed rather than abandoned: a local
-<tt class="docutils literal">gba_fix_from_float_rounded()</tt> (not a change to the shared, truncating
-<tt class="docutils literal">fix_from_float()</tt>, since the 3D rasterizer depends on that one's exact
-behavior) that rounds to nearest instead of truncating. The sweep test
-that caught the first attempt now passes, including the exact-integer
-cases it failed before and the narrowest possible margin around an
-integer boundary a float can represent.</p>
-<p>The second change mattered as much as the rounding fix: every
-frame-constant term — camera position, ortho extent, the screen-space
-scale — gets converted to <tt class="docutils literal">fix_t</tt> once per function call, not once per
-entity. Only the entity's own position still needs converting per entity.
-Downstream, <tt class="docutils literal">fix_mul</tt> is a single hardware multiply, and flooring a
-<tt class="docutils literal">fix_t</tt> back to a pixel coordinate is a plain arithmetic right shift —
-no library call at all, unlike either of the two float attempts above.</p>
-<p>One more wrinkle: a rotated text entity still needs a plain float
-<tt class="docutils literal">cx</tt>/<tt class="docutils literal">cy</tt> for the sprite-rotation math downstream, which takes float
-arguments. Computing that from scratch, alongside the new fixed-point
-version every entity now also computes, meant a rotated entity paid for
-both — net worse than before the change for exactly that case, confirmed
-by re-running <tt class="docutils literal">cycle_probe.py</tt> against <tt class="docutils literal">wordle</tt>'s word cloud, the one
-example here with heavily rotated text. Deriving the float version from
-the already-computed <tt class="docutils literal">fix_t</tt> one instead (one int-to-float conversion
-and a multiply by a compile-time constant, rather than the full
-subtract/add/multiply chain again) cut that overhead roughly in half.
-Not to zero — a rotated entity still computes both representations, just
-a cheaper version of the second one.</p>
+<p>Fixed-point, with the rounding fixed: a local <tt class="docutils literal">gba_fix_from_float_rounded()</tt>
+that rounds to nearest. The shared <tt class="docutils literal">fix_from_float()</tt> stays untouched because
+the 3D rasterizer depends on its truncation. The sweep test now passes,
+including the exact-integer cases and the narrowest float margin around an
+integer boundary.</p>
+<p>The second change mattered as much: every frame-constant term (camera
+position, ortho extent, screen-space scale) is converted to <tt class="docutils literal">fix_t</tt> once per
+call, not once per entity. Only the entity's own position is converted per
+entity. <tt class="docutils literal">fix_mul</tt> is one hardware multiply, and flooring a <tt class="docutils literal">fix_t</tt> to a
+pixel coordinate is an arithmetic right shift, with no library call.</p>
+<p>A rotated text entity still needs a float <tt class="docutils literal">cx</tt>/<tt class="docutils literal">cy</tt> for the sprite-rotation
+math. Computing it from scratch next to the fixed-point version made a rotated
+entity pay for both, which was slower than before for that case;
+<tt class="docutils literal">cycle_probe.py</tt> on <tt class="docutils literal">wordle</tt>'s word cloud confirmed it. Deriving the float
+value from the <tt class="docutils literal">fix_t</tt> one (one int-to-float conversion and a multiply by a
+constant) halved that overhead. A rotated entity still computes both.</p>
 </div>
 <div class="section" id="checking-it">
 <h2>Checking it</h2>
-<p>Cycle counts say a change is faster. They say nothing about whether it's
-still correct, and a screen-space projection rewrite is exactly the kind
-of change that can be wrong by one pixel and still look fine in a casual
-glance at an emulator window. The check was the same shape as the
-<a class="reference external" href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html">flicker article's</a> OAM sampling, but byte-exact
-instead of statistical: connect to the emulator's GDB stub, let a handful
-of frames pass so
-startup settles, read the full 1 KB of hardware sprite memory, and
-compare it against the same read from the unmodified ROM.</p>
+<p>Cycle counts do not show correctness, and a projection rewrite can be off by
+one pixel without looking wrong. The check is the <a class="reference external" href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html">flicker article's</a> OAM sampling, made byte-exact: connect to the emulator's
+GDB stub, let a few frames pass so startup settles, read the 1 KB of hardware
+sprite memory, and compare it with the same read from the unmodified ROM.</p>
 <div class="highlight"><pre><span></span>IDENTICAL: 1024 bytes of OAM match exactly
 </pre></div>
-<p>...for both <tt class="docutils literal">input_tester</tt> (plain, unrotated text, the common case)
-and <tt class="docutils literal">wordle</tt> (the rotated one). All 128 hardware sprite entries, same
-position, same tile, same palette bank, same affine flags, in both ROMs.
-The fixed-point rewrite changes how the pixel coordinate gets computed; it
-is not allowed to change what the coordinate is.</p>
+<p>This holds for both <tt class="docutils literal">input_tester</tt> (unrotated text) and <tt class="docutils literal">wordle</tt>
+(rotated): all 128 sprite entries have the same position, tile, palette bank
+and affine flags in both ROMs.</p>
 </div>
 <div class="section" id="the-numbers">
 <h2>The numbers</h2>
@@ -267,31 +232,26 @@ is not allowed to change what the coordinate is.</p>
 </tr>
 </tbody>
 </table>
-<p><tt class="docutils literal">input_tester</tt> is the representative case: a HUD-style scene with
-static, unrotated labels, which is what most of a game's own on-screen
-text actually looks like. <tt class="docutils literal">wordle</tt>'s word cloud is a rotation showcase,
-not representative of that, and it is the one case where this change
-gives a little back. Closing that gap too would mean two separate code
-paths — fixed-point only when nothing is rotated, float only when it is —
-instead of one computed and the other derived from it. I didn't take it:
-more branching in an already-dense function, for a demo scene rather than
-the 18 FPS HUD/UI case this work was for.</p>
+<p><tt class="docutils literal">input_tester</tt> is the representative case: a HUD-style scene with static,
+unrotated labels. <tt class="docutils literal">wordle</tt>'s word cloud is a rotation showcase and the one
+case where the change gives a little back. Closing that gap would need two code
+paths, fixed-point when nothing is rotated and float when something is. I did
+not add them: more branching in a dense function, for a demo scene rather than
+the 18 FPS HUD case.</p>
 </div>
 <div class="section" id="what-is-left">
 <h2>What is left</h2>
-<p>~3.5% is real and it is not the fix for an 18 FPS scene. The per-entity
-layout call and <tt class="docutils literal">framer_color_bank_acquire()</tt> were never bracketed the
-way the projection math was, and either could be sitting on cost of its
-own. The method that found this one generalizes directly: two
-breakpoints, a steady frame, and the delta between them — not a guess
-about which function looks expensive.</p>
+<p>~3.5% is not the fix for an 18 FPS scene. The per-entity layout call and
+<tt class="docutils literal">framer_color_bank_acquire()</tt> were never bracketed like the projection math,
+and either may hold more cost. Next step: the same two-breakpoint measurement
+on them.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html">posted at 22:50</a>
-                    &nbsp;&middot;&nbsp;8 min read
+                    &nbsp;&middot;&nbsp;6 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>

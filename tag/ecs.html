@@ -67,67 +67,51 @@
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>The <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">previous article on this blog</a> was about the
-static, no-heap Entity Component System <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> runs on GBA and
-NDS: a fixed table of component slots and a fixed table of entities,
-sized to fit in a machine with no <tt class="docutils literal">malloc()</tt>. That fixed sizing has a
-consequence the article didn't need to dwell on at the time: with today's
-component set, the table has room for 64 real entities. A caravan-style
-vertical shoot-'em-up, the first playable milestone this engine is
-building toward, wants several hundred bullets on screen during a dense
-pattern. Neither number moves to meet the other — the entity table isn't
-growing to fit a bullet count, and a bullet pattern isn't capping itself
-at 64 shots to fit the table.</p>
+<p>The <a class="reference external" href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">previous article</a> described the static, no-heap
+Entity Component System <a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> runs on GBA and NDS: fixed tables of
+component slots and entities, sized for a machine with no <tt class="docutils literal">malloc()</tt>. With
+today's component set the table has room for 64 real entities. A caravan-style
+vertical shoot-'em-up, the engine's first playable milestone, wants several
+hundred bullets on screen in a dense pattern. The entity table cannot grow to
+fit that, and the pattern cannot cap itself at 64 shots.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
 made publicly available once the engine reaches a sufficient level of
 maturity.</p>
 </div>
-<p>The tension is old and the usual answer is old too: don't make every
-bullet an entity. What took two attempts wasn't the bullet simulation
-itself — a flat array of structs, advanced by one system, is not a hard
-problem — it was deciding how that array gets drawn without quietly
-opening a second, ECS-shaped hole in the renderer. The first answer
-shipped, worked, and was wrong in a way no test had a reason to catch.
-The second answer was smaller, matched a pattern the engine already had,
-and went on to surface three real bugs across three different rendering
-backends, none of which were about bullets at all.</p>
+<p>The usual answer is not to make every bullet an entity. The simulation, a flat
+array of structs advanced by one system, was easy. Drawing that array without
+opening a second path in the renderer took two attempts. The first shipped,
+worked, and was wrong in a way no test would catch. The second was smaller,
+matched a pattern the engine already had, and surfaced three bugs across three
+rendering backends, none about bullets.</p>
 </div>
 <div class="section" id="the-first-answer-a-queue-that-isn-t-an-entity">
 <h2>The first answer: a queue that isn't an entity</h2>
-<p>The obvious shape for &quot;hundreds of short-lived things, updated every
-frame, drawn every frame, never touched individually by name&quot; is a
-per-frame queue: a flat array of draw commands (position, sprite, frame),
-reset at the start of each frame, appended to by whatever wants something
-drawn, and consumed once by the renderer at the end of it. A bullet pool
-fits that shape exactly — push one entry per live bullet, once, after the
-physics step — and it required nothing new from the ECS at all, since
-nothing about it touched an entity, a component, or a query.</p>
-<p>That was also exactly the problem. Every other thing this engine draws —
-a sprite, a tilemap, a HUD label — is an entity carrying a component, and
-every renderer's draw phase is systems iterating queries. A queue fed
-directly by application code and drained directly by the renderer is a
-second path with none of that: it isn't visible to the entity-inspection
-API a previous milestone added, it isn't something a capability query
-knows exists, and it isn't something any of the debugging tooling built
-around &quot;the ECS is the whole scene&quot; has any way to see. It worked, in the
-narrow sense that bullets appeared on screen in the right place moving
-at the right speed. It didn't survive being looked at as architecture:
-elements without an entity, bypassing the engine's own core model,
-aren't a smaller version of the real design — they're a different
-design that happens to render the same pixels.</p>
+<p>Hundreds of short-lived things, updated and drawn every frame and never
+addressed individually, suggest a per-frame queue: a flat array of draw
+commands (position, sprite, frame), reset each frame, appended to by whatever
+wants something drawn and consumed once by the renderer. A bullet pool fits
+exactly, pushing one entry per live bullet after the physics step, and needs
+nothing from the ECS: no entity, component or query.</p>
+<p>That was the problem. Everything else the engine draws (a sprite, a tilemap, a
+HUD label) is an entity with a component, and every renderer's draw phase is
+systems iterating queries. A queue fed by application code and drained by the
+renderer is a second path. The entity-inspection API cannot see it, capability
+queries do not know it exists, and the debugging tools built on &quot;the ECS is the
+whole scene&quot; miss it. Bullets appeared in the right place at the right speed,
+but elements without an entity bypass the engine's core model. It is a
+different design that happens to render the same pixels.</p>
 </div>
 <div class="section" id="the-second-answer-an-entity-that-stands-for-many">
 <h2>The second answer: an entity that stands for many</h2>
-<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> already had a component that solves this exact
-class of problem, for a different feature: a <tt class="docutils literal">Tilemap</tt> is one entity
-whose component points at a grid the owner keeps, and the renderer draws
-the whole grid from that one entity every frame. Nothing about &quot;many
-drawn things, one piece of external memory, one component pointing at
-it&quot; is specific to tiles. The rewrite generalizes that shape and gives it
-a name — <tt class="docutils literal">SpriteBatch</tt> — and the bullet pool becomes one more caller
-of it instead of a bespoke path of its own:</p>
+<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> already had a component for this class of problem: a
+<tt class="docutils literal">Tilemap</tt> is one entity whose component points at a grid the owner keeps,
+and the renderer draws the whole grid from that entity. Nothing in &quot;many drawn
+things, one external memory, one component pointing at it&quot; is specific to
+tiles. The rewrite generalizes it as <tt class="docutils literal">SpriteBatch</tt>, and the bullet pool
+becomes one more caller instead of a bespoke path:</p>
 <div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">framer_batch_sprite</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">       </span><span class="cm">/* center, world units, fixed point */</span>
 <span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">texture</span><span class="p">;</span>
@@ -141,70 +125,55 @@ of it instead of a bespoke path of its own:</p>
 <span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">stride</span><span class="p">;</span><span class="w">      </span><span class="cm">/* bytes between elements */</span>
 <span class="p">};</span>
 </pre></div>
-<p>A <tt class="docutils literal">framer_bullet</tt> places its own <tt class="docutils literal">struct framer_batch_sprite</tt> as its
-first field, so the bullet pool's own storage array <em>is</em> the
-<tt class="docutils literal">SpriteBatch</tt>'s element array — no copy, no second buffer kept in sync.
-<tt class="docutils literal">framer_bullet_pool_entity_create()</tt> gives the pool's one entity both a
-<tt class="docutils literal">BulletPool</tt> component, stepped every frame by a physics system, and a
-<tt class="docutils literal">SpriteBatch</tt> component built from the same array, drawn every frame by
-the renderer. Every renderer's draw phase still only ever does one thing:
-iterate a query and draw what it finds. Hundreds of bullets stay out of
-the 64-slot entity table; nothing draws that isn't reachable from an
-entity.</p>
-<p>That much is a straightforward generalization of an existing pattern, and
-it's also where the interesting bugs started, because a component that
-every renderer backend has to independently learn to draw is a component
-that gives every renderer backend its own chance to get it wrong.</p>
+<p>A <tt class="docutils literal">framer_bullet</tt> has its own <tt class="docutils literal">struct framer_batch_sprite</tt> as its first
+field, so the pool's storage array <em>is</em> the <tt class="docutils literal">SpriteBatch</tt> element array, with
+no copy and no second buffer to keep in sync.
+<tt class="docutils literal">framer_bullet_pool_entity_create()</tt> gives the pool's one entity a
+<tt class="docutils literal">BulletPool</tt> component, stepped each frame by a physics system, and a
+<tt class="docutils literal">SpriteBatch</tt> component built from the same array, drawn each frame by the
+renderer. Every draw phase still iterates a query and draws what it finds.
+The bullets stay out of the 64-slot entity table, and everything drawn is
+reachable from an entity.</p>
+<p>Every renderer backend has to learn to draw the new component independently,
+which gave each one a chance to get it wrong.</p>
 </div>
 <div class="section" id="bug-1-vulkan-a-guard-that-was-checking-the-wrong-component">
 <h2>Bug 1 (Vulkan): a guard that was checking the wrong component</h2>
-<p>Every renderer backend's sprite system is imported once per world, and
-every one of them has to answer the same small design question: how do
-you know &quot;once&quot; has already happened? The naive answer, comparing the
-stored world pointer against the one you were just called with, breaks
-the moment a <em>different</em> world gets allocated at the <em>same</em> address —
-which is exactly what every test in this codebase does, tearing a world
-down and creating a fresh one for the next case. The existing convention
-across this codebase's renderer imports is therefore to also check that
-some component the import function itself registers is actually present
-on the world in front of you, not just that the pointer matches.</p>
-<p>The version of this check written for <tt class="docutils literal">SpriteBatch</tt> picked the wrong
-component to check:</p>
+<p>Each backend's sprite system is imported once per world, so it needs a guard
+against importing twice. Comparing the stored world pointer with the current
+one breaks when a <em>different</em> world is allocated at the <em>same</em> address, which
+every test here does by tearing a world down and creating a fresh one. The
+convention in the renderer imports is to also check that a component the
+import function itself registers is present on the world.</p>
+<p>The check written for <tt class="docutils literal">SpriteBatch</tt> tested the wrong component:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Wrong: Sprite is registered by the renderer&#39;s own import, before</span>
 <span class="cm"> * this function ever runs -- it says nothing about whether THIS</span>
 <span class="cm"> * function has run on this particular world. */</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s_world</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">FRAMER_COMPONENT_IS_REGISTERED</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">Sprite</span><span class="p">))</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 </pre></div>
-<p>On a fresh world reusing a previous world's address, <tt class="docutils literal">Sprite</tt> is
-already registered — by the caller, earlier in the same
-<tt class="docutils literal">framer_sprite_system_import()</tt> — before this guard is ever reached.
-The check reports &quot;already set up&quot; on the very first call, every time,
-and the function returns without ever registering <tt class="docutils literal">SpriteBatch</tt> or its
-draw system. Sprites drew fine; batches never did.</p>
-<p>This one didn't need staring at code to find — it failed exactly where a
-test already existed to catch it. The new pixel-readback test for
-<tt class="docutils literal">SpriteBatch</tt> (draw an element, read the pixel back, expect it filled)
-passed against the software and OpenGL backends and failed against
-Vulkan specifically, because Vulkan's test suite happened to run a batch
-test on a world whose address a prior test had already used. Fixing the
-guard to check the component this function actually registers —</p>
+<p>On a fresh world reusing a previous world's address, <tt class="docutils literal">Sprite</tt> is already
+registered by the caller, earlier in the same
+<tt class="docutils literal">framer_sprite_system_import()</tt>, before the guard runs. The check reports
+&quot;already set up&quot; on the first call and the function returns without
+registering <tt class="docutils literal">SpriteBatch</tt> or its draw system. Sprites drew; batches never
+did.</p>
+<p>A test caught it. The new pixel-readback test for <tt class="docutils literal">SpriteBatch</tt> (draw an
+element, read the pixel back, expect it filled) passed on the software and
+OpenGL backends and failed on Vulkan, whose suite happened to run a batch test
+on a world at an address a prior test had used. The fix checks the component
+this function registers:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">s_world</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">world</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">FRAMER_COMPONENT_IS_REGISTERED</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">SpriteBatch</span><span class="p">))</span>
 <span class="w">    </span><span class="k">return</span><span class="p">;</span>
 </pre></div>
-<p>— was a one-line change once the failing test pointed at exactly which
-world-reuse case was wrong. The same wrong-component shape was checked
-for, by inspection, in the OpenGL and software backends before either
-one had actually failed a test; both had the identical guard, both got
-the identical fix, and both were then verified rather than assumed
-fixed.</p>
+<p>The OpenGL and software backends had the identical guard, found by
+inspection before either failed a test. Both got the same fix and were
+verified.</p>
 </div>
 <div class="section" id="bug-2-opengl-reading-back-a-write-that-hasn-t-happened-yet">
 <h2>Bug 2 (OpenGL): reading back a write that hasn't happened yet</h2>
-<p>The OpenGL backend's default shaders are compiled lazily, the first time
-anything asks for one, and cached in the world's own <tt class="docutils literal">Shader</tt>
-singleton component so the next thousand callers don't recompile
-anything:</p>
+<p>The OpenGL backend compiles its default shaders lazily, on first request, and
+caches them in the world's <tt class="docutils literal">Shader</tt> singleton component:</p>
 <div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shader</span><span class="w"> </span><span class="o">*</span><span class="n">shaders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FRAMER_GET</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="n">Shader</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">shaders</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">framer_shader_create</span><span class="p">(...);</span>
@@ -221,28 +190,19 @@ anything:</p>
 <span class="cm">/* ... */</span>
 <span class="p">}</span>
 </pre></div>
-<p>This is correct exactly as long as a component write, from the caller's
-point of view, takes effect immediately. It doesn't, unconditionally: a
-write issued from inside a running system is staged and only merged once
-every system scheduled for that step has finished, so a <em>second</em> system
-in the same step can already see it, but the <em>same</em> call that just made
-the write cannot read it back synchronously. That's an ordinary property
-of this ECS, not a bug in it — every other caller of
-<tt class="docutils literal">framer_shader_get_default()</tt> had always been either the very first
-mesh or sprite draw of an existing scene, where something upstream
-(loading a level, spawning a player) had already asked for a shader on
-some earlier frame, so the singleton already existed by the time this
-function's fast path ran.</p>
-<p>The <tt class="docutils literal">SpriteBatch</tt> draw system is the first thing in a brand-new scene
-that has <em>nothing</em> upstream of it — no mesh, no plain sprite entity, just
-a bullet pool's one entity. On that scene's very first frame, its render
-system is the very first caller of <tt class="docutils literal">framer_shader_get_default()</tt> ever,
-from inside a system, in a world where nothing has asked before. The
-write lands; the read-back in the same call finds nothing; the function
-returns 0; that frame renders every batch element with no shader bound at
-all. The fix doesn't touch the ECS's timing at all, because there's
-nothing wrong with it — it stops asking the world to hand back something
-it was just told, seconds from now, to go store:</p>
+<p>This assumes a component write takes effect immediately. It does not: a write
+issued inside a running system is staged and merged once every system in that
+step has finished. A second system in the same step can see it, but the call
+that made the write cannot read it back. That is an ordinary property of this
+ECS. Every other caller of <tt class="docutils literal">framer_shader_get_default()</tt> came after something
+upstream (loading a level, spawning a player) had already asked for a shader on
+an earlier frame, so the singleton existed.</p>
+<p>The <tt class="docutils literal">SpriteBatch</tt> draw system is the first thing in a new scene with nothing
+upstream: no mesh, no plain sprite, just a bullet pool's entity. On the first
+frame its render system is the first caller of <tt class="docutils literal">framer_shader_get_default()</tt>.
+The write lands, the read-back in the same call finds nothing, the function
+returns 0, and that frame renders every batch element with no shader bound.
+The ECS timing is fine; the fix stops reading back what was just staged:</p>
 <div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">shader</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">sprite_shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sprite</span><span class="p">,</span><span class="w"> </span><span class="cm">/* ... */</span><span class="p">};</span>
 
 <span class="n">framer_component_set</span><span class="p">(</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="n">FRAMER_ID</span><span class="p">(</span><span class="n">Shader</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">created</span><span class="p">);</span>
@@ -251,43 +211,36 @@ it was just told, seconds from now, to go store:</p>
 </div>
 <div class="section" id="bug-3-all-three-desktop-backends-drawn-correctly-in-the-wrong-order">
 <h2>Bug 3 (all three desktop backends): drawn correctly, in the wrong order</h2>
-<p>The first two bugs were both &quot;nothing drew.&quot; The third one was quieter:
-every bullet drew, at the right position, the right size, the right
-texture — and the entity that fired them disappeared behind its own
-bullets the moment enough of them piled up at its position.</p>
-<p><tt class="docutils literal">SpriteBatch</tt> and the ordinary per-entity <tt class="docutils literal">Sprite</tt> draw are two
-separate systems in the same ECS phase, and nothing had ever said which
-one goes first. On GBA and NDS this was never a question worth asking,
-because the hardware answers it structurally: OAM sprites carry an
-explicit priority value, and entity sprites are deliberately drawn at a
+<p>The first two bugs were &quot;nothing drew&quot;. In the third, every bullet drew at the
+right position, size and texture, but the entity that fired them disappeared
+behind its own bullets once enough piled up at its position.</p>
+<p><tt class="docutils literal">SpriteBatch</tt> and the per-entity <tt class="docutils literal">Sprite</tt> draw are separate systems in the
+same ECS phase, and nothing said which goes first. On GBA and NDS the hardware
+settles it: OAM sprites carry a priority, and entity sprites are drawn at a
 higher priority than batch elements, so an entity is in front of a batch
-by construction, regardless of which system happened to run first that
-frame. Sampling the actual OAM contents through mGBA's debug stub, mid-run,
-confirms it — the emitter (the round blue sprite at the center) sits
-visibly in front of the spiral of bullets it just fired:</p>
+whatever the system order. Sampling the OAM through mGBA's debug stub mid-run
+confirms it: the emitter (the round blue sprite at the center) sits in front of
+the spiral it fired:</p>
 <div class="figure align-center">
 <img alt="The bullets example running under mGBA, OAM contents captured over its debug stub -- a blue emitter sprite is clearly visible on top of a spiral of orange bullet sprites radiating from it" src="https://tprrt.tupi.fr/static/images/one-entity-many-bullets-sprite-batch-ecs/gba-oam-emitter-in-front.png" />
 <p class="caption">The bullets example's spiral pattern, OAM contents read directly off a
 running GBA — the emitter draws in front of every bullet it fires, by
 hardware priority, regardless of draw order.</p>
 </div>
-<p>The three desktop backends (OpenGL, Vulkan, software) have no equivalent
-hardware guarantee — draw order <em>is</em> the only ordering mechanism they
-have — and the two systems simply registered in whatever order their
-import code happened to call them, which put <tt class="docutils literal">SpriteBatch</tt> after the
-entity sprite system. Sampling actual framebuffer pixels at the emitter's
-screen position, once every fifty frames of a real Vulkan run, shows
-exactly the moment it stops working: the emitter's own blue for hundreds
-of frames, then — once the bullet pool has enough live bullets to reach
-that exact pixel — the pixel starts reading back as whatever bullet is
-currently passing through it instead:</p>
+<p>The three desktop backends (OpenGL, Vulkan, software) have no such guarantee:
+draw order is their only ordering mechanism, and the two systems registered in
+whatever order the import code called them, which put <tt class="docutils literal">SpriteBatch</tt> after the
+entity sprite system. Sampling framebuffer pixels at the emitter's position
+every fifty frames of a Vulkan run shows the failure: the emitter's blue for
+hundreds of frames, then, once enough live bullets reach that pixel, whatever
+bullet is passing through it:</p>
 <div class="highlight"><pre><span></span>frame  350: 2850c8 5a96ff 5a96ff 5a96ff 2850c8   (emitter blue)
 frame  750: 2850c8 5a96ff 5a96ff 5a96ff 2850c8   (emitter blue)
 frame  800: c81e28 ff7828 ffdc50 ff7828 c81e28   (bullet red/orange)
 frame 1200: c81e28 ffdc50 fffff0 ff7828 c81e28   (bullet, still)
 </pre></div>
-<p>The fix is the same one line of intent, spelled out explicitly instead of
-left to registration order, on every desktop backend:</p>
+<p>The fix declares the order explicitly instead of relying on registration
+order, on every desktop backend:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">framer_system_dep</span><span class="w"> </span><span class="n">batch_deps</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">{.</span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sprite_render_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">}};</span>
 
@@ -295,52 +248,38 @@ left to registration order, on every desktop backend:</p>
 <span class="w">                        </span><span class="n">FRAMER_PHASE_ON_UPDATE</span><span class="p">,</span>
 <span class="w">                        </span><span class="n">sprite_batch_render_system</span><span class="p">,</span><span class="w"> </span><span class="n">bq</span><span class="p">,</span><span class="w"> </span><span class="n">batch_deps</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
-<p>A new renderer test pins this down the same way the fix does — a red
-entity sprite and a white batch element occupying the same pixels, one
-assertion that the pixel reads back red — so the ordering is now a
-property the test suite checks rather than an accident of import order.</p>
+<p>A new renderer test pins it down: a red entity sprite and a white batch
+element on the same pixels, asserting the pixel reads back red.</p>
 </div>
 <div class="section" id="verification-one-bug-per-backend-so-one-check-per-backend">
 <h2>Verification: one bug per backend, so one check per backend</h2>
-<p>Nothing about the design change itself is backend-specific, so the actual
-proof that the redesign works had to be, backend by backend, rather than
-inferred from any one of them: the desktop pixel-readback tests
-(software, OpenGL, Vulkan) each got their own pass through the same three
-scenes, <tt class="docutils literal">examples/bullets</tt> was cross-compiled for both GBA and NDS and
-the resulting ROM's OAM contents were sampled through mGBA's debug stub —
-the same technique the <a class="reference external" href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">previous dithering article</a>
-used to catch its own hardware-only bug — and every GBA example ROM in
-the tree was booted headlessly to confirm the pooled component-storage
-change underneath all of this (a separate, smaller fix the redesign also
-needed, since one more component pushed the fixed-stride storage layout
-past EWRAM) didn't regress startup on anything else.</p>
-<p>One number came out the same on every target it was checked on, which
-wasn't the point of the exercise but is a reassuring sign the redesign is
-actually target-neutral: with the pool's rotating spiral pattern running
-continuously, the live bullet count settles in roughly the high 90s on
-GBA, OpenGL and Vulkan alike, all three converging on the same rough
-capacity for the same pattern despite three completely different drawing
-paths underneath.</p>
+<p>The design is not backend-specific, but each backend had its own bug, so each
+was checked separately. The desktop pixel-readback tests (software, OpenGL,
+Vulkan) ran the same three scenes. <tt class="docutils literal">examples/bullets</tt> was cross-compiled for
+GBA and NDS and its OAM sampled through mGBA's debug stub, the technique the
+<a class="reference external" href="https://tprrt.tupi.fr/gba-dither-offset-separation.html">dithering article</a> used to catch a hardware-only bug. Every
+GBA example ROM was booted headlessly to check that a related fix did not
+regress startup: one more component pushed the fixed-stride storage layout past
+EWRAM, so component storage is now pooled.</p>
+<p>One result was the same everywhere I checked: with the spiral pattern running
+continuously, the live bullet count settles in the high 90s on GBA, OpenGL and
+Vulkan alike.</p>
 </div>
 <div class="section" id="where-this-goes-next">
 <h2>Where this goes next</h2>
-<p><tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt> (40) and <tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt>
-(104, leaving 64 for actual game use) both grew slightly to make room for
-the new component without pushing the pooled storage past EWRAM on GBA —
-a two-line configuration change today, in a codebase where each of those
-numbers has moved before and will again. The bullet-pool roadmap item
-itself narrows to what's left once &quot;draws correctly, everywhere&quot; is no
-longer the open question: measuring and documenting the actual per-target
-bullet ceiling, rather than the two capacity constants
-(<tt class="docutils literal">examples/bullets</tt> currently uses 128 on GBA/NDS, 1024 on desktop)
-picked ahead of having real numbers to size them against.</p>
+<p><tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt> (40) and <tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt> (104,
+leaving 64 for game use) both grew slightly to fit the new component without
+pushing the pooled storage past EWRAM on GBA. What remains for the bullet pool
+is measuring and documenting the per-target bullet ceiling. The capacity
+constants (<tt class="docutils literal">examples/bullets</tt> uses 128 on GBA/NDS, 1024 on desktop) were
+picked before there were numbers to size them against.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html">posted at 21:40</a>
-                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;8 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/ecs.html" class="tags selected">ecs</a>
@@ -359,25 +298,22 @@ picked ahead of having real numbers to size them against.</p>
 
             <article class="post">
                 <h2 class="title">
-                    <a href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="bookmark" title="Permanent Link to &quot;No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance&quot;">No Heap, No Problem: a Static Micro-ECS for the Game Boy Advance</a>
+                    <a href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html" rel="bookmark" title="Permanent Link to &quot;A Static Micro-ECS for the Game Boy Advance&quot;">A Static Micro-ECS for the Game Boy Advance</a>
                 </h2>
 
 
 
                 <div class="section" id="introduction">
 <h2>Introduction</h2>
-<p>The <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">previous article</a> on this blog was about
-squeezing cycles out of framer-engine's GBA renderer. This one is about
-something that has to be settled <em>before</em> any of that renderer work is
-possible at all: how do you run an Entity Component System — the
-architecture pattern the whole engine is built around — on a console with
-32KB of fast RAM, 256KB of slow RAM, no operating system, and no
-<tt class="docutils literal">malloc()</tt> you can lean on?</p>
-<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a>'s answer is a second, much smaller ECS implementation
-living behind the same interface as the desktop one. Every game-logic
-line — component definitions, systems, queries — is identical between a
-PC build and a GBA build. Only one file differs: which <tt class="docutils literal">world.c</tt> gets
-linked in.</p>
+<p>The <a class="reference external" href="https://tprrt.tupi.fr/gba-performance-optimization-framer-engine.html">previous article</a> was about squeezing cycles
+out of framer-engine's GBA renderer. This one covers what has to be settled
+before that work is possible: how to run an Entity Component System, the
+pattern the engine is built around, on a console with 32KB of fast RAM, 256KB
+of slow RAM, no operating system and no usable <tt class="docutils literal">malloc()</tt>.</p>
+<p><a class="reference external" href="https://github.com/tprrt/framer-engine">framer-engine</a> answers with a second, much smaller ECS implementation behind
+the same interface as the desktop one. Component definitions, systems and
+queries are identical between a PC build and a GBA build. Only one file
+differs: which <tt class="docutils literal">world.c</tt> is linked.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
@@ -387,24 +323,18 @@ maturity.</p>
 </div>
 <div class="section" id="two-ecs-backends-one-interface">
 <h2>Two ECS backends, one interface</h2>
-<p>framer-engine's default ECS backend is <a class="reference external" href="https://github.com/SanderMertens/flecs">Flecs</a>, a full-featured ECS used
-for desktop and handheld targets with a real OS underneath (PSP, 3DS,
-Switch, PC). Flecs is excellent at what it does — archetypes, queries,
-observers, relationships — but all of that bookkeeping assumes a working
-heap it can grow and shrink as entities and component types come and go.
-That's simply not available on a target like the GBA: 32KB of IWRAM,
-256KB of EWRAM, both fixed-size and fully accounted for from the moment
-the ROM boots, with no MMU and no OS to page anything in. There's no heap
-to assume.</p>
-<p>Rolling a second full-featured ECS to fit that budget wasn't the
-answer either — that's a lot of complexity to maintain for a problem
-that doesn't need it. What GBA-class scenes actually look like is a
-handful of objects (<cite>examples/simple_cube</cite> uses one mesh and a camera;
-<cite>examples/spinning_shapes</cite> uses three), not thousands, and the
-component types are known and fixed at compile time, not user-extensible
-at runtime. That's a much smaller problem than &quot;general-purpose ECS,&quot;
-and <tt class="docutils literal">src/ecs/static/world.c</tt> — about 550 lines of plain C — is sized to
-match it instead of to match Flecs:</p>
+<p>The default backend is <a class="reference external" href="https://github.com/SanderMertens/flecs">Flecs</a>, a full-featured ECS used for desktop and
+handheld targets with a real OS (PSP, 3DS, Switch, PC). It provides archetypes,
+queries, observers and relationships, and all of that bookkeeping assumes a
+heap that grows and shrinks as entities and component types come and go. The
+GBA has 32KB of IWRAM and 256KB of EWRAM, both fixed-size and fully accounted
+for from boot, with no MMU and no OS to page anything in. There is no heap.</p>
+<p>A second full-featured ECS sized to that budget would be a lot to maintain for
+a problem that does not need it. GBA-class scenes hold a handful of objects
+(<cite>examples/simple_cube</cite> uses one mesh and a camera, <cite>examples/spinning_shapes</cite>
+three), not thousands, and the component types are fixed at compile time.
+<tt class="docutils literal">src/ecs/static/world.c</tt>, about 550 lines of plain C, is sized to that
+instead of to Flecs:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Entities */</span>
 <span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">s_alive</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="p">];</span>
 <span class="k">static</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">s_comp_mask</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="p">];</span>
@@ -415,26 +345,23 @@ match it instead of to match Flecs:</p>
 <span class="w">                       </span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="w"> </span><span class="o">*</span>
 <span class="w">                        </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">];</span>
 </pre></div>
-<p>Every one of those arrays is a fixed-size global, sized by compile-time
-constants. There is no <tt class="docutils literal">framer_entity_create()</tt> call anywhere in this
-file that can fail by running out of memory in some unpredictable way —
-it can only fail by running out of <em>array slots</em>, a number known before
-the program even starts.</p>
-<p>Both backends sit behind the exact same <tt class="docutils literal">include/framer/ecs.h</tt> —
-<tt class="docutils literal">framer_world_t</tt>, <tt class="docutils literal">framer_component_register()</tt>, <tt class="docutils literal">framer_query_create()</tt>,
-<tt class="docutils literal">framer_system_register()</tt>, the <tt class="docutils literal">FRAMER_GET</tt>/<tt class="docutils literal">FRAMER_SET</tt>/<tt class="docutils literal">FRAMER_FIELD</tt>
-macros. A component defined with <tt class="docutils literal">FRAMER_COMPONENT_DEFINE(Velocity)</tt> and
-a system registered with <tt class="docutils literal">framer_system_register()</tt> compiles and runs
-unchanged on either backend; which one a build gets is a single Meson
-option, <tt class="docutils literal"><span class="pre">-Decs=flecs</span></tt> or <tt class="docutils literal"><span class="pre">-Decs=static</span></tt>, and GBA's cross file pins it
-to <tt class="docutils literal">static</tt> (Flecs needs an OS, and bare-metal GBA doesn't have one) —
-the build refuses to configure any other way for that target.</p>
+<p>Every array is a fixed-size global sized by compile-time constants. Nothing in
+this file can fail by running out of memory unpredictably. It can only run out
+of <em>array slots</em>, a number known before the program starts.</p>
+<p>Both backends sit behind the same <tt class="docutils literal">include/framer/ecs.h</tt>: <tt class="docutils literal">framer_world_t</tt>,
+<tt class="docutils literal">framer_component_register()</tt>, <tt class="docutils literal">framer_query_create()</tt>,
+<tt class="docutils literal">framer_system_register()</tt> and the <tt class="docutils literal">FRAMER_GET</tt>/<tt class="docutils literal">FRAMER_SET</tt>/
+<tt class="docutils literal">FRAMER_FIELD</tt> macros. A component defined with
+<tt class="docutils literal">FRAMER_COMPONENT_DEFINE(Velocity)</tt> and a system registered with
+<tt class="docutils literal">framer_system_register()</tt> compile and run unchanged on either. A single Meson
+option selects the backend, <tt class="docutils literal"><span class="pre">-Decs=flecs</span></tt> or <tt class="docutils literal"><span class="pre">-Decs=static</span></tt>. GBA's cross
+file pins it to <tt class="docutils literal">static</tt> because Flecs needs an OS, and the build refuses to
+configure otherwise.</p>
 </div>
-<div class="section" id="entities-are-array-slots-nothing-more">
-<h2>Entities are array slots, nothing more</h2>
-<p>An entity in this backend isn't an object — it's a 1-based index into
-those parallel arrays. <tt class="docutils literal">framer_entity_create()</tt> finds the lowest dead
-slot and claims it, first-fit:</p>
+<div class="section" id="entities-are-array-slots">
+<h2>Entities are array slots</h2>
+<p>An entity here is a 1-based index into those parallel arrays.
+<tt class="docutils literal">framer_entity_create()</tt> claims the lowest dead slot, first-fit:</p>
 <div class="highlight"><pre><span></span><span class="n">framer_entity_t</span><span class="w"> </span><span class="nf">framer_entity_create</span><span class="p">(</span><span class="n">framer_world_t</span><span class="w"> </span><span class="o">*</span><span class="n">world</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
@@ -451,24 +378,19 @@ slot and claims it, first-fit:</p>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="cm">/* pool exhausted */</span>
 <span class="p">}</span>
 </pre></div>
-<p>That's the entire allocator. No free list to maintain, no fragmentation
-to worry about — there's nothing to fragment when every slot is the same
-fixed size and lives at a compile-time-known address. The price for that
-simplicity is explicit and deliberate: destroying entity 5 and creating a
-new one immediately afterward hands back the same ID, 5, for a
-completely different logical entity. There's no generation counter to
-tell the two apart. For the scene sizes and lifetimes this backend
-targets — a handful of objects that mostly live for the whole level, not
-a churn of thousands spawning and despawning every frame — that's an
-acceptable trade, not an oversight; it's directly covered by a unit test
-(<tt class="docutils literal">test_entity_slot_recycled_first_fit</tt>) precisely so it stays a known,
-intentional property instead of a surprise.</p>
+<p>That is the whole allocator. There is no free list and no fragmentation, since
+every slot has the same size and a compile-time address. The price is
+deliberate: destroying entity 5 and creating a new one immediately returns ID
+5 for a different logical entity, and there is no generation counter to tell
+them apart. For a handful of objects that mostly live for a whole level, that
+is acceptable. <tt class="docutils literal">test_entity_slot_recycled_first_fit</tt> pins it down so it
+stays a known property.</p>
 </div>
 <div class="section" id="components-a-bitmask-and-a-flat-array">
 <h2>Components: a bitmask and a flat array</h2>
-<p>Each entity slot carries one <tt class="docutils literal">uint64_t</tt> bitmask, one bit per registered
-component type. <tt class="docutils literal">framer_component_set()</tt> is a <tt class="docutils literal">memcpy</tt> into a
-fixed-stride row of the flat <tt class="docutils literal">s_store</tt> array, plus a bit set:</p>
+<p>Each entity slot carries one <tt class="docutils literal">uint64_t</tt> bitmask with one bit per registered
+component type. <tt class="docutils literal">framer_component_set()</tt> is a <tt class="docutils literal">memcpy</tt> into a fixed-stride
+row of <tt class="docutils literal">s_store</tt> plus a bit set:</p>
 <div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">framer_component_set</span><span class="p">(</span><span class="n">framer_world_t</span><span class="w"> </span><span class="o">*</span><span class="n">world</span><span class="p">,</span><span class="w"> </span><span class="n">framer_entity_t</span><span class="w"> </span><span class="n">e</span><span class="p">,</span>
 <span class="w">                          </span><span class="n">framer_id_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
 <span class="p">{</span>
@@ -481,31 +403,25 @@ fixed-stride row of the flat <tt class="docutils literal">s_store</tt> array, pl
 <span class="w">    </span><span class="n">s_any_mask</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="mi">1u</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ci</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-<p>A query is just a precomputed mask built from the component ids it asks
-for; matching an entity against it is one <tt class="docutils literal">AND</tt> and one comparison
-(<tt class="docutils literal">(s_comp_mask[ei] &amp; mask) == mask</tt>). The <tt class="docutils literal">uint64_t</tt> bitmask is also
-the hard ceiling on how many distinct component <em>types</em> can exist in one
-world — 64 — which is generous for a retro scene's needs but means the
-type system itself enforces &quot;don't try to build something Flecs-shaped
-on top of this.&quot;</p>
+<p>A query is a precomputed mask built from the component ids it asks for, and
+matching an entity is one <tt class="docutils literal">AND</tt> and one comparison
+(<tt class="docutils literal">(s_comp_mask[ei] &amp; mask) == mask</tt>). The <tt class="docutils literal">uint64_t</tt> is also the ceiling on
+distinct component <em>types</em> in a world: 64. That is plenty for a retro scene,
+and it stops anyone building something Flecs-shaped on top.</p>
 </div>
-<div class="section" id="war-story-a-silent-null-deref-vs-a-loud-abort">
-<h2>War story: a silent NULL deref vs. a loud abort()</h2>
-<p>The single most important property of this backend isn't the data
-layout — it's what happens when a limit is hit. Early on,
-<tt class="docutils literal">framer_component_register()</tt> returned 0 when a component was too big
-or the registry was full, the same &quot;just signal failure&quot; convention used
-everywhere else in this API. That sounds reasonable until you trace what
-a 0 component id actually does downstream: <tt class="docutils literal">framer_query_create()</tt>
-silently skips it when building a query's mask, and the system that
-registered that query goes on to call <tt class="docutils literal">FRAMER_FIELD()</tt> for a field that
-was quietly dropped — which dereferences NULL on the system's very next
-matching entity. That's exactly what happened on a real GBA build: a
-<tt class="docutils literal">Text</tt> component at 288 bytes against a 64-byte cap, and 17 registered
-component types against a cap of 12. The crash that surfaced wasn't &quot;your
-component is too big,&quot; it was a NULL-pointer SIGSEGV deep inside a render
-system, two layers removed from the actual mistake.</p>
-<p>The fix removes the silent path entirely:</p>
+<div class="section" id="a-silent-null-deref-vs-a-loud-abort">
+<h2>A silent NULL deref vs. a loud abort()</h2>
+<p>The most important property of this backend is what happens when a limit is
+hit. <tt class="docutils literal">framer_component_register()</tt> originally returned 0 when a component
+was too big or the registry was full, like the rest of the API. A 0 component
+id then does damage downstream: <tt class="docutils literal">framer_query_create()</tt> skips it when
+building the mask, and the system that registered the query calls
+<tt class="docutils literal">FRAMER_FIELD()</tt> on a field that was dropped, dereferencing NULL on its next
+matching entity. This happened on a real GBA build: a <tt class="docutils literal">Text</tt> component of 288
+bytes against a 64-byte cap, and 17 component types against a cap of 12. The
+crash was a NULL-pointer SIGSEGV inside a render system, two layers away from
+the mistake, not &quot;your component is too big&quot;.</p>
+<p>The fix removes the silent path:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span>
 <span class="w">        </span><span class="s">&quot;framer_component_register: </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s"> is %lu bytes, &quot;</span>
@@ -515,58 +431,46 @@ system, two layers removed from the actual mistake.</p>
 <span class="w">    </span><span class="n">abort</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
-<p><tt class="docutils literal">abort()</tt> rather than an <tt class="docutils literal">assert()</tt> or a GCC/Clang-specific builtin,
-because this backend also has to compile under cc65 and SDCC for
-8-bit targets — plain C89 <tt class="docutils literal">abort()</tt> is the one failure primitive
-guaranteed to exist everywhere this code runs. The test suite verifies
-the <em>contract</em>, not just the arithmetic: <tt class="docutils literal">test_ecs_static_limits.c</tt>
-forks a child process, registers one component past the limit inside it,
-and asserts the child died of <tt class="docutils literal">SIGABRT</tt> rather than returning normally
-— proving the fail-loud path actually fires, not just that the size
-check's math is correct.</p>
-<p>The broader lesson generalizes past this one bug: on a backend built
-entirely out of fixed-size arrays, every hard limit is a wall, not a
-suggestion. The only choice that matters is whether you hit that wall
-with a clear error message at the exact call site that caused it, or
-with a corrupted query and a crash three function calls away. This
-backend picked loud, on purpose, everywhere a hard cap exists.</p>
+<p>It uses <tt class="docutils literal">abort()</tt> instead of <tt class="docutils literal">assert()</tt> or a GCC/Clang builtin because this
+backend also has to compile under cc65 and SDCC for 8-bit targets, and C89
+<tt class="docutils literal">abort()</tt> is the one failure primitive guaranteed everywhere. The tests check
+the contract, not just the arithmetic: <tt class="docutils literal">test_ecs_static_limits.c</tt> forks a
+child, registers one component past the limit, and asserts the child died of
+<tt class="docutils literal">SIGABRT</tt>. That proves the fail-loud path fires.</p>
+<p>On a backend made of fixed-size arrays, every hard limit is a wall. The choice
+is hitting it with a clear message at the offending call, or with a corrupted
+query and a crash three calls away. This backend fails loudly wherever a hard
+cap exists.</p>
 </div>
 <div class="section" id="sizing-the-pools-and-a-second-silent-failure-bug">
 <h2>Sizing the pools, and a second silent-failure bug</h2>
 <p>Each target's <tt class="docutils literal">meson.build</tt> picks <tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENTS</tt>,
-<tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt>, and <tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENT_SIZE</tt>
-to fit what that platform actually needs — there's no universal default
-that's right for every target, because the engine registers its full set
-of core components (<tt class="docutils literal">Transform</tt>, <tt class="docutils literal">Velocity</tt>, <tt class="docutils literal">Sprite</tt>, <tt class="docutils literal">Light</tt>,
-<tt class="docutils literal">Text</tt>, <tt class="docutils literal">Camera</tt>, and so on — 19 today) unconditionally, regardless
-of whether a given example actually uses all of them:</p>
+<tt class="docutils literal">FRAMER_STATIC_MAX_ENTITIES</tt> and <tt class="docutils literal">FRAMER_STATIC_MAX_COMPONENT_SIZE</tt> for
+that platform. No universal default fits, because the engine registers its full
+set of core components (<tt class="docutils literal">Transform</tt>, <tt class="docutils literal">Velocity</tt>, <tt class="docutils literal">Sprite</tt>, <tt class="docutils literal">Light</tt>,
+<tt class="docutils literal">Text</tt>, <tt class="docutils literal">Camera</tt> and so on, 19 today) regardless of what an example uses:</p>
 <div class="highlight"><pre><span></span># Embedded (system == &#39;none&#39;):
 -DFRAMER_STATIC_MAX_COMPONENTS=19
 -DFRAMER_STATIC_MAX_ENTITIES=96
 -DFRAMER_STATIC_MAX_COMPONENT_SIZE=64
 </pre></div>
-<p>That <tt class="docutils literal">MAX_ENTITIES=96</tt> number has its own bug story behind it. Each
-<em>registered component type</em> — not each entity actually created — reserves
-one sentinel slot out of the same entity pool, so the entities actually
-available to a scene is <tt class="docutils literal">MAX_ENTITIES</tt> minus however many component
-types exist. At <tt class="docutils literal">MAX_ENTITIES=64</tt> and 19 components, that left 45 usable
-slots — comfortably enough for <cite>examples/simple_cube</cite>, but one short of
-<cite>examples/input_tester</cite>'s 48 (47 on-screen panel entities plus one
-camera). The failure mode was, again, silent: <tt class="docutils literal">framer_entity_create()</tt>
-returning 0 once the pool filled, and the caller that wanted one more
-entity for a gamepad-axis label simply never got it — the text just never
-appeared on screen, with nothing in the logs to say why. Raising the cap
-to 96 (77 free after the 19 sentinels) fixed it with headroom to spare.
-On the GBA build that growth costs about 544 bytes of IWRAM (three
-per-entity arrays scale with the cap), which was checked against the
-build's actual free IWRAM margin before landing — on a 32KB budget,
-guessing isn't good enough, you measure.</p>
-<p>That measurement habit is the same one from the performance article:
-<tt class="docutils literal"><span class="pre">arm-none-eabi-size</span> <span class="pre">-A</span></tt> on a current GBA build shows exactly where this
-backend's memory actually goes. The flat component store
-(19 × 96 × 64 bytes ≈ 114KB) is placed in EWRAM's <tt class="docutils literal">.sbss</tt> section — too
-big for IWRAM, and zero-initialized for free by the startup code without
-costing any ROM space:</p>
+<p><tt class="docutils literal">MAX_ENTITIES=96</tt> has its own bug behind it. Each <em>registered component type</em>,
+not each entity created, reserves one sentinel slot from the same entity pool,
+so the entities available to a scene are <tt class="docutils literal">MAX_ENTITIES</tt> minus the number of
+component types. At <tt class="docutils literal">MAX_ENTITIES=64</tt> and 19 components that left 45 usable
+slots, enough for <cite>examples/simple_cube</cite> but one short of
+<cite>examples/input_tester</cite>'s 48 (47 on-screen panel entities plus a camera). The
+failure was silent again: <tt class="docutils literal">framer_entity_create()</tt> returned 0 once the pool
+filled, and the caller wanting one more entity for a gamepad-axis label never
+got it. The text did not appear and nothing in the logs said why. Raising the
+cap to 96 (77 free after the 19 sentinels) fixed it. On GBA that costs about
+544 bytes of IWRAM (three per-entity arrays scale with the cap), which I
+checked against the build's free IWRAM margin before landing. On a 32KB budget
+you measure.</p>
+<p>As in the performance article, <tt class="docutils literal"><span class="pre">arm-none-eabi-size</span> <span class="pre">-A</span></tt> on a current GBA build
+shows where this backend's memory goes. The flat component store
+(19 × 96 × 64 bytes ≈ 114KB) goes in EWRAM's <tt class="docutils literal">.sbss</tt> section: too big for
+IWRAM, and zero-initialized by the startup code at no ROM cost:</p>
 <div class="highlight"><pre><span></span><span class="cp">#ifdef GBA</span>
 <span class="cp">#define _FRAMER_STORE_ATTR __attribute__((section(&quot;.sbss&quot;)))</span>
 <span class="cp">#else</span>
@@ -577,80 +481,59 @@ costing any ROM space:</p>
 <span class="w">    </span><span class="n">s_store</span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_COMPONENTS</span><span class="p">]</span>
 <span class="w">           </span><span class="p">[</span><span class="n">FRAMER_STATIC_MAX_ENTITIES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">FRAMER_STATIC_MAX_COMPONENT_SIZE</span><span class="p">];</span>
 </pre></div>
-<p>Everything else — the alive flags, the masks, the per-frame iterator's
-entity list — is small enough to live in IWRAM, the GBA's fast 32KB
-scratch memory, where the CPU actually wants its hot working data. On
-the current <tt class="docutils literal">examples/simple_cube</tt> build that's roughly 19.5KB of
-IWRAM used out of 32KB, leaving real headroom for the next component or
-two — a number worth checking again every time that count grows, the
-same way the 96-entity fix had to be checked against it.</p>
+<p>Everything else (alive flags, masks, the per-frame iterator's entity list) is
+small enough for IWRAM, the GBA's fast 32KB memory, where the CPU wants its
+hot data. On the current <tt class="docutils literal">examples/simple_cube</tt> build that is roughly 19.5KB
+of 32KB used. That leaves room for a component or two, and the number needs
+rechecking whenever the component count grows, as the 96-entity change did.</p>
 </div>
-<div class="section" id="the-scan-loop-briefly">
-<h2>The scan loop, briefly</h2>
-<p><tt class="docutils literal">framer_world_progress()</tt> walks every registered system, in phase
-order, and for each one scans entity slots up to the high-water mark
-(<tt class="docutils literal">s_entity_high</tt>, one past the highest slot any entity or component
-sentinel has ever occupied) looking for bitmask matches. That scan, and
-the sticky <tt class="docutils literal">s_any_mask</tt> check that skips it entirely for systems whose
-component type no entity has ever had, was the single biggest win in
-the previous article's performance work — covered there in full, since
-it's a perf story more than a design story. The design point that
-matters here is simpler: this is a linear scan over a flat array, not a
-sparse-set or archetype-table lookup. That's the right trade at GBA
-scene sizes (tens of entities), and the wrong one at thousands — which is
-exactly the line where you'd reach for Flecs instead.</p>
+<div class="section" id="the-scan-loop">
+<h2>The scan loop</h2>
+<p><tt class="docutils literal">framer_world_progress()</tt> walks every registered system in phase order and,
+for each, scans entity slots up to the high-water mark (<tt class="docutils literal">s_entity_high</tt>, one
+past the highest slot any entity or component sentinel has occupied) looking
+for bitmask matches. The sticky <tt class="docutils literal">s_any_mask</tt> check skips the scan entirely
+for systems whose component type no entity has ever had. That was the biggest
+win in the previous article's performance work, covered there. The design point
+here is that this is a linear scan over a flat array, not a sparse-set or
+archetype lookup. That is right at GBA scene sizes (tens of entities) and wrong
+at thousands, where you would reach for Flecs.</p>
 </div>
-<div class="section" id="what-this-design-explicitly-gives-up">
-<h2>What this design explicitly gives up</h2>
-<p>None of the above is free, and being upfront about the trade-offs is the
-point of having two backends instead of pretending one ECS fits every
+<div class="section" id="what-this-design-gives-up">
+<h2>What this design gives up</h2>
+<p>Two backends exist so that these trade-offs are made once, explicitly, per
 target:</p>
 <ul class="simple">
-<li><strong>No entity generations.</strong> As covered above, IDs are recycled
-immediately and look identical to the entity that previously held
-them.</li>
-<li><strong>No archetypes, no sparse sets.</strong> Matching is a linear scan with a
-bitmask test, not a cache-optimized contiguous iteration over exactly
-the matching entities. Fine at dozens of entities; the wrong tool past
-that.</li>
-<li><strong>64 component types, total, forever, for the whole world.</strong> Not per
-query — for every component type that exists anywhere in the engine,
-shared across every system. The engine's current 19 leaves room to
-grow, but a &quot;just add a component&quot; change always has a final cost
-attached: someone, somewhere, has to recheck that ceiling.</li>
-<li><strong>No relationships, no hierarchies, no observers.</strong> Flecs has all of
-these; this backend has entities, components, and queries, deliberately
-nothing more.</li>
+<li><strong>No entity generations.</strong> IDs are recycled immediately and look identical
+to the entity that held them before.</li>
+<li><strong>No archetypes, no sparse sets.</strong> Matching is a linear scan with a bitmask
+test, not a cache-friendly iteration over exactly the matching entities.
+Fine at dozens of entities, wrong past that.</li>
+<li><strong>64 component types in total, for the whole world.</strong> Not per query: every
+component type in the engine, shared across every system. The current 19
+leaves room, but adding a component means someone must recheck that ceiling.</li>
+<li><strong>No relationships, hierarchies or observers.</strong> Flecs has all three. This
+backend has entities, components and queries.</li>
 </ul>
-<p>Every one of these is a real capability Flecs has and this backend
-doesn't. They're also exactly the features that cost the heap, the
-dynamic bookkeeping, and the unpredictable-at-compile-time memory use
-that a bare-metal ROM target can't afford. The two-tier split exists so
-that trade only has to be made once, explicitly, per target — not
-silently, by whichever ECS happened to compile.</p>
+<p>Flecs has these capabilities and this backend does not, and they are the
+features that cost a heap, dynamic bookkeeping and memory use unknowable at
+compile time, none of which a bare-metal ROM can afford.</p>
 </div>
 <div class="section" id="where-this-goes-next">
 <h2>Where this goes next</h2>
-<p>The same problem — &quot;no OS, no heap, fixed memory map, known component
-set&quot; — is true of every retro target on framer-engine's roadmap, not just
-the GBA. The 32-bit-era consoles mentioned in the previous article's
-closing section, starting with the PlayStation 1, sit in an interesting
-middle ground: dramatically more RAM and a real GPU compared to the GBA,
-but still no OS and still nothing resembling a desktop heap. The
-expectation going in is that they'll want this same static backend, just
-with much larger pool constants — not Flecs, and not a third ECS
-implementation. Whether that expectation survives contact with an actual
-PS1 build, the way the &quot;obviously correct&quot; tricks in the performance
-article sometimes didn't survive contact with measurement, is exactly
-the kind of thing a future article on this blog will have to report
-honestly either way.</p>
+<p>Every retro target on the roadmap has the same constraints: no OS, no heap, a
+fixed memory map and a known component set. The 32-bit-era consoles mentioned
+at the end of the previous article, starting with the PlayStation 1, have far
+more RAM and a real GPU but still no OS and no desktop heap. I expect them to
+use this static backend with much larger pool constants, not Flecs and not a
+third ECS. Whether that holds on a real PS1 build is for a later article.</p>
 </div>
 
                 <div class="clear"></div>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/static-ecs-no-heap-retro-platforms.html">posted at 23:30</a>
-                    &nbsp;&middot;&nbsp;11 min read
+                    &nbsp;&middot;&nbsp;9 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>

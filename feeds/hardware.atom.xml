@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T15:11:53.392493+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Open-Source Hardware Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T19:44:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/open-source-hardware-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Hardware</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/hardware.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T16:11:40.337206+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Open-Source Hardware Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T19:44:00+02:00</published><updated>2026-10-30T16:11:40.337206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/open-source-hardware-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="chips-boards-and-bare-metal"&gt;
@@ -32,7 +32,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/09/15/more-than-9000-patches-total-in-the-seven-stable-kernels-for-monday/"&gt;More than 9,000 patches total in the seven stable kernels for Monday&lt;/a&gt; – Adafruit Industries – Makers, hackers, artists, designers and engineers!&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:52:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/open-source-hardware-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:52:00+02:00</published><updated>2026-10-30T16:11:40.336205+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/open-source-hardware-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="the-big-picture-open-source-hardware-s-growing-impact"&gt;
@@ -62,7 +62,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://hackaday.com/2026/08/31/defeating-bacteria-in-hot-water-systems-with-a-heat-exchanger/"&gt;Defeating Bacteria In Hot Water Systems With A Heat Exchanger&lt;/a&gt; (Source: Hackaday) — An engineering approach to keeping water systems safe and efficient.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:50:00+02:00</published><updated>2026-10-30T15:11:53.392493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/open-source-hardware-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:50:00+02:00</published><updated>2026-10-30T16:11:40.336205+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/open-source-hardware-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -109,7 +109,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T13:43:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/open-source-hardware-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -149,7 +149,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:35:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/open-source-hardware-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-overview"&gt;
@@ -184,7 +184,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/29/the-python-on-microcontrollers-newsletter-subscribe-for-free-6-29/"&gt;The Python on Microcontrollers Newsletter: subscribe for free&lt;/a&gt; – Adafruit Industries&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-10-30T15:11:53.391493+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:50:00+02:00</published><updated>2026-10-30T16:11:40.335206+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/open-source-hardware-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-trends"&gt;
@@ -212,7 +212,7 @@
 &lt;li&gt;&lt;strong&gt;Top Ten Projects My Dad Would Like&lt;/strong&gt;: This article offers a light-hearted look at popular projects that could engage community members with hands-on open-source DIY fun. &lt;a class="reference external" href="https://makezine.com/article/home/top-ten-projects-my-dad-would-like/"&gt;Top Ten Projects My Dad Would Like&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:42:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/open-source-hardware-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-initiatives"&gt;
@@ -250,7 +250,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.adafruit.com/2026/06/14/reviving-teletext-for-ham-radio-hamsunday-ieeespectrum/"&gt;Reviving Teletext for Ham Radio #HamSunday &amp;#64;IEEESpectrum&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T16:59:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/open-source-hardware-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware-community-engagement"&gt;
@@ -274,7 +274,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.phoronix.com"&gt;Linux Hardware Reviews &amp;amp; Performance Benchmarks, Open-Source News - Phoronix&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:17:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/open-source-hardware-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -306,7 +306,7 @@
 &lt;p&gt;As the open-source hardware movement continues to evolve, these articles serve as a testament to its vibrant community, innovative spirit, and the myriad possibilities that open-source design unlocks for makers worldwide.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T15:27:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/open-source-hardware-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Open-Source Hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -363,7 +363,7 @@
 &lt;/ul&gt;
 &lt;p&gt;The articles this week illustrate the dynamic and multifaceted world of open-source hardware, engaging the community and fostering innovation across various applications and discussions.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-10-30T15:11:53.390598+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Open-Source Hardware Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/open-source-hardware-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-10-30T16:11:40.334227+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/open-source-hardware-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of open-source hardware news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="open-source-hardware"&gt;
@@ -406,21 +406,14 @@
 &lt;li&gt;&lt;a class="reference external" href="https://hackaday.io/"&gt;Hackaday.io — The world's largest collaborative hardware development community&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retro Console Hardware Comparison: A Technical Deep Dive</title><link href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="alternate"/><published>2025-03-11T10:00:00+01:00</published><updated>2025-03-11T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-03-11:/retro-console-hardware-comparison.html</id><summary type="html">&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
+</content><category term="Hardware"/><category term="open-source"/><category term="hardware"/><category term="oshw"/><category term="digest"/></entry><entry><title>Retro Console Hardware Comparison</title><link href="https://tprrt.tupi.fr/retro-console-hardware-comparison.html" rel="alternate"/><published>2025-03-11T10:00:00+01:00</published><updated>2025-03-11T10:00:00+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2025-03-11:/retro-console-hardware-comparison.html</id><summary type="html">&lt;p class="first last"&gt;A technical comparison of classic gaming consoles, covering CPU
 specifications, graphics capabilities, audio systems, and special features
 across multiple generations of hardware.&lt;/p&gt;
 </summary><content type="html">&lt;div class="section" id="introduction"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-1"&gt;Introduction&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Understanding the hardware capabilities of classic gaming consoles
-provides valuable insight for both homebrew developers and retro gaming
-enthusiasts. Each console generation brought significant improvements in
-processing power, graphics capabilities, and audio quality, while
-working within tight memory constraints and power budgets.&lt;/p&gt;
-&lt;p&gt;This guide provides detailed technical comparisons across multiple
-console generations, from the 8-bit Game Boy to modern hybrid systems
-like the Nintendo Switch. Whether you're developing homebrew games or
-simply curious about the technical evolution of gaming hardware, these
-tables offer a reference.&lt;/p&gt;
+&lt;p&gt;Reference tables for the CPU, memory, graphics, video and audio hardware of
+consoles from the 8-bit Game Boy to the Nintendo Switch, for homebrew
+developers and retro gaming enthusiasts.&lt;/p&gt;
 &lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title"&gt;&lt;a class="reference internal" href="#top"&gt;Table of Contents&lt;/a&gt;&lt;/p&gt;
 &lt;ul class="simple"&gt;
@@ -454,9 +447,6 @@ tables offer a reference.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="cpu-and-memory-architecture"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-2"&gt;CPU and Memory Architecture&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The processors and memory configurations of gaming consoles reveal much
-about their capabilities and limitations. Early consoles operated with
-kilobytes of RAM, while modern systems have gigabytes at their disposal.&lt;/p&gt;
 &lt;div class="section" id="processor-specifications"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-3"&gt;Processor Specifications&lt;/a&gt;&lt;/h3&gt;
 &lt;table border="1" class="docutils"&gt;
@@ -583,17 +573,14 @@ Speed&lt;/th&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The evolution from kilobytes to gigabytes of RAM represents a
-million-fold increase in memory capacity. The NES operated with just
-2 KB of main RAM, requiring extremely efficient programming. Modern
-consoles like the Switch have 4 GB, enabling complex 3D worlds and
-high-resolution textures.&lt;/p&gt;
+&lt;p&gt;RAM grew from kilobytes to gigabytes, roughly a million-fold. The NES had 2 KB
+of main RAM; the Switch has 4 GB.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="d-graphics-capabilities"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-5"&gt;2D Graphics Capabilities&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Early gaming consoles were built around dedicated 2D graphics hardware
-with hardware sprites and tile-based rendering systems.&lt;/p&gt;
+&lt;p&gt;Early consoles used dedicated 2D hardware with hardware sprites and tile-based
+rendering.&lt;/p&gt;
 &lt;div class="section" id="color-depth-and-palette"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-6"&gt;Color Depth and Palette&lt;/a&gt;&lt;/h3&gt;
 &lt;table border="1" class="docutils"&gt;
@@ -737,16 +724,13 @@ engine&lt;/td&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Sprite-per-line limits were a critical constraint for 8-bit and 16-bit
-consoles. Developers had to carefully manage sprite placement to avoid
-flickering. The Neo Geo's massive sprite sizes (up to 16x512 pixels)
-and high sprite count made it exceptional for arcade-style action games.&lt;/p&gt;
+&lt;p&gt;Sprite-per-line limits constrained 8-bit and 16-bit consoles, and developers
+had to manage sprite placement to avoid flicker. The Neo Geo's large sprites
+(up to 16x512 pixels) and high sprite count suited arcade-style action games.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="video-output-specifications"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-8"&gt;Video Output Specifications&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Display resolution, refresh rate, and aspect ratio define the visual
-output characteristics of each console.&lt;/p&gt;
 &lt;div class="section" id="display-characteristics"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-9"&gt;Display Characteristics&lt;/a&gt;&lt;/h3&gt;
 &lt;table border="1" class="docutils"&gt;
@@ -839,16 +823,13 @@ Ratio&lt;/th&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Resolution evolved from the Game Boy's 160x144 to Full HD (1920x1080)
-on the Switch when docked. Most classic consoles targeted NTSC's 60 Hz
-or PAL's 50 Hz refresh rates. The shift from 4:3 to 16:9 aspect ratios
-occurred around the PSP/Wii generation.&lt;/p&gt;
+&lt;p&gt;Resolution went from the Game Boy's 160x144 to 1920x1080 on a docked Switch.
+Most classic consoles targeted NTSC's 60 Hz or PAL's 50 Hz. The shift from 4:3
+to 16:9 came around the PSP/Wii generation.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="audio-capabilities"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-10"&gt;Audio Capabilities&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Audio capabilities progressed from simple tone generators to full PCM
-sample playback and streaming capabilities.&lt;/p&gt;
 &lt;div class="section" id="sound-architecture"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-11"&gt;Sound Architecture&lt;/a&gt;&lt;/h3&gt;
 &lt;table border="1" class="docutils"&gt;
@@ -991,16 +972,13 @@ Ricoh 2A07 (PAL)&lt;/td&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The SNES was revolutionary with its 8-channel PCM audio at 32 kHz,
-enabling CD-quality sound. The transition from mono to stereo output
-occurred in the 16-bit generation. Modern consoles support Dolby
-Pro Logic surround sound encoding.&lt;/p&gt;
+&lt;p&gt;The SNES had 8-channel PCM audio at 32 kHz. Output went from mono to stereo in
+the 16-bit generation, and the Wii and Switch support Dolby Pro Logic
+surround encoding.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="special-graphics-features"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-13"&gt;Special Graphics Features&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Beyond basic sprite and tile rendering, many consoles included special
-graphics modes that enabled advanced visual effects.&lt;/p&gt;
 &lt;div class="section" id="hardware-effects-by-console"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#toc-entry-14"&gt;Hardware Effects by Console&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Game Boy / Game Boy Color:&lt;/strong&gt;&lt;/p&gt;
@@ -1074,33 +1052,19 @@ independent scrolling&lt;/li&gt;
 occlusion (SSAO), temporal anti-aliasing&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Key Observations:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The SNES Mode 7 was revolutionary for its time, enabling pseudo-3D
-effects with 2D hardware. The transition from fixed-function 2D
-hardware to programmable 3D GPUs occurred around the Nintendo DS/PSP
-generation. Modern consoles like the Switch support physically-based
-rendering and advanced post-processing effects comparable to modern
-gaming PCs.&lt;/p&gt;
+&lt;p&gt;SNES Mode 7 gave 2D hardware pseudo-3D effects. The move from fixed-function
+2D hardware to 3D GPUs came around the Nintendo DS/PSP generation, and the
+Switch supports physically-based rendering and post-processing comparable to
+a gaming PC.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="conclusion"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#toc-entry-15"&gt;Conclusion&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;The evolution of gaming console hardware represents one of the most
-dramatic technological progressions in computing history. From the
-humble Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's
-1+ GHz quad-core CPU and 4 GB of RAM, each generation brought order-of-
-magnitude improvements in capabilities.&lt;/p&gt;
-&lt;p&gt;Understanding these hardware specifications is essential for homebrew
-developers targeting specific platforms. The constraints of each
-system - limited sprite counts, scanline restrictions, memory budgets -
-defined the creative solutions developers employed to create memorable
-gaming experiences.&lt;/p&gt;
-&lt;p&gt;Whether you're developing a Game Boy game with 40 sprites and 4 colors,
-or a Switch title with millions of polygons and advanced shaders, these
-specifications provide the foundation for understanding what's possible
-on each platform.&lt;/p&gt;
-&lt;p&gt;For developers, these tables serve as quick references when planning
-projects. For enthusiasts, they illuminate why certain games looked and
-played the way they did. The ingenuity of developers working within
-these constraints produced some of gaming's most iconic titles.&lt;/p&gt;
+&lt;p&gt;From the Game Boy's 4.19 MHz processor and 8 KB of RAM to the Switch's 1+ GHz
+quad-core CPU and 4 GB of RAM, each generation gained roughly an order of
+magnitude. For homebrew developers, the per-system limits (sprite counts,
+scanline restrictions, memory budgets) decide what is feasible and shape how
+the code is written, from a Game Boy game with 40 sprites and 4 shades to a
+Switch title with advanced shaders.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="hardware"/><category term="hardware"/><category term="retro"/><category term="console"/><category term="comparison"/><category term="technical"/><category term="article"/></entry></feed>

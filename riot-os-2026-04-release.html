@@ -27,10 +27,10 @@
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out" />
-<meta property="og:description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system." />
+<meta property="og:description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. The notable changes in this release of the open-source IoT operating system." />
 <meta property="og:url" content="https://tprrt.tupi.fr/riot-os-2026-04-release.html" />
 <meta property="article:published_time" content="2026-05-26T12:00:00+02:00" />
-<meta property="article:modified_time" content="2026-10-30T15:11:53.389056+01:00" />
+<meta property="article:modified_time" content="2026-10-30T16:11:40.333051+01:00" />
 <meta property="article:tag" content="riot" />
 <meta property="article:tag" content="rtos" />
 <meta property="article:tag" content="embedded" />
@@ -39,16 +39,16 @@
 <meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="RIOT-OS 2026.04 &quot;Fire Rizzlease&quot; is out" />
-<meta name="twitter:description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system." />
+<meta name="twitter:description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. The notable changes in this release of the open-source IoT operating system." />
 <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
 <link rel="canonical" href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","headline":"RIOT-OS 2026.04 \u0026quot;Fire Rizzlease\u0026quot; is out","description":"RIOT-OS 2026.04 \"Fire Rizzlease\" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system.","datePublished":"2026-05-26T12:00:00+02:00","dateModified":"2026-10-30T15:11:53.389056+01:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/riot-os-2026-04-release.html"}
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"RIOT-OS 2026.04 \u0026quot;Fire Rizzlease\u0026quot; is out","description":"RIOT-OS 2026.04 \"Fire Rizzlease\" is out. The notable changes in this release of the open-source IoT operating system.","datePublished":"2026-05-26T12:00:00+02:00","dateModified":"2026-10-30T16:11:40.333051+01:00","author":{"@type":"Person","name":"tperrot"},"image":"https://tprrt.tupi.fr/static/linux-512.webp","url":"https://tprrt.tupi.fr/riot-os-2026-04-release.html"}
 </script>
 
     <meta name="keywords" content="riot,rtos,embedded,iot,article" />
 
-<meta name="description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. Here is an overview of the most notable changes in this release of the open-source IoT operating system." />
+<meta name="description" content="RIOT-OS 2026.04 "Fire Rizzlease" is out. The notable changes in this release of the open-source IoT operating system." />
 </head>
 <body>
     <header>
@@ -84,24 +84,22 @@ Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processo
 with a focus on energy-efficiency, soft real-time capabilities, and a small memory
 footprint.</p>
 <p>This release spans 84 days of development, 125 merged pull requests composed of 229
-commits, and contributions from 27 people. A notable stat: <strong>1,141,523 lines were
-deleted</strong> against only 25,007 inserted, largely thanks to a major vendor code cleanup.</p>
+commits, and contributions from 27 people. <strong>1,141,523 lines were deleted</strong> against 25,007
+inserted, mostly from a vendor code cleanup.</p>
 <div class="section" id="codeberg-mirror">
 <h2>Codeberg mirror</h2>
-<p>RIOT is now synced to <a class="reference external" href="https://codeberg.org/riot/riot">Codeberg</a> (#21997). This gives the project a home on a
-non-profit, community-driven forge alongside its GitHub presence, a welcome step
-for an independent open-source project.</p>
+<p>RIOT is now synced to <a class="reference external" href="https://codeberg.org/riot/riot">Codeberg</a> (#21997), a non-profit community forge,
+alongside GitHub.</p>
 </div>
 <div class="section" id="massive-efm32-vendor-code-removal">
 <h2>Massive EFM32 vendor code removal</h2>
 <p>Over <strong>one million lines of vendor code</strong> have been removed from the EFM32 family,
-replaced by a <tt class="docutils literal">pkg/gecko_sdk</tt> dependency (#22040). This is the single biggest
-contributor to the impressive deletion count and results in a much leaner and more
-maintainable codebase for Silicon Labs EFM32-based boards.</p>
+replaced by a <tt class="docutils literal">pkg/gecko_sdk</tt> dependency (#22040). This accounts for most of
+the deletions and shrinks the codebase for Silicon Labs EFM32-based boards.</p>
 </div>
 <div class="section" id="raspberry-pi-pico-2-rp2350-improvements">
 <h2>Raspberry Pi Pico 2 / RP2350 improvements</h2>
-<p>The RP2350 support received a thorough overhaul (#21753):</p>
+<p>RP2350 support was reworked (#21753):</p>
 <ul class="simple">
 <li>Unified abstractions between the RISC-V and ARM cores of the RP2350.</li>
 <li>Added the XH3IRQ interrupt controller.</li>
@@ -130,8 +128,8 @@ support for the nucleo-h753zi (#22076).</li>
 </div>
 <div class="section" id="guide-site-and-documentation">
 <h2>Guide site and documentation</h2>
-<p>The <a class="reference external" href="https://guide.riot-os.org/">RIOT Guide Site</a> continues to grow as the default entry point for new users,
-progressively replacing Doxygen for prose documentation. This release adds:</p>
+<p>The <a class="reference external" href="https://guide.riot-os.org/">RIOT Guide Site</a> is the entry point for new users and is replacing Doxygen
+for prose documentation. This release adds:</p>
 <ul class="simple">
 <li>More tutorials.</li>
 <li>An experimental <a class="reference external" href="https://guide.riot-os.org/boards/">Supported Boards</a> section.</li>
@@ -166,7 +164,7 @@ progressively replacing Doxygen for prose documentation. This release adds:</p>
 
                 <div class="info">
                     <a href="https://tprrt.tupi.fr/riot-os-2026-04-release.html">posted at 12:00</a>
-                    &nbsp;&middot;&nbsp;3 min read
+                    &nbsp;&middot;&nbsp;2 min read
                     &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
                     &nbsp;&middot;
                     &nbsp;<a href="https://tprrt.tupi.fr/tag/riot.html" class="tags">riot</a>
