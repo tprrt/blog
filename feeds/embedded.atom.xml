@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-10-30T17:07:43.331133+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 44, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-44-2026.html" rel="alternate"/><published>2026-10-30T15:59:00+01:00</published><updated>2026-10-30T17:07:43.331133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-30:/zephyr-rtos-digest-week-44-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - Embedded</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/embedded.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-11-06T17:21:34.534859+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Zephyr RTOS Digest — Week 44, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-44-2026.html" rel="alternate"/><published>2026-10-30T15:59:00+01:00</published><updated>2026-11-06T17:21:34.534859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-30:/zephyr-rtos-digest-week-44-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-project-news-and-technical-updates"&gt;
@@ -31,7 +31,239 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/10/29/2600-lattepanda-sigma-2-single-board-server-features-180-tops-intel-core-ultra-x7-358h-soc-for-local-ai-applications/"&gt;$2600 LattePanda Sigma 2 single board server features 180 TOPS Intel Core Ultra X7 358H SoC for local AI applications&lt;/a&gt; (Source: CNX Software – Embedded Systems News)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T14:13:00+02:00</published><updated>2026-10-30T17:07:43.331133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/zephyr-rtos-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Plugging a Mini-HDMI into a Running Game: Six Wrong Turns on an RG353M</title><link href="https://tprrt.tupi.fr/hdmi-hotplug-recalbox-rg353m-retroarch.html" rel="alternate"/><published>2026-10-22T23:00:00+02:00</published><updated>2026-11-06T17:21:34.530859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-22:/hdmi-hotplug-recalbox-rg353m-retroarch.html</id><summary type="html">&lt;p class="first last"&gt;On an Anbernic RG353M running Recalbox, a game started after
+plugging the mini-HDMI cable exited at once, the panel stayed black
+after unplugging it, and every display change took 25 seconds. Each
+symptom had a cause other than the one I first blamed: a missing DRM
+encoder, a stale binary in a Buildroot per-package directory, a
+kernel race on shared VOP2 registers, a frontend never rebuilt, and a
+thread sleeping for 30 seconds.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The Anbernic RG353M is a handheld built around a Rockchip RK3568, with a
+640x480 DSI panel and a mini-HDMI connector. Recalbox runs on it, and
+until now the HDMI output only half worked: plug the cable before
+powering on and the menu appears on the TV, but plug it afterwards and
+nothing follows. This article is about making the menu, the boot video,
+and above all a &lt;em&gt;running game&lt;/em&gt; follow the cable, in both directions.&lt;/p&gt;
+&lt;p&gt;The fix is a merge request on the Recalbox side and a few patches on
+RetroArch's KMS context. It took six detours. In each one my first
+explanation was wrong, and a log line or a file date told me so.&lt;/p&gt;
+&lt;p&gt;The setup, for reference:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Recalbox, a Buildroot external tree, target &lt;tt class="docutils literal"&gt;rg353x&lt;/tt&gt;, Linux 6.16.5;&lt;/li&gt;
+&lt;li&gt;RetroArch 1.22.2, plus a stack of local patches;&lt;/li&gt;
+&lt;li&gt;the Recalbox frontend, an EmulationStation fork, drawing through SDL's
+KMSDRM backend;&lt;/li&gt;
+&lt;li&gt;two connectors: &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;DSI-1&lt;/span&gt;&lt;/tt&gt; (the panel) and &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;HDMI-A-1&lt;/span&gt;&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A note on method: I build in a rootless Podman container, flash an SD
+card, test on the real device and paste the logs back. A cycle takes
+several minutes, so each wrong guess is expensive, and that shaped how
+this went.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-1-the-game-that-exits-right-away"&gt;
+&lt;h2&gt;Wrong turn 1: the game that exits right away&lt;/h2&gt;
+&lt;p&gt;The first piece was easy. The frontend reads
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;/sys/class/drm/card*-HDMI-A-*/status&lt;/span&gt;&lt;/tt&gt; every half second, waits for
+three identical reads (about 1.5 s) to ignore a sink that bounces while
+the link comes up, and then relaunches itself. SDL's KMSDRM backend picks
+its connector once, at init, so a new process is the simplest way to
+follow the cable. After that, the menu showed up on the TV.&lt;/p&gt;
+&lt;p&gt;Then I started a game on the TV and it quit immediately, back to the
+menu. RetroArch's log had the reason:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[WARN] [DRM] Couldn&amp;#39;t find DRM encoder.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;RetroArch's KMS context looks for the encoder the selected connector is
+currently using. When the board boots without a cable, &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;HDMI-A-1&lt;/span&gt;&lt;/tt&gt; has
+no encoder at all, because nothing ever drove it. Plugged in later, the
+connector is connected but has none, and the context gives up.&lt;/p&gt;
+&lt;p&gt;The fix is what a modeset does anyway: take one of the connector's
+possible encoders, and a CRTC that is off, falling back to a lit one only
+when none is free. A second small fix goes with it. RetroArch asks for the
+size the game was started with, 640x480 on the panel; the TV has no such
+mode, and the start failed again. Falling back to the display's first mode
+costs nothing.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-2-the-patch-that-never-reached-the-image"&gt;
+&lt;h2&gt;Wrong turn 2: the patch that never reached the image&lt;/h2&gt;
+&lt;p&gt;I added the patch, rebuilt, flashed. The same error. The RetroArch log
+printed its build date:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[INFO] Built: Oct 20 2026
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Two days old. The patch was in the source tree, the package had been
+rebuilt, and the image still had the old binary.&lt;/p&gt;
+&lt;p&gt;Recalbox builds with &lt;tt class="docutils literal"&gt;BR2_PER_PACKAGE_DIRECTORIES=y&lt;/tt&gt;. Each package gets
+its own copy of the target tree, assembled from its dependencies. Three
+packages that depend on &lt;tt class="docutils literal"&gt;retroarch&lt;/tt&gt; (&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;retroarch-assets&lt;/span&gt;&lt;/tt&gt;,
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;libretro-holani&lt;/span&gt;&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;libretro-mojozork&lt;/span&gt;&lt;/tt&gt;) carried their own copy of
+the &lt;em&gt;old&lt;/em&gt; &lt;tt class="docutils literal"&gt;/usr/bin/retroarch&lt;/tt&gt;, and when the final tree is put
+together theirs won. Rebuilding only the dependency leaves the stale files
+in the dependents.&lt;/p&gt;
+&lt;p&gt;The fix is to clean the dependents too, and the check is cheap: the
+&lt;tt class="docutils literal"&gt;Built:&lt;/tt&gt; line, or &lt;tt class="docutils literal"&gt;strings&lt;/tt&gt; on the binary in &lt;tt class="docutils literal"&gt;output/target&lt;/tt&gt;. I
+should have looked at that line before touching the code. It is the first
+thing I do now.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-3-restarting-everything-just-to-change-the-screen"&gt;
+&lt;h2&gt;Wrong turn 3: restarting everything just to change the screen&lt;/h2&gt;
+&lt;p&gt;With games starting on the TV, I wanted the next step: plug or unplug
+the cable &lt;em&gt;during&lt;/em&gt; a game and have the game move. RetroArch already
+knows how to restart its video driver; what it lacked was a reason to do
+it.&lt;/p&gt;
+&lt;p&gt;The context polls the connectors once a second from &lt;tt class="docutils literal"&gt;check_window&lt;/tt&gt;, and
+asks for a restart when the monitor index would now pick another display.
+Three details made it behave:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Debounce:&lt;/strong&gt; a restart only on two identical polls in a row, as with
+the frontend side;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A loop guard:&lt;/strong&gt; a connector already tried is not requested again, so
+a display with no usable mode cannot cause an endless restart;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Where it runs:&lt;/strong&gt; the poll runs on the video thread, which cannot
+restart itself. It sets a flag, and the main loop does the restart.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It worked. The log showed the connector change four times in one game,
+HDMI to panel to HDMI to panel, and the game kept running. But the sound
+cut at each switch. The reason was one argument:
+&lt;tt class="docutils literal"&gt;command_event(CMD_EVENT_REINIT, NULL)&lt;/tt&gt; restarts &lt;em&gt;all&lt;/em&gt; the drivers,
+audio included, and I had also suspended audio explicitly around it.
+Passing a mask of video, input and menu was enough. In the next log
+&lt;tt class="docutils literal"&gt;Started synchronous audio driver&lt;/tt&gt; appears once for the whole game, not
+once per switch.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-4-the-panel-that-stayed-black"&gt;
+&lt;h2&gt;Wrong turn 4: the panel that stayed black&lt;/h2&gt;
+&lt;p&gt;This one cost the most. Boot with the cable plugged, unplug it, and the
+frontend relaunches on the panel (&lt;tt class="docutils literal"&gt;Trying Resolution: 640,480&lt;/tt&gt;), but the
+panel stays black. The backlight reads 128. The DRM state, dumped from
+debugfs, is identical to the working case. Stopping the frontend does not
+bring the console back either, so the panel is not being scanned out
+whatever userspace does.&lt;/p&gt;
+&lt;p&gt;I proposed three explanations to myself and had to retract all of them:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;the date of &lt;tt class="docutils literal"&gt;/dev/dri/card0&lt;/tt&gt; looked like the device had been recreated.
+It is the &lt;em&gt;last access&lt;/em&gt; time;&lt;/li&gt;
+&lt;li&gt;the plane assignment looked different. The working case had the same one;&lt;/li&gt;
+&lt;li&gt;the Dim screensaver sets brightness to a smaller step, and brightness 8
+fits &lt;tt class="docutils literal"&gt;(7 &amp;gt;&amp;gt; 1) = 3&lt;/tt&gt; then &lt;tt class="docutils literal"&gt;1 &amp;lt;&amp;lt; 3&lt;/tt&gt;. It was not the cause here, since
+the backlight read 128 with a black panel.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;What finally gave a direction was a line in &lt;tt class="docutils literal"&gt;dmesg&lt;/tt&gt;, present on every
+boot with the cable plugged, around the start of fbdev:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rockchip-vop2 fe040000.vop: [drm:rk3568_vop2_setup_overlay] *ERROR*
+    wait layer cfg done timeout: 0x54760213--0x54762013
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;On the RK3568 the VOP2 has several video ports sharing the layer and port
+select registers, and those registers are latched by the vsync of &lt;em&gt;one&lt;/em&gt;
+of the ports. The 6.16.5 code waits for the wrong value, and switches the
+vsync source before the previous latch happened. With two ports started
+together, HDMI and DSI at boot, the configuration of one of them may
+never be applied.&lt;/p&gt;
+&lt;p&gt;Four upstream commits fix this, the last two merged in June 2026. I took
+them unchanged as kernel patches, in order, so that together they give
+the upstream &lt;tt class="docutils literal"&gt;rk3568_vop2_setup_layer_mixer()&lt;/tt&gt;. After flashing, the
+error is gone from &lt;tt class="docutils literal"&gt;dmesg&lt;/tt&gt; and the panel comes back after an unplug.&lt;/p&gt;
+&lt;p&gt;The link between that error and the black panel is only a hypothesis. An
+earlier boot logged the same error and the panel had worked. The patches are
+correct on their own merits and the symptom went away, but I cannot say one
+caused the other.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-5-a-panel-that-was-on-at-brightness-0"&gt;
+&lt;h2&gt;Wrong turn 5: a panel that was &amp;quot;on&amp;quot; at brightness 0&lt;/h2&gt;
+&lt;p&gt;Next, a game on HDMI, then unplug. RetroArch switched to the panel
+(&lt;tt class="docutils literal"&gt;Connector 54 is now the display to use&lt;/tt&gt;), the DSI link was enabled
+and connected, and the panel was black again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cat /sys/class/backlight/backlight/brightness
+0
+# cat /sys/class/drm/card0-DSI-1/enabled /sys/class/drm/card0-DSI-1/status
+enabled
+connected
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Brightness zero, with the video path fine. The frontend keeps the panel
+dark while HDMI is in use, and a commit I had written was supposed to
+restore it on unplug. The code looked right. So I compared the file the
+build had compiled with the one in the source tree:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;build/.../es-app/src/MainRunner.cpp   2026-10-21 13:03
+projects/frontend/es-app/src/MainRunner.cpp   2026-10-21 21:06
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The frontend is a Buildroot package with &lt;tt class="docutils literal"&gt;SITE_METHOD = local&lt;/tt&gt;. It is
+copied into the build directory once, and a plain &lt;tt class="docutils literal"&gt;make&lt;/tt&gt; never copies
+it again. My advice to rebuild with a plain &lt;tt class="docutils literal"&gt;make&lt;/tt&gt; was wrong for this
+package; it needs &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;recalbox-emulationstation2-rebuild&lt;/span&gt;&lt;/tt&gt;, which clears
+the rsync stamp. A &lt;tt class="docutils literal"&gt;diff &lt;span class="pre"&gt;-r&lt;/span&gt;&lt;/tt&gt; of the two trees, which must print
+nothing, is now part of my pre-flash checklist.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="wrong-turn-6-a-relaunch-that-took-25-seconds"&gt;
+&lt;h2&gt;Wrong turn 6: a relaunch that took 25 seconds&lt;/h2&gt;
+&lt;p&gt;With everything working, the one thing that felt wrong was time. Unplug
+in the menu and the screen stayed blank for ten to twenty seconds. The
+detection is instant (two lines in the log). What was slow was the
+frontend quitting.&lt;/p&gt;
+&lt;p&gt;The log of the quit gave the answer, once I looked at the &lt;em&gt;gaps&lt;/em&gt; instead
+of the messages. The unplug came at 12:14:42, about eleven seconds after
+the frontend had started. The Hasher thread, which computes ROM hashes,
+exited at 12:15:01, about thirty seconds after that start, while every
+other thread had stopped within a couple of seconds.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Initial delay&lt;/span&gt;
+&lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The hasher waits thirty seconds before starting its work, and that sleep
+cannot be interrupted. Quitting inside that window waits for the end of
+it. Other threads had the same shape: the netplay and command threads
+sleep five seconds at the start, and the file watcher and others one
+second per loop. Together they made up the five seconds of teardown I
+could see even when the hasher was idle.&lt;/p&gt;
+&lt;p&gt;The fix is small: a &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;Thread::SleepWhileRunning(ms)&lt;/span&gt;&lt;/tt&gt; that sleeps in steps
+of at most 50 ms and returns as soon as the thread is stopped, used in
+those loops. The order of the sleeps is unchanged, only the exit is
+faster. &lt;tt class="docutils literal"&gt;Thread.h&lt;/tt&gt; has Windows line endings in the repository, and my first
+scripted edit silently converted the whole file. The diff stat (240 lines for a
+14-line change) caught it before the commit.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="epilogue-upstream-got-there-first"&gt;
+&lt;h2&gt;Epilogue: upstream got there first&lt;/h2&gt;
+&lt;p&gt;When I went to rebase the RetroArch branch on the current master, the
+first commit conflicted. Upstream had landed, that morning, its own
+version of the same work: a free CRTC for a display nothing had set up,
+a fallback to the first mode, and a udev-based hotplug watch that
+restarts the video driver when the display in use goes away. Two of those
+commits credit me as co-author.&lt;/p&gt;
+&lt;p&gt;I had not looked at upstream between writing the patches and rebasing
+them, and that is the lesson I take from this: check what is already on
+master &lt;em&gt;before&lt;/em&gt; the third commit, not after the fifth.&lt;/p&gt;
+&lt;p&gt;The upstream behaviour has one gap for my use case. If the panel is in
+use and HDMI is plugged in, the output stays where it is: the restart
+only happens when the display in use is lost. The change I could add on
+top is four lines: with the default monitor index, a display that now
+ranks &lt;em&gt;before&lt;/em&gt; the one in use takes over, and an index set by the user
+is left alone. It has a unit test, and it worked on the board, but it
+needs a newer RetroArch than 1.22.2. Recalbox keeps its three patches for
+now.&lt;/p&gt;
+&lt;p&gt;One of my patches had an all-zero &lt;tt class="docutils literal"&gt;From&lt;/tt&gt; line, written by hand when I ported
+it to the 1.22.2 tree. That is not a valid patch header. Apply the patch on a
+real branch of the upstream repository at the target tag, commit it, and
+regenerate the file with &lt;tt class="docutils literal"&gt;git &lt;span class="pre"&gt;format-patch&lt;/span&gt;&lt;/tt&gt; so the commit ID, date and blob
+hashes are real.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-is-left"&gt;
+&lt;h2&gt;What is left&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The frontend relaunch is still a whole process restart. The quit is
+fast now, but the init takes about eight seconds, two for the window
+and five and a half to load the systems, plus the time the TV needs to
+lock the HDMI link. An in-place display reinit, which another merge
+request on the Recalbox side proposes, would remove most of it.&lt;/li&gt;
+&lt;li&gt;Only RetroArch cores follow a live switch. A standalone emulator keeps
+the display it picked until it exits.&lt;/li&gt;
+&lt;li&gt;The audio output is not switched automatically, and it stops during a
+frontend relaunch.&lt;/li&gt;
+&lt;li&gt;I decided against pausing the game during a switch. The restart already
+blocks it for about a second.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The work is in the &lt;a class="reference external" href="https://gitlab.com/recalbox/recalbox/-/merge_requests/3764"&gt;Recalbox merge request&lt;/a&gt;. A second board would tell me
+whether the black panel was really the VOP2 race.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Embedded"/><category term="recalbox"/><category term="retroarch"/><category term="kms"/><category term="drm"/><category term="rockchip"/><category term="buildroot"/><category term="embedded"/><category term="linux"/><category term="retro"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 38, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-38-2026.html" rel="alternate"/><published>2026-09-15T14:13:00+02:00</published><updated>2026-11-06T17:21:34.534859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-15:/zephyr-rtos-digest-week-38-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="community-and-governance"&gt;
@@ -48,7 +280,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.st.com/smart-power-distribution/"&gt;Smart power distribution in cars, it’s much more than a numbers game, it’s how the future takes shape&lt;/a&gt; (Source: The ST Blog)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:55:00+02:00</published><updated>2026-10-30T17:07:43.330133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/zephyr-rtos-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 36, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-36-2026.html" rel="alternate"/><published>2026-08-31T21:55:00+02:00</published><updated>2026-11-06T17:21:34.533859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-31:/zephyr-rtos-digest-week-36-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="releases-and-development-momentum"&gt;
@@ -81,7 +313,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org/community"&gt;Zephyr Community Awards, marking 10 years of contribution&lt;/a&gt; (Source: Zephyr Project)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:56:00+02:00</published><updated>2026-10-30T17:07:43.330133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/zephyr-rtos-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 30, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-30-2026.html" rel="alternate"/><published>2026-07-23T13:56:00+02:00</published><updated>2026-11-06T17:21:34.533859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-23:/zephyr-rtos-digest-week-30-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-growth"&gt;
@@ -111,7 +343,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/07/23/99-xteink-x4-pro-4-3-inch-touchscreen-ereader-to-support-crosspoint-reader-open-source-firmware/"&gt;$99 Xteink X4 Pro 4.3-inch touchscreen eReader to support CrossPoint Reader open-source firmware&lt;/a&gt; (Source: CNX Software – Embedded Systems News)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-10-30T17:07:43.330133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 28, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-28-2026.html" rel="alternate"/><published>2026-07-06T14:56:00+02:00</published><updated>2026-11-06T17:21:34.533859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-07-06:/zephyr-rtos-digest-week-28-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="ecosystem-expansion-and-membership-growth"&gt;
@@ -135,7 +367,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://interrupt.memfault.com/blog/march-through-june-2026-roundup"&gt;What we've been reading this Spring/Early Summer (2026)&lt;/a&gt; (Source: Interrupt)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-10-30T17:07:43.329133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 27, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-27-2026.html" rel="alternate"/><published>2026-06-29T21:41:00+02:00</published><updated>2026-11-06T17:21:34.533859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-29:/zephyr-rtos-digest-week-27-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates-and-expansions"&gt;
@@ -172,7 +404,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://blog.golioth.io/cra-compliance-for-embedded-devices-webinar/"&gt;CRA Compliance for Embedded Devices Webinar&lt;/a&gt; (Source: The Golioth Developer Blog)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-10-30T17:07:43.329133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 26, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-26-2026.html" rel="alternate"/><published>2026-06-22T09:52:00+02:00</published><updated>2026-11-06T17:21:34.532859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-22:/zephyr-rtos-digest-week-26-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-ecosystem-expansion"&gt;
@@ -201,7 +433,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.zephyrproject.org"&gt;Zephyr Project&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-10-30T17:07:43.329133+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 25, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-25-2026.html" rel="alternate"/><published>2026-06-15T07:44:00+02:00</published><updated>2026-11-06T17:21:34.532859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-15:/zephyr-rtos-digest-week-25-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="new-features-and-releases"&gt;
@@ -232,7 +464,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/06/15/gateworks-catalina-gw9200-nxp-i-mx-95-sbc-features-flexible-socket-adapter-sockets-for-m-2-or-mpcie-modules/"&gt;Gateworks Catalina GW9200 NXP i.MX 95 SBC features Flexible Socket Adapter sockets for M.2 or mPCIe modules&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-10-30T17:07:43.329051+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 23, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-23-2026.html" rel="alternate"/><published>2026-06-06T17:14:00+02:00</published><updated>2026-11-06T17:21:34.532859+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-06-06:/zephyr-rtos-digest-week-23-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-updates"&gt;
@@ -257,7 +489,7 @@
 &lt;li&gt;&lt;a class="reference external" href="https://shawnhymel.com/2791/a-brief-history-of-zephyr-rtos"&gt;A Brief History of Zephyr RTOS&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-10-30T17:07:43.326152+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. The notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>RIOT-OS 2026.04 "Fire Rizzlease" is out</title><link href="https://tprrt.tupi.fr/riot-os-2026-04-release.html" rel="alternate"/><published>2026-05-26T12:00:00+02:00</published><updated>2026-11-06T17:21:34.530411+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-26:/riot-os-2026-04-release.html</id><summary type="html">&lt;p class="first last"&gt;RIOT-OS 2026.04 &amp;quot;Fire Rizzlease&amp;quot; is out. The notable changes in this release of the open-source IoT operating system.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;&lt;a class="reference external" href="https://github.com/RIOT-OS/RIOT/releases/tag/2026.04"&gt;RIOT-OS 2026.04&lt;/a&gt;, codenamed &lt;strong&gt;Fire Rizzlease&lt;/strong&gt;, was released on May 6, 2026.
 RIOT is a multi-threading operating system targeting microcontrollers found in the
 Internet of Things — from 8-bit and 16-bit MCUs to lightweight 32-bit processors —
@@ -339,7 +571,7 @@ for prose documentation. This release adds:&lt;/p&gt;
 &lt;li&gt;LVGL configuration and SDL issues on native (#22005, #22139).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-10-30T17:07:43.329051+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="riot"/><category term="rtos"/><category term="embedded"/><category term="iot"/><category term="article"/></entry><entry><title>Zephyr RTOS Digest — Week 21, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-20-2026.html" rel="alternate"/><published>2026-05-24T17:24:00+02:00</published><updated>2026-11-06T17:21:34.532487+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-24:/zephyr-rtos-digest-week-20-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-overview"&gt;
@@ -354,7 +586,7 @@ for prose documentation. This release adds:&lt;/p&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/recap-zephyr-project-meetup-march-26-2026-rennes-france/"&gt;Recap – Zephyr Project meetup (March 26, 2026): Rennes, France&lt;/a&gt;
 - &lt;a class="reference external" href="https://zephyrproject.org/how-organizations-choose-and-deploy-rtos/"&gt;How Organizations Choose and Deploy RTOS&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-10-30T17:07:43.328429+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 20, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-19-2026.html" rel="alternate"/><published>2026-05-15T16:13:00+02:00</published><updated>2026-11-06T17:21:34.532487+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-15:/zephyr-rtos-digest-week-19-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-rtos-developments"&gt;
@@ -381,7 +613,7 @@ for prose documentation. This release adds:&lt;/p&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.cnx-software.com/2026/05/15/start9-risc-v-router-features-spacemit-k1-soc-startwrt-openwrt-fork/"&gt;Start9 RISC-V Router features SpacemiT K1 SoC, runs StartWRT OpenWrt fork (Crowdfunding)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-10-30T17:07:43.328429+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
+</content><category term="Embedded"/><category term="zephyr"/><category term="rtos"/><category term="embedded"/><category term="digest"/></entry><entry><title>Zephyr RTOS Digest — Week 19, 2026</title><link href="https://tprrt.tupi.fr/zephyr-rtos-digest-week-18-2026.html" rel="alternate"/><published>2026-05-08T13:25:00+02:00</published><updated>2026-11-06T17:21:34.532487+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-05-08:/zephyr-rtos-digest-week-18-2026.html</id><summary type="html">&lt;p class="first last"&gt;Weekly roundup of Zephyr RTOS news.&lt;/p&gt;
 </summary><content type="html">&lt;!-- SPDX-FileCopyrightText: 2026 Thomas Perrot &lt;thomas.perrot@tupi.fr&gt; --&gt;
 &lt;!-- SPDX-License-Identifier: CC-BY-SA-4.0 --&gt;
 &lt;div class="section" id="zephyr-project-documentation-and-resources"&gt;

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tprrt's Blog | articles tagged "drm"</title>
+    <link rel="shortcut icon" type="image/png" href="https://tprrt.tupi.fr/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://tprrt.tupi.fr/favicon.ico">
+    <link href="https://tprrt.tupi.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tprrt's Blog Full Atom Feed" />
+    <link href="https://tprrt.tupi.fr/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Tprrt's Blog Full RSS Feed" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="https://tprrt.tupi.fr/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta name="author" content="Thomas Perrot" />
+    <style>
+        footer .license-info { margin-top: 0.5em; font-size: 0.9em; }
+    </style>
+    <script>
+    // Remove stale GA-era cookie consent key left in returning visitors' browsers
+    localStorage.removeItem('cookieConsent');
+    </script>
+    <meta property="og:site_name" content="Tprrt's Blog" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tprrt's Blog" />
+    <meta property="og:description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta property="og:url" content="https://tprrt.tupi.fr/" />
+    <meta property="og:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tprrt's Blog" />
+    <meta name="twitter:description" content="Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness" />
+    <meta name="twitter:image" content="https://tprrt.tupi.fr/static/linux-512.webp" />
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"Tprrt\u0027s Blog","description":"Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness","url":"https://tprrt.tupi.fr"}
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li class="ephemeral selected"><a href="https://tprrt.tupi.fr/tag/drm.html">drm</a></li>
+                <li><a href="https://tprrt.tupi.fr/">Home</a></li>
+                <li><a href="https://tprrt.tupi.fr/articles">Articles</a></li>
+                <li><a href="https://tprrt.tupi.fr/digests">Digests</a></li>
+                <li><a href="https://tprrt.tupi.fr/categories">Categories</a></li>
+                <li><a href="https://tprrt.tupi.fr/contributions">Contributions</a></li>
+                <li><a href="https://tprrt.tupi.fr/about.html">About</a></li>
+                <li><a href="https://tprrt.tupi.fr/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="https://tprrt.tupi.fr/">Tprrt's Blog</a></h1>
+            <h2>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</h2>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Oct 22, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/hdmi-hotplug-recalbox-rg353m-retroarch.html" rel="bookmark" title="Permanent Link to &quot;Plugging a Mini-HDMI into a Running Game: Six Wrong Turns on an RG353M&quot;">Plugging a Mini-HDMI into a Running Game: Six Wrong Turns on an RG353M</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The Anbernic RG353M is a handheld built around a Rockchip RK3568, with a
+640x480 DSI panel and a mini-HDMI connector. Recalbox runs on it, and
+until now the HDMI output only half worked: plug the cable before
+powering on and the menu appears on the TV, but plug it afterwards and
+nothing follows. This article is about making the menu, the boot video,
+and above all a <em>running game</em> follow the cable, in both directions.</p>
+<p>The fix is a merge request on the Recalbox side and a few patches on
+RetroArch's KMS context. It took six detours. In each one my first
+explanation was wrong, and a log line or a file date told me so.</p>
+<p>The setup, for reference:</p>
+<ul class="simple">
+<li>Recalbox, a Buildroot external tree, target <tt class="docutils literal">rg353x</tt>, Linux 6.16.5;</li>
+<li>RetroArch 1.22.2, plus a stack of local patches;</li>
+<li>the Recalbox frontend, an EmulationStation fork, drawing through SDL's
+KMSDRM backend;</li>
+<li>two connectors: <tt class="docutils literal"><span class="pre">DSI-1</span></tt> (the panel) and <tt class="docutils literal"><span class="pre">HDMI-A-1</span></tt>.</li>
+</ul>
+<p>A note on method: I build in a rootless Podman container, flash an SD
+card, test on the real device and paste the logs back. A cycle takes
+several minutes, so each wrong guess is expensive, and that shaped how
+this went.</p>
+</div>
+<div class="section" id="wrong-turn-1-the-game-that-exits-right-away">
+<h2>Wrong turn 1: the game that exits right away</h2>
+<p>The first piece was easy. The frontend reads
+<tt class="docutils literal"><span class="pre">/sys/class/drm/card*-HDMI-A-*/status</span></tt> every half second, waits for
+three identical reads (about 1.5 s) to ignore a sink that bounces while
+the link comes up, and then relaunches itself. SDL's KMSDRM backend picks
+its connector once, at init, so a new process is the simplest way to
+follow the cable. After that, the menu showed up on the TV.</p>
+<p>Then I started a game on the TV and it quit immediately, back to the
+menu. RetroArch's log had the reason:</p>
+<div class="highlight"><pre><span></span>[WARN] [DRM] Couldn&#39;t find DRM encoder.
+</pre></div>
+<p>RetroArch's KMS context looks for the encoder the selected connector is
+currently using. When the board boots without a cable, <tt class="docutils literal"><span class="pre">HDMI-A-1</span></tt> has
+no encoder at all, because nothing ever drove it. Plugged in later, the
+connector is connected but has none, and the context gives up.</p>
+<p>The fix is what a modeset does anyway: take one of the connector's
+possible encoders, and a CRTC that is off, falling back to a lit one only
+when none is free. A second small fix goes with it. RetroArch asks for the
+size the game was started with, 640x480 on the panel; the TV has no such
+mode, and the start failed again. Falling back to the display's first mode
+costs nothing.</p>
+</div>
+<div class="section" id="wrong-turn-2-the-patch-that-never-reached-the-image">
+<h2>Wrong turn 2: the patch that never reached the image</h2>
+<p>I added the patch, rebuilt, flashed. The same error. The RetroArch log
+printed its build date:</p>
+<div class="highlight"><pre><span></span>[INFO] Built: Oct 20 2026
+</pre></div>
+<p>Two days old. The patch was in the source tree, the package had been
+rebuilt, and the image still had the old binary.</p>
+<p>Recalbox builds with <tt class="docutils literal">BR2_PER_PACKAGE_DIRECTORIES=y</tt>. Each package gets
+its own copy of the target tree, assembled from its dependencies. Three
+packages that depend on <tt class="docutils literal">retroarch</tt> (<tt class="docutils literal"><span class="pre">retroarch-assets</span></tt>,
+<tt class="docutils literal"><span class="pre">libretro-holani</span></tt> and <tt class="docutils literal"><span class="pre">libretro-mojozork</span></tt>) carried their own copy of
+the <em>old</em> <tt class="docutils literal">/usr/bin/retroarch</tt>, and when the final tree is put
+together theirs won. Rebuilding only the dependency leaves the stale files
+in the dependents.</p>
+<p>The fix is to clean the dependents too, and the check is cheap: the
+<tt class="docutils literal">Built:</tt> line, or <tt class="docutils literal">strings</tt> on the binary in <tt class="docutils literal">output/target</tt>. I
+should have looked at that line before touching the code. It is the first
+thing I do now.</p>
+</div>
+<div class="section" id="wrong-turn-3-restarting-everything-just-to-change-the-screen">
+<h2>Wrong turn 3: restarting everything just to change the screen</h2>
+<p>With games starting on the TV, I wanted the next step: plug or unplug
+the cable <em>during</em> a game and have the game move. RetroArch already
+knows how to restart its video driver; what it lacked was a reason to do
+it.</p>
+<p>The context polls the connectors once a second from <tt class="docutils literal">check_window</tt>, and
+asks for a restart when the monitor index would now pick another display.
+Three details made it behave:</p>
+<ul class="simple">
+<li><strong>Debounce:</strong> a restart only on two identical polls in a row, as with
+the frontend side;</li>
+<li><strong>A loop guard:</strong> a connector already tried is not requested again, so
+a display with no usable mode cannot cause an endless restart;</li>
+<li><strong>Where it runs:</strong> the poll runs on the video thread, which cannot
+restart itself. It sets a flag, and the main loop does the restart.</li>
+</ul>
+<p>It worked. The log showed the connector change four times in one game,
+HDMI to panel to HDMI to panel, and the game kept running. But the sound
+cut at each switch. The reason was one argument:
+<tt class="docutils literal">command_event(CMD_EVENT_REINIT, NULL)</tt> restarts <em>all</em> the drivers,
+audio included, and I had also suspended audio explicitly around it.
+Passing a mask of video, input and menu was enough. In the next log
+<tt class="docutils literal">Started synchronous audio driver</tt> appears once for the whole game, not
+once per switch.</p>
+</div>
+<div class="section" id="wrong-turn-4-the-panel-that-stayed-black">
+<h2>Wrong turn 4: the panel that stayed black</h2>
+<p>This one cost the most. Boot with the cable plugged, unplug it, and the
+frontend relaunches on the panel (<tt class="docutils literal">Trying Resolution: 640,480</tt>), but the
+panel stays black. The backlight reads 128. The DRM state, dumped from
+debugfs, is identical to the working case. Stopping the frontend does not
+bring the console back either, so the panel is not being scanned out
+whatever userspace does.</p>
+<p>I proposed three explanations to myself and had to retract all of them:</p>
+<ul class="simple">
+<li>the date of <tt class="docutils literal">/dev/dri/card0</tt> looked like the device had been recreated.
+It is the <em>last access</em> time;</li>
+<li>the plane assignment looked different. The working case had the same one;</li>
+<li>the Dim screensaver sets brightness to a smaller step, and brightness 8
+fits <tt class="docutils literal">(7 &gt;&gt; 1) = 3</tt> then <tt class="docutils literal">1 &lt;&lt; 3</tt>. It was not the cause here, since
+the backlight read 128 with a black panel.</li>
+</ul>
+<p>What finally gave a direction was a line in <tt class="docutils literal">dmesg</tt>, present on every
+boot with the cable plugged, around the start of fbdev:</p>
+<div class="highlight"><pre><span></span>rockchip-vop2 fe040000.vop: [drm:rk3568_vop2_setup_overlay] *ERROR*
+    wait layer cfg done timeout: 0x54760213--0x54762013
+</pre></div>
+<p>On the RK3568 the VOP2 has several video ports sharing the layer and port
+select registers, and those registers are latched by the vsync of <em>one</em>
+of the ports. The 6.16.5 code waits for the wrong value, and switches the
+vsync source before the previous latch happened. With two ports started
+together, HDMI and DSI at boot, the configuration of one of them may
+never be applied.</p>
+<p>Four upstream commits fix this, the last two merged in June 2026. I took
+them unchanged as kernel patches, in order, so that together they give
+the upstream <tt class="docutils literal">rk3568_vop2_setup_layer_mixer()</tt>. After flashing, the
+error is gone from <tt class="docutils literal">dmesg</tt> and the panel comes back after an unplug.</p>
+<p>The link between that error and the black panel is only a hypothesis. An
+earlier boot logged the same error and the panel had worked. The patches are
+correct on their own merits and the symptom went away, but I cannot say one
+caused the other.</p>
+</div>
+<div class="section" id="wrong-turn-5-a-panel-that-was-on-at-brightness-0">
+<h2>Wrong turn 5: a panel that was &quot;on&quot; at brightness 0</h2>
+<p>Next, a game on HDMI, then unplug. RetroArch switched to the panel
+(<tt class="docutils literal">Connector 54 is now the display to use</tt>), the DSI link was enabled
+and connected, and the panel was black again:</p>
+<div class="highlight"><pre><span></span># cat /sys/class/backlight/backlight/brightness
+0
+# cat /sys/class/drm/card0-DSI-1/enabled /sys/class/drm/card0-DSI-1/status
+enabled
+connected
+</pre></div>
+<p>Brightness zero, with the video path fine. The frontend keeps the panel
+dark while HDMI is in use, and a commit I had written was supposed to
+restore it on unplug. The code looked right. So I compared the file the
+build had compiled with the one in the source tree:</p>
+<div class="highlight"><pre><span></span>build/.../es-app/src/MainRunner.cpp   2026-10-21 13:03
+projects/frontend/es-app/src/MainRunner.cpp   2026-10-21 21:06
+</pre></div>
+<p>The frontend is a Buildroot package with <tt class="docutils literal">SITE_METHOD = local</tt>. It is
+copied into the build directory once, and a plain <tt class="docutils literal">make</tt> never copies
+it again. My advice to rebuild with a plain <tt class="docutils literal">make</tt> was wrong for this
+package; it needs <tt class="docutils literal"><span class="pre">recalbox-emulationstation2-rebuild</span></tt>, which clears
+the rsync stamp. A <tt class="docutils literal">diff <span class="pre">-r</span></tt> of the two trees, which must print
+nothing, is now part of my pre-flash checklist.</p>
+</div>
+<div class="section" id="wrong-turn-6-a-relaunch-that-took-25-seconds">
+<h2>Wrong turn 6: a relaunch that took 25 seconds</h2>
+<p>With everything working, the one thing that felt wrong was time. Unplug
+in the menu and the screen stayed blank for ten to twenty seconds. The
+detection is instant (two lines in the log). What was slow was the
+frontend quitting.</p>
+<p>The log of the quit gave the answer, once I looked at the <em>gaps</em> instead
+of the messages. The unplug came at 12:14:42, about eleven seconds after
+the frontend had started. The Hasher thread, which computes ROM hashes,
+exited at 12:15:01, about thirty seconds after that start, while every
+other thread had stopped within a couple of seconds.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Initial delay</span>
+<span class="n">Thread</span><span class="o">::</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">30</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+</pre></div>
+<p>The hasher waits thirty seconds before starting its work, and that sleep
+cannot be interrupted. Quitting inside that window waits for the end of
+it. Other threads had the same shape: the netplay and command threads
+sleep five seconds at the start, and the file watcher and others one
+second per loop. Together they made up the five seconds of teardown I
+could see even when the hasher was idle.</p>
+<p>The fix is small: a <tt class="docutils literal"><span class="pre">Thread::SleepWhileRunning(ms)</span></tt> that sleeps in steps
+of at most 50 ms and returns as soon as the thread is stopped, used in
+those loops. The order of the sleeps is unchanged, only the exit is
+faster. <tt class="docutils literal">Thread.h</tt> has Windows line endings in the repository, and my first
+scripted edit silently converted the whole file. The diff stat (240 lines for a
+14-line change) caught it before the commit.</p>
+</div>
+<div class="section" id="epilogue-upstream-got-there-first">
+<h2>Epilogue: upstream got there first</h2>
+<p>When I went to rebase the RetroArch branch on the current master, the
+first commit conflicted. Upstream had landed, that morning, its own
+version of the same work: a free CRTC for a display nothing had set up,
+a fallback to the first mode, and a udev-based hotplug watch that
+restarts the video driver when the display in use goes away. Two of those
+commits credit me as co-author.</p>
+<p>I had not looked at upstream between writing the patches and rebasing
+them, and that is the lesson I take from this: check what is already on
+master <em>before</em> the third commit, not after the fifth.</p>
+<p>The upstream behaviour has one gap for my use case. If the panel is in
+use and HDMI is plugged in, the output stays where it is: the restart
+only happens when the display in use is lost. The change I could add on
+top is four lines: with the default monitor index, a display that now
+ranks <em>before</em> the one in use takes over, and an index set by the user
+is left alone. It has a unit test, and it worked on the board, but it
+needs a newer RetroArch than 1.22.2. Recalbox keeps its three patches for
+now.</p>
+<p>One of my patches had an all-zero <tt class="docutils literal">From</tt> line, written by hand when I ported
+it to the 1.22.2 tree. That is not a valid patch header. Apply the patch on a
+real branch of the upstream repository at the target tag, commit it, and
+regenerate the file with <tt class="docutils literal">git <span class="pre">format-patch</span></tt> so the commit ID, date and blob
+hashes are real.</p>
+</div>
+<div class="section" id="what-is-left">
+<h2>What is left</h2>
+<ul class="simple">
+<li>The frontend relaunch is still a whole process restart. The quit is
+fast now, but the init takes about eight seconds, two for the window
+and five and a half to load the systems, plus the time the TV needs to
+lock the HDMI link. An in-place display reinit, which another merge
+request on the Recalbox side proposes, would remove most of it.</li>
+<li>Only RetroArch cores follow a live switch. A standalone emulator keeps
+the display it picked until it exits.</li>
+<li>The audio output is not switched automatically, and it stops during a
+frontend relaunch.</li>
+<li>I decided against pausing the game during a switch. The restart already
+blocks it for about a second.</li>
+</ul>
+<p>The work is in the <a class="reference external" href="https://gitlab.com/recalbox/recalbox/-/merge_requests/3764">Recalbox merge request</a>. A second board would tell me
+whether the black panel was really the VOP2 race.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/hdmi-hotplug-recalbox-rg353m-retroarch.html">posted at 23:00</a>
+                    &nbsp;&middot;&nbsp;10 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/embedded.html" rel="tag">Embedded</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/recalbox.html" class="tags">recalbox</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retroarch.html" class="tags">retroarch</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/kms.html" class="tags">kms</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/drm.html" class="tags selected">drm</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/rockchip.html" class="tags">rockchip</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/buildroot.html" class="tags">buildroot</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/linux.html" class="tags">linux</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.atom.xml" rel="alternate">Atom Feed</a>
+                &middot;
+                <a href="https://tprrt.tupi.fr/feeds/all.rss.xml" rel="alternate">Rss Feed</a>
+                </p>
+                <p class="license-info">Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a> &middot; Code licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a></p>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+<script data-goatcounter="https://tperrot.goatcounter.com/count"
+        async src="https://tprrt.tupi.fr/static/count.js"></script>
+</body>
+</html>
