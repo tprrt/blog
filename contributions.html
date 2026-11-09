@@ -58,133 +58,258 @@
         <div id="content">
             <div class="page">
                 <h1>Contributions</h1>
-                <div class="section" id="summary">
-<h2>Summary</h2>
-<p>Below, a non-exhaustive list of my last contributions to opensource projects.</p>
+                <p>I contribute to free and open-source projects, mainly around embedded Linux,
+Yocto/OpenEmbedded, secure boot and RISC-V. The lists below are non-exhaustive;
+counts include commits I authored, signed off or co-authored.</p>
+<div class="section" id="upstream-projects">
+<h2>Upstream projects</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="31%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Project</th>
+<th class="head">Contribution</th>
+<th class="head">Count</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a class="reference external" href="https://github.com/linux4sam/at91bootstrap/commits?author=tprrt">at91bootstrap</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&amp;state=*">Buildroot</a></td>
+<td>patches</td>
+<td>9</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/bootlin/elixir/commits?author=tprrt">Elixir</a></td>
+<td>patches</td>
+<td>9</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/sifiveinc/freedom-u-sdk/commits?author=tprrt">freedom-u-sdk</a></td>
+<td>patches</td>
+<td>206</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/libevent/libevent/commits?author=tprrt">libevent</a></td>
+<td>patches</td>
+<td>1</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=author&amp;q=thomas.perrot">Linux</a></td>
+<td>patches</td>
+<td>4</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/search?q=repo%3AOP-TEE%2Foptee_os%20%22Signed-off-by%3A%20Thomas%20Perrot%22&amp;type=commits">OP-TEE</a></td>
+<td>patches</td>
+<td>46</td>
+</tr>
+<tr><td><a class="reference external" href="https://gitlab.com/recalbox/recalbox/-/merge_requests?scope=all&amp;state=all&amp;author_username=tprrt">Recalbox</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/search?q=repo%3Alibretro%2FRetroArch%20%22Co-authored-by%3A%20Thomas%20Perrot%22&amp;type=commits">RetroArch</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/RIOT-OS/RIOT/commits?author=tprrt">RIOT</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/bootlin/snagboot/commits?author=tprrt">Snagboot</a></td>
+<td>patches</td>
+<td>21</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/u-boot/u-boot/commits/master?author=tprrt">U-Boot</a></td>
+<td>patches</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="yocto-and-openembedded">
+<h2>Yocto and OpenEmbedded</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="31%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Project</th>
+<th class="head">Contribution</th>
+<th class="head">Count</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a class="reference external" href="https://git.openembedded.org/bitbake/log/?qt=author&amp;q=thomas.perrot">Bitbake</a></td>
+<td>patches</td>
+<td>7</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/error-report-web/log/?qt=author&amp;q=thomas.perrot">error-report-web</a></td>
+<td>patches</td>
+<td>3</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-arm/log/?qt=author&amp;q=thomas.perrot">meta-arm</a></td>
+<td>patches</td>
+<td>1</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/linux4sam/meta-atmel/commits?author=tprrt">meta-atmel</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/meta-erlang/meta-erlang/commits?author=tprrt">meta-erlang</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-freescale/log/?qt=author&amp;q=thomas.perrot">meta-freescale</a></td>
+<td>patches</td>
+<td>16</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/srware/meta-iot-cloud/commits?author=tprrt">meta-iot-cloud</a></td>
+<td>patches</td>
+<td>1</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.openembedded.org/meta-openembedded/log/?qt=author&amp;q=thomas.perrot">meta-openembedded</a></td>
+<td>patches</td>
+<td>20</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-raspberrypi/log/?qt=author&amp;q=thomas.perrot">meta-raspberrypi</a></td>
+<td>patches</td>
+<td>1</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/riscv/meta-riscv/commits?author=tprrt">meta-riscv</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-security/log/?qt=author&amp;q=thomas.perrot">meta-security</a></td>
+<td>patches</td>
+<td>4</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-selinux/log/?qt=author&amp;q=thomas.perrot">meta-selinux</a></td>
+<td>patches</td>
+<td>4</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/search?q=repo%3Asifiveinc%2Fmeta-sifive%20%22Signed-off-by%3A%20Thomas%20Perrot%22&amp;type=commits">meta-sifive</a></td>
+<td>patches</td>
+<td>128</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/search?q=repo%3ASTMicroelectronics%2Fmeta-st-stm32mp%20%22Signed-off-by%3A%20Thomas%20Perrot%22&amp;type=commits">meta-st-stm32mp</a></td>
+<td>patches</td>
+<td>1</td>
+</tr>
+<tr><td><a class="reference external" href="https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits?author=tprrt">meta-tensorflow-lite</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-ti/log/?qt=author&amp;q=thomas.perrot">meta-ti</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.yoctoproject.org/meta-virtualization/log/?qt=author&amp;q=thomas.perrot">meta-virtualization</a></td>
+<td>patches</td>
+<td>2</td>
+</tr>
+<tr><td><a class="reference external" href="https://git.openembedded.org/openembedded-core/log/?qt=grep&amp;q=Signed-off-by%3A+Thomas+Perrot">openembedded-core</a></td>
+<td>patches</td>
+<td>34</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="31%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Wiki</th>
+<th class="head">Contribution</th>
+<th class="head">Count</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a class="reference external" href="https://wiki.arcadeotaku.com/w/Special:Contributions/Pantoufle31">Arcade Otaku</a></td>
+<td>edits</td>
+<td>3</td>
+</tr>
+<tr><td><a class="reference external" href="https://elinux.org/Special:Contributions/Tperrot">Embedded Linux</a></td>
+<td>edits</td>
+<td>33</td>
+</tr>
+<tr><td><a class="reference external" href="https://shmups.wiki/library/Special:Contributions/Pantoufle31">Shmups</a></td>
+<td>edits</td>
+<td>24</td>
+</tr>
+<tr><td><a class="reference external" href="https://en.wikipedia.org/wiki/Special:Contributions/Tperrot">Wikipedia</a></td>
+<td>edits</td>
+<td>4</td>
+</tr>
+<tr><td><a class="reference external" href="https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot">Yocto Project</a></td>
+<td>edits</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="talks">
+<h2>Talks</h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="25%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Date</th>
+<th class="head">Event</th>
+<th class="head">Title</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Nov 2022</td>
+<td><a class="reference external" href="https://capitoledulibre.org">Capitole du libre</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf">Embedded Linux and Yocto introduction</a></td>
+</tr>
+<tr><td>May 2022</td>
+<td><a class="reference external" href="https://www.linkedin.com/company/live-embedded-event">Live Embedded Event</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20220518/perrot-optee-pkcs11.pdf">PKCS#11 with OP-TEE</a></td>
+</tr>
+<tr><td>Jun 2021</td>
+<td><a class="reference external" href="https://www.linkedin.com/company/live-embedded-event">Live Embedded Event</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20210603/perrot-secure-boot.pdf">Secure boot in embedded Linux systems</a></td>
+</tr>
+<tr><td>Nov 2019</td>
+<td><a class="reference external" href="https://capitoledulibre.org">Capitole du libre</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20191116/building_linux.pdf">Main steps to build an embedded Linux system</a></td>
+</tr>
+<tr><td>Nov 2018</td>
+<td><a class="reference external" href="https://capitoledulibre.org">Capitole du libre</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20181117/measured_boot.pdf">Measured boot: how to link the operating system to the platform integrity</a></td>
+</tr>
+<tr><td>Jan 2018</td>
+<td><a class="reference external" href="https://www.meetup.com/Toulouse-Embedded-Linux-Android-Meetup">Toulouse Embedded Linux Meetup</a></td>
+<td><a class="reference external" href="https://github.com/tprrt/slides/blob/master/20180116/update_feedback.pdf">A concrete application of a custom OTA system upgrade</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="blog-posts">
+<h2>Blog posts</h2>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>Blog post</dt>
-<dd><ul class="first last">
 <li><a class="reference external" href="https://bootlin.com/blog/updated-yocto-support-for-sifive-risc-v-platforms-2/">Updated Yocto support for SiFive RISC-V platforms</a></li>
 <li><a class="reference external" href="https://bootlin.com/blog/feedback-from-elce-2023-selection-of-talks-3/">Feedback from ELCE 2023: selection of talks #3</a></li>
 <li><a class="reference external" href="https://bootlin.com/blog/updated-yocto-support-for-sifive-risc-v-platforms/">Updated Yocto support for SiFive RISC-V platforms</a></li>
 <li><a class="reference external" href="https://bootlin.com/blog/flutter-nvidia-jetson-openembedded-yocto/">Using Flutter on NVidia Jetson to build graphical applications</a></li>
 </ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Documentation</dt>
-<dd><ul class="first last">
-<li><a class="reference external" href="https://wiki.arcadeotaku.com/w/Special:Contributions/Pantoufle31">Arcade Otaku Wiki</a></li>
-<li><a class="reference external" href="https://elinux.org/Special:Contributions/Tperrot">Embedded Linux Wiki</a></li>
-<li><a class="reference external" href="https://shmups.wiki/library/Special:Contributions/Pantoufle31">Shmups Wiki</a></li>
-<li><a class="reference external" href="https://en.wikipedia.org/wiki/Special:Contributions/Tperrot">Wikipedia</a></li>
-<li><a class="reference external" href="https://wiki.yoctoproject.org/wiki/Special:Contributions/Thomas_Perrot">Yocto Project Wiki</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Patches</dt>
-<dd><ul class="first last">
-<li><a class="reference external" href="https://github.com/linux4sam/at91bootstrap/commits?author=tprrt">at91bootstrap patches</a></li>
-<li><a class="reference external" href="https://git.openembedded.org/bitbake/log/?qt=author&amp;q=thomas.perrot">Bitbake patches</a></li>
-<li><a class="reference external" href="https://patchwork.ozlabs.org/project/buildroot/list/?submitter=82054&amp;state=*">Buildroot patches</a></li>
-<li><a class="reference external" href="https://github.com/mirror/busybox/commits?author=tprrt">Busybox patches</a></li>
-<li><a class="reference external" href="https://github.com/bootlin/elixir/commits?author=tprrt">Elixir patches</a></li>
-<li><a class="reference external" href="https://github.com/sifive/freedom-u-sdk/commits?author=tprrt">freedom-u-sdk patches</a></li>
-<li><a class="reference external" href="https://lore.kernel.org/stable/?qt=author&amp;q=thomas.perrot">Linux patches</a></li>
-<li><a class="reference external" href="https://github.com/libevent/libevent/commits?author=tprrt">libevent patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-arm/log/?qt=author&amp;q=thomas.perrot">meta-arm patches</a></li>
-<li><a class="reference external" href="https://github.com/linux4sam/meta-atmel/commits?author=tprrt">meta-atmel patches</a></li>
-<li><a class="reference external" href="https://github.com/meta-erlang/meta-erlang/commits?author=tprrt">meta-erlang patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-freescale/log/?qt=author&amp;q=thomas.perrot">meta-freescale patches</a></li>
-<li><a class="reference external" href="https://github.com/intel-iot-devkit/meta-iot-cloud/commits?author=tprrt">meta-iot-cloud patches</a></li>
-<li><a class="reference external" href="https://git.openembedded.org/meta-openembedded/log/?qt=author&amp;q=thomas.perrot">meta-openembedded patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/log/?qt=author&amp;q=thomas.perrot">meta-raspberrypi patches</a></li>
-<li><a class="reference external" href="https://github.com/riscv/meta-riscv/commits?author=tprrt">meta-riscv patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-security/log/?qt=author&amp;q=thomas.perrot">meta-security patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-selinux/log/?qt=author&amp;q=thomas.perrot">meta-selinux patches</a></li>
-<li><a class="reference external" href="https://github.com/sifive/meta-sifive/commits?author=tprrt">meta-sifive patches</a></li>
-<li><a class="reference external" href="https://github.com/STMicroelectronics/meta-st-stm32mp/commits?author=tprrt">meta-st-stm32mp patches</a></li>
-<li><a class="reference external" href="https://github.com/NobuoTsukamoto/meta-tensorflow-lite/commits?author=tprrt">meta-tensorflow-lite patches</a></li>
-<li><a class="reference external" href="https://git.yoctoproject.org/cgit/cgit.cgi/meta-ti/log/?qt=author&amp;q=thomas.perrot">meta-ti patches</a></li>
-<li><a class="reference external" href="https://git.openembedded.org/openembedded-core/log/?qt=author&amp;q=thomas.perrot">openembedded-core patches</a></li>
-<li><a class="reference external" href="https://github.com/OP-TEE/optee_os/commits?author=tprrt">OP-TEE patches</a></li>
-<li><a class="reference external" href="https://gitlab.com/recalbox/recalbox/-/merge_requests?scope=all&amp;state=all&amp;author_username=tprrt">Recalbox patches</a></li>
-<li><a class="reference external" href="https://github.com/libretro/RetroArch/commits?author=tprrt">RetroArch patches</a></li>
-<li><a class="reference external" href="https://github.com/RIOT-OS/RIOT/commits?author=tprrt">RIOT patches</a></li>
-<li><a class="reference external" href="https://github.com/bootlin/snagboot/commits?author=tprrt">Snagboot patches</a></li>
-<li><a class="reference external" href="https://github.com/mirror/util-linux/commits?author=tprrt">util-linux patches</a></li>
-<li><a class="reference external" href="https://lore.kernel.org/u-boot/?qt=author&amp;q=thomas.perrot">U-boot patches</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Presentation</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>Nov 2022</dt>
-<dd><ul class="first last">
-<li><cite>Capitole du libre</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf">Embedded Linux and Yocto introduction</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Mai 2022</dt>
-<dd><ul class="first last">
-<li><cite>LEE</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20220518/perrot-optee-pkcs11.pdf">PKCS#11 with OP-TEE</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Jun 2021</dt>
-<dd><ul class="first last">
-<li><cite>LEE</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20210603/perrot-secure-boot.pdf">Secure boot in embedded Linux systems</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Nov 2019</dt>
-<dd><ul class="first last">
-<li><cite>Capitole du libre</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20191116/building_linux.pdf">Main steps to build an embedded Linux system</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Nov 2018</dt>
-<dd><ul class="first last">
-<li><cite>Capitole du libre</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20181117/measured_boot.pdf">Measure boot: How to link the operating system to the platform integrity</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Jan 2017</dt>
-<dd><ul class="first last">
-<li><cite>Toulouse Embedded Linux Meetup</cite>: <a class="reference external" href="https://github.com/tprrt/slides/blob/master/20180116/update_feedback.pdf">A concrete application of a custom OTA system upgrade</a></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Training</dt>
-<dd><ul class="first last">
+</div>
+<div class="section" id="training">
+<h2>Training</h2>
+<ul class="simple">
 <li><a class="reference external" href="https://bootlin.com/training/yocto/">Yocto Project and OpenEmbedded development training</a></li>
-</ul>
-</dd>
-</dl>
-</li>
 </ul>
 </div>
 
