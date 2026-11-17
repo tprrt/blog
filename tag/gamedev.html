@@ -56,7 +56,148 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Oct 15, 2026</h4>
+        <div id="content">            <h4 class="date">Nov 04, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://tprrt.tupi.fr/one-confession-one-alibi-gba-text-performance.html" rel="bookmark" title="Permanent Link to &quot;One Confession, One Alibi: Closing Out the GBA Text Performance Hunt&quot;">One Confession, One Alibi: Closing Out the GBA Text Performance Hunt</a>
+                </h2>
+
+
+
+                <div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The <a class="reference external" href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html">previous article</a> fixed the dominant cost in
+<tt class="docutils literal">gba_text_render_system</tt>, screen-space projection math running through the
+ARM7TDMI's software float library, and left two functions unmeasured:
+<tt class="docutils literal">framer_color_bank_acquire()</tt>, and the per-line layout call that decides
+how many hardware sprites a string needs. Both run once per text line at the
+same place in the loop.</p>
+<p>One had a soft-float cost. The other is a handful of integer instructions
+that only looked suspicious because the compiler had inlined it out of
+sight.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">framer-engine</span></tt> is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.</p>
+</div>
+</div>
+<div class="section" id="the-confession-framer-color-bank-acquire">
+<h2>The confession: <tt class="docutils literal">framer_color_bank_acquire()</tt></h2>
+<p>GBA sprites index into one of 16 hardware palette banks.
+<tt class="docutils literal">framer_color_bank_acquire()</tt> picks the bank for a tint color: reuse an
+exact match, reuse the least-recently-used bank if the color is close enough,
+or claim a free one. It runs once per text line.</p>
+<p>The matching loop compares each bank's stored color with the incoming one:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">color_matches</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">bank_slot</span><span class="w"> </span><span class="o">*</span><span class="n">slot</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">vec4</span><span class="w"> </span><span class="n">color</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">eps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.004f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fabsf</span><span class="p">(</span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">r</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">eps</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">           </span><span class="n">fabsf</span><span class="p">(</span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">g</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">eps</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">           </span><span class="n">fabsf</span><span class="p">(</span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">b</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">eps</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>That is three subtractions, three <tt class="docutils literal">fabsf()</tt> calls and three comparisons per
+bank, and on an FPU-less ARM7TDMI each is a soft-float library call. Two
+breakpoints, at the function's entry and at the epilogue every return path
+converges to, measured it on <tt class="docutils literal">examples/input_tester</tt> in mGBA: about 3300
+cycles in the common case, an exact match on the first bank. That is roughly
+a third of the 7400-17000 cycle per-entity gap the previous article measured.</p>
+<p>The hardware write path already converts each float channel to its 5-bit
+value with <tt class="docutils literal">rgb555.h</tt>'s <tt class="docutils literal">f_to_5bit()</tt> before it reaches <tt class="docutils literal">OBJ_PALETTE</tt>.
+Doing that conversion before the comparison turns it into three integer
+equality checks:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">color_matches</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">bank_slot</span><span class="w"> </span><span class="o">*</span><span class="n">slot</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">q5</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">q5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">q5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">q5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">q5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">           </span><span class="n">slot</span><span class="o">-&gt;</span><span class="n">q5</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">q5</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+<p>Each bank's quantized value is computed once, when the bank's color is
+assigned, and the incoming color is quantized once per call, not once per
+bank. The stored float color is unchanged. Same breakpoints, same scene:
+about 1100 cycles, a third of before.</p>
+<p>This does change the matching rule. The old test matched colors within 0.004
+of each other; the new one matches colors that land in the same 5-bit step,
+about 0.032 wide. Two colors 0.002 apart on either side of a step boundary no
+longer share a bank, and two colors 0.02 apart inside one step now do. Since
+the hardware cannot display the difference within a step, sharing a bank
+there is correct, and the scenes checked below are unaffected.</p>
+</div>
+<div class="section" id="the-alibi-the-layout-call">
+<h2>The alibi: the layout call</h2>
+<p>Under <tt class="docutils literal"><span class="pre">-O3</span></tt> and LTO, <tt class="docutils literal">framer_oam_layout_string()</tt> has no symbol left: it is
+inlined into <tt class="docutils literal">gba_text_render_system</tt>, like the sub-functions the previous
+article had to find with <tt class="docutils literal"><span class="pre">arm-none-eabi-objdump</span> <span class="pre">-dS</span></tt>. The source:</p>
+<div class="highlight"><pre><span></span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">char_count</span><span class="p">;</span>
+<span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">remaining</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">FRAMER_OAM_MAX_SPRITES_PER_TEXT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* ... fill out one sprite-group descriptor ... */</span>
+<span class="w">    </span><span class="n">offset</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">remaining</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Integer arithmetic, at most ten iterations
+(<tt class="docutils literal">FRAMER_OAM_MAX_SPRITES_PER_TEXT</tt>), no float. It looked cheap, but the
+previous article's two &quot;obvious&quot; fixes that measured as regressions are
+reason enough to measure it.</p>
+<p>The disassembly showed the compiler had fully unrolled the loop into ten
+early exits, one per possible iteration count, all jumping to the same
+post-layout address. A breakpoint there fires exactly once per call, whichever
+exit the line takes, so it works as well as a symbol.</p>
+<p>With a second breakpoint at the loop entry, <tt class="docutils literal">phase_probe.py</tt> in mGBA
+recorded 40 hits in steady state. The first call took about 176 cycles, and
+every later one 114-128, averaging about 119. The spread follows the source:
+a label needing one more four-character sprite group costs a few more cycles.</p>
+<p>For scale: the projection math cost 7400-17000 cycles per transition,
+<tt class="docutils literal">framer_color_bank_acquire()</tt> 3300 before its fix, layout 119.
+<tt class="docutils literal">input_tester</tt> draws 19 or 20 lines per frame at its 76-of-96 OAM budget, so
+the whole layout pass costs roughly 2300-2500 cycles against a 660650-684800
+cycle frame, about a third of one percent. There is nothing to fix.</p>
+</div>
+<div class="section" id="checking-it">
+<h2>Checking it</h2>
+<p>Only the color-bank change touched code. The check is the usual byte-for-byte
+comparison: connect to the emulator's GDB stub, let a few frames settle, read
+palette and sprite memory, and diff against the same read from the unfixed
+ROM. All 128 sprite entries and the full 256-color palette came back
+identical. Two new host-side tests pin the new boundary: two colors in the
+same 5-bit step share a bank, two colors straddling a step do not.
+<tt class="docutils literal">games/caravan</tt>, the heaviest user of this code, also cross-compiles cleanly
+for NDS.</p>
+</div>
+<div class="section" id="what-s-left">
+<h2>What's left</h2>
+<p>Both functions are now measured: one fixed, one left alone. With the
+projection rewrite and the color-bank quantization, <tt class="docutils literal">input_tester</tt> is faster
+than two articles ago, but nowhere near 60 Hz from 18 FPS. Every function the
+investigation suspected has been measured, so the remaining cost needs a
+different kind of change.</p>
+</div>
+
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="https://tprrt.tupi.fr/one-confession-one-alibi-gba-text-performance.html">posted at 18:40</a>
+                    &nbsp;&middot;&nbsp;5 min read
+                    &nbsp;&middot;&nbsp;<a href="https://tprrt.tupi.fr/category/gamedev.html" rel="tag">gamedev</a>
+                    &nbsp;&middot;
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gba.html" class="tags">gba</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/performance.html" class="tags">performance</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/optimization.html" class="tags">optimization</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/embedded.html" class="tags">embedded</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/retro.html" class="tags">retro</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/gamedev.html" class="tags selected">gamedev</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/debugging.html" class="tags">debugging</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/c.html" class="tags">c</a>
+                    &nbsp;<a href="https://tprrt.tupi.fr/tag/article.html" class="tags">article</a>
+                </div>
+            </article>            <h4 class="date">Oct 15, 2026</h4>
 
             <article class="post">
                 <h2 class="title">

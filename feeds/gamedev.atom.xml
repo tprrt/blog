@@ -1,5 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-11-09T10:36:00.575667+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>Floored Twice: Chasing a Soft-Float Tax in GBA Text Rendering</title><link href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html" rel="alternate"/><published>2026-10-15T22:50:00+02:00</published><updated>2026-11-09T10:36:00.575667+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-15:/floored-twice-gba-text-soft-float.html</id><summary type="html">&lt;p class="first last"&gt;A GBA example with a lot of on-screen text ran at 18 FPS, idle,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tprrt's Blog - gamedev</title><link href="https://tprrt.tupi.fr/" rel="alternate"/><link href="https://tprrt.tupi.fr/feeds/gamedev.atom.xml" rel="self"/><id>https://tprrt.tupi.fr/</id><updated>2026-11-17T16:50:40.626497+01:00</updated><subtitle>Embedded Linux, Zephyr RTOS, open-source hardware, Linux gaming, retro gaming, and competitive fitness</subtitle><entry><title>One Confession, One Alibi: Closing Out the GBA Text Performance Hunt</title><link href="https://tprrt.tupi.fr/one-confession-one-alibi-gba-text-performance.html" rel="alternate"/><published>2026-11-04T18:40:00+01:00</published><updated>2026-11-17T16:50:40.626497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-11-04:/one-confession-one-alibi-gba-text-performance.html</id><summary type="html">&lt;p class="first last"&gt;The previous GBA text-rendering investigation ended with two
+suspects unmeasured: a palette-bank lookup and a layout function the
+compiler had inlined away. The first spent cycles on soft-float calls it
+did not need. The second was cheap, and measuring it meant finding the
+one address that ten unrolled loop exits share.&lt;/p&gt;
+</summary><content type="html">&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html"&gt;previous article&lt;/a&gt; fixed the dominant cost in
+&lt;tt class="docutils literal"&gt;gba_text_render_system&lt;/tt&gt;, screen-space projection math running through the
+ARM7TDMI's software float library, and left two functions unmeasured:
+&lt;tt class="docutils literal"&gt;framer_color_bank_acquire()&lt;/tt&gt;, and the per-line layout call that decides
+how many hardware sprites a string needs. Both run once per text line at the
+same place in the loop.&lt;/p&gt;
+&lt;p&gt;One had a soft-float cost. The other is a handful of integer instructions
+that only looked suspicious because the compiler had inlined it out of
+sight.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;framer-engine&lt;/span&gt;&lt;/tt&gt; is a personal side project. The source code will be
+made publicly available once the engine reaches a sufficient level of
+maturity.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-confession-framer-color-bank-acquire"&gt;
+&lt;h2&gt;The confession: &lt;tt class="docutils literal"&gt;framer_color_bank_acquire()&lt;/tt&gt;&lt;/h2&gt;
+&lt;p&gt;GBA sprites index into one of 16 hardware palette banks.
+&lt;tt class="docutils literal"&gt;framer_color_bank_acquire()&lt;/tt&gt; picks the bank for a tint color: reuse an
+exact match, reuse the least-recently-used bank if the color is close enough,
+or claim a free one. It runs once per text line.&lt;/p&gt;
+&lt;p&gt;The matching loop compares each bank's stored color with the incoming one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;color_matches&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;bank_slot&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;vec4&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eps&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;0.004f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fabsf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eps&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="n"&gt;fabsf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eps&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="n"&gt;fabsf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eps&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That is three subtractions, three &lt;tt class="docutils literal"&gt;fabsf()&lt;/tt&gt; calls and three comparisons per
+bank, and on an FPU-less ARM7TDMI each is a soft-float library call. Two
+breakpoints, at the function's entry and at the epilogue every return path
+converges to, measured it on &lt;tt class="docutils literal"&gt;examples/input_tester&lt;/tt&gt; in mGBA: about 3300
+cycles in the common case, an exact match on the first bank. That is roughly
+a third of the 7400-17000 cycle per-entity gap the previous article measured.&lt;/p&gt;
+&lt;p&gt;The hardware write path already converts each float channel to its 5-bit
+value with &lt;tt class="docutils literal"&gt;rgb555.h&lt;/tt&gt;'s &lt;tt class="docutils literal"&gt;f_to_5bit()&lt;/tt&gt; before it reaches &lt;tt class="docutils literal"&gt;OBJ_PALETTE&lt;/tt&gt;.
+Doing that conversion before the comparison turns it into three integer
+equality checks:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;color_matches&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;bank_slot&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="n"&gt;slot&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;q5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Each bank's quantized value is computed once, when the bank's color is
+assigned, and the incoming color is quantized once per call, not once per
+bank. The stored float color is unchanged. Same breakpoints, same scene:
+about 1100 cycles, a third of before.&lt;/p&gt;
+&lt;p&gt;This does change the matching rule. The old test matched colors within 0.004
+of each other; the new one matches colors that land in the same 5-bit step,
+about 0.032 wide. Two colors 0.002 apart on either side of a step boundary no
+longer share a bank, and two colors 0.02 apart inside one step now do. Since
+the hardware cannot display the difference within a step, sharing a bank
+there is correct, and the scenes checked below are unaffected.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-alibi-the-layout-call"&gt;
+&lt;h2&gt;The alibi: the layout call&lt;/h2&gt;
+&lt;p&gt;Under &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-O3&lt;/span&gt;&lt;/tt&gt; and LTO, &lt;tt class="docutils literal"&gt;framer_oam_layout_string()&lt;/tt&gt; has no symbol left: it is
+inlined into &lt;tt class="docutils literal"&gt;gba_text_render_system&lt;/tt&gt;, like the sub-functions the previous
+article had to find with &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;arm-none-eabi-objdump&lt;/span&gt; &lt;span class="pre"&gt;-dS&lt;/span&gt;&lt;/tt&gt;. The source:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;remaining&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;char_count&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;remaining&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FRAMER_OAM_MAX_SPRITES_PER_TEXT&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;remaining&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;remaining&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="cm"&gt;/* ... fill out one sprite-group descriptor ... */&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;remaining&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Integer arithmetic, at most ten iterations
+(&lt;tt class="docutils literal"&gt;FRAMER_OAM_MAX_SPRITES_PER_TEXT&lt;/tt&gt;), no float. It looked cheap, but the
+previous article's two &amp;quot;obvious&amp;quot; fixes that measured as regressions are
+reason enough to measure it.&lt;/p&gt;
+&lt;p&gt;The disassembly showed the compiler had fully unrolled the loop into ten
+early exits, one per possible iteration count, all jumping to the same
+post-layout address. A breakpoint there fires exactly once per call, whichever
+exit the line takes, so it works as well as a symbol.&lt;/p&gt;
+&lt;p&gt;With a second breakpoint at the loop entry, &lt;tt class="docutils literal"&gt;phase_probe.py&lt;/tt&gt; in mGBA
+recorded 40 hits in steady state. The first call took about 176 cycles, and
+every later one 114-128, averaging about 119. The spread follows the source:
+a label needing one more four-character sprite group costs a few more cycles.&lt;/p&gt;
+&lt;p&gt;For scale: the projection math cost 7400-17000 cycles per transition,
+&lt;tt class="docutils literal"&gt;framer_color_bank_acquire()&lt;/tt&gt; 3300 before its fix, layout 119.
+&lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; draws 19 or 20 lines per frame at its 76-of-96 OAM budget, so
+the whole layout pass costs roughly 2300-2500 cycles against a 660650-684800
+cycle frame, about a third of one percent. There is nothing to fix.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="checking-it"&gt;
+&lt;h2&gt;Checking it&lt;/h2&gt;
+&lt;p&gt;Only the color-bank change touched code. The check is the usual byte-for-byte
+comparison: connect to the emulator's GDB stub, let a few frames settle, read
+palette and sprite memory, and diff against the same read from the unfixed
+ROM. All 128 sprite entries and the full 256-color palette came back
+identical. Two new host-side tests pin the new boundary: two colors in the
+same 5-bit step share a bank, two colors straddling a step do not.
+&lt;tt class="docutils literal"&gt;games/caravan&lt;/tt&gt;, the heaviest user of this code, also cross-compiles cleanly
+for NDS.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-s-left"&gt;
+&lt;h2&gt;What's left&lt;/h2&gt;
+&lt;p&gt;Both functions are now measured: one fixed, one left alone. With the
+projection rewrite and the color-bank quantization, &lt;tt class="docutils literal"&gt;input_tester&lt;/tt&gt; is faster
+than two articles ago, but nowhere near 60 Hz from 18 FPS. Every function the
+investigation suspected has been measured, so the remaining cost needs a
+different kind of change.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="gamedev"/><category term="gba"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="debugging"/><category term="c"/><category term="article"/></entry><entry><title>Floored Twice: Chasing a Soft-Float Tax in GBA Text Rendering</title><link href="https://tprrt.tupi.fr/floored-twice-gba-text-soft-float.html" rel="alternate"/><published>2026-10-15T22:50:00+02:00</published><updated>2026-11-17T16:50:40.626497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-15:/floored-twice-gba-text-soft-float.html</id><summary type="html">&lt;p class="first last"&gt;A GBA example with a lot of on-screen text ran at 18 FPS, idle,
 no input needed. The cost turned out to be screen-space projection
 math running through the ARM7TDMI's software float library once per
 text entity and once per line. Two fixes that looked obviously
@@ -169,7 +288,7 @@ the 18 FPS HUD case.&lt;/p&gt;
 and either may hold more cost. Next step: the same two-breakpoint measurement
 on them.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="gba"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="fixed-point"/><category term="c"/><category term="article"/></entry><entry><title>Dropping Sprites on Purpose: Flicker Rotation on GBA and NDS</title><link href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html" rel="alternate"/><published>2026-10-07T22:10:00+02:00</published><updated>2026-11-09T10:36:00.575667+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-07:/dropping-sprites-on-purpose-flicker-rotation.html</id><summary type="html">&lt;p class="first last"&gt;The Game Boy Advance and the Nintendo DS can show 128 sprites at
+</content><category term="gamedev"/><category term="gba"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="fixed-point"/><category term="c"/><category term="article"/></entry><entry><title>Dropping Sprites on Purpose: Flicker Rotation on GBA and NDS</title><link href="https://tprrt.tupi.fr/dropping-sprites-on-purpose-flicker-rotation.html" rel="alternate"/><published>2026-10-07T22:10:00+02:00</published><updated>2026-11-17T16:50:40.625497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-07:/dropping-sprites-on-purpose-flicker-rotation.html</id><summary type="html">&lt;p class="first last"&gt;The Game Boy Advance and the Nintendo DS can show 128 sprites at
 once, so a bullet pattern bigger than that has to lose some. Losing
 the same ones every frame makes them disappear for good; losing a
 different set each frame makes them flicker, which is what the
@@ -377,7 +496,7 @@ Also planned: a way to report how many sprites a frame used, so a game can see
 its budget without a debugger, and a priority for single sprite entities and
 text, which today are always drawn before every batch.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="sprites"/><category term="oam"/><category term="gba"/><category term="nds"/><category term="flicker"/><category term="shmup"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Wireframe Ran at 20 FPS, Solid at 60: Counting ARM9 Cycles to Find Out Why</title><link href="https://tprrt.tupi.fr/nds-wireframe-display-lists-cycle-counting.html" rel="alternate"/><published>2026-10-02T21:30:00+02:00</published><updated>2026-11-09T10:36:00.575667+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-02:/nds-wireframe-display-lists-cycle-counting.html</id><summary type="html">&lt;p class="first last"&gt;A demo with three spinning shapes ran at 60 FPS in solid and
+</content><category term="gamedev"/><category term="sprites"/><category term="oam"/><category term="gba"/><category term="nds"/><category term="flicker"/><category term="shmup"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Wireframe Ran at 20 FPS, Solid at 60: Counting ARM9 Cycles to Find Out Why</title><link href="https://tprrt.tupi.fr/nds-wireframe-display-lists-cycle-counting.html" rel="alternate"/><published>2026-10-02T21:30:00+02:00</published><updated>2026-11-17T16:50:40.625497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-10-02:/nds-wireframe-display-lists-cycle-counting.html</id><summary type="html">&lt;p class="first last"&gt;A demo with three spinning shapes ran at 60 FPS in solid and
 about 20 in wireframe on the Nintendo DS. The emulator's frame rate did
 not explain why, so I measured the cost in hardware timer ticks read over
 a debugger. It pointed at a few million software floating-point
@@ -642,7 +761,7 @@ triangle, so a scene dominated by them gets none of this. Both can be baked: a
 per-texture-size list for the textured case, one list per colour run for the
 face-coloured one. They are next, measured the same way.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>One Entity, Many Bullets: Fitting a Projectile Pool Into the ECS</title><link href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html" rel="alternate"/><published>2026-09-25T21:40:00+02:00</published><updated>2026-11-09T10:36:00.575667+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-25:/one-entity-many-bullets-sprite-batch-ecs.html</id><summary type="html">&lt;p class="first last"&gt;A shoot-'em-up's bullet pool doesn't fit the ECS's entity budget,
+</content><category term="gamedev"/><category term="nds"/><category term="gpu"/><category term="performance"/><category term="optimization"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>One Entity, Many Bullets: Fitting a Projectile Pool Into the ECS</title><link href="https://tprrt.tupi.fr/one-entity-many-bullets-sprite-batch-ecs.html" rel="alternate"/><published>2026-09-25T21:40:00+02:00</published><updated>2026-11-17T16:50:40.625497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-09-25:/one-entity-many-bullets-sprite-batch-ecs.html</id><summary type="html">&lt;p class="first last"&gt;A shoot-'em-up's bullet pool doesn't fit the ECS's entity budget,
 and the first fix that shipped solved that by quietly stepping outside
 the ECS entirely. The redesign that replaced it exposed three
 unrelated bugs, one per rendering backend, none about bullets.&lt;/p&gt;
@@ -855,7 +974,7 @@ is measuring and documenting the per-target bullet ceiling. The capacity
 constants (&lt;tt class="docutils literal"&gt;examples/bullets&lt;/tt&gt; uses 128 on GBA/NDS, 1024 on desktop) were
 picked before there were numbers to size them against.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="gamedev"/><category term="ecs"/><category term="rendering"/><category term="vulkan"/><category term="opengl"/><category term="gba"/><category term="nds"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency</title><link href="https://tprrt.tupi.fr/gba-dither-offset-separation.html" rel="alternate"/><published>2026-08-13T11:00:00+02:00</published><updated>2026-11-09T10:36:00.575667+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-13:/gba-dither-offset-separation.html</id><summary type="html">&lt;p class="first last"&gt;A per-object dithering offset that looked correct collapsed
+</content><category term="gamedev"/><category term="ecs"/><category term="rendering"/><category term="vulkan"/><category term="opengl"/><category term="gba"/><category term="nds"/><category term="embedded"/><category term="retro"/><category term="gamedev"/><category term="c"/><category term="article"/></entry><entry><title>Sixteen Offsets, Two Patterns: Debugging GBA's Ordered-Dither Translucency</title><link href="https://tprrt.tupi.fr/gba-dither-offset-separation.html" rel="alternate"/><published>2026-08-13T11:00:00+02:00</published><updated>2026-11-17T16:50:40.625497+01:00</updated><author><name>tperrot</name></author><id>tag:tprrt.tupi.fr,2026-08-13:/gba-dither-offset-separation.html</id><summary type="html">&lt;p class="first last"&gt;A per-object dithering offset that looked correct collapsed
 sixteen possible values down to two on real hardware. The fix shipped,
 then turned out to have a subtler version of the same bug. What solved
 it was building three competing designs and testing them.&lt;/p&gt;
