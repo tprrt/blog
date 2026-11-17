@@ -14,8 +14,7 @@ Contributions
 :save_as: contributions.html
 
 I contribute to free and open-source projects, mainly around embedded Linux,
-Yocto/OpenEmbedded, secure boot and RISC-V. The lists below are non-exhaustive;
-counts include commits I authored, signed off or co-authored.
+Yocto/OpenEmbedded, secure boot and RISC-V. The lists below are non-exhaustive.
 
 Upstream projects
 =================
@@ -166,7 +165,7 @@ Talks
      - Event
      - Title
    * - Nov 2022
-     - `Capitole du libre`_
+     - `Capitole du Libre`_
      - `Embedded Linux and Yocto introduction <https://github.com/tprrt/slides/blob/master/20221020/perrot-yocto-intro.pdf>`_
    * - May 2022
      - `Live Embedded Event`_
@@ -175,10 +174,10 @@ Talks
      - `Live Embedded Event`_
      - `Secure boot in embedded Linux systems <https://github.com/tprrt/slides/blob/master/20210603/perrot-secure-boot.pdf>`_
    * - Nov 2019
-     - `Capitole du libre`_
+     - `Capitole du Libre`_
      - `Main steps to build an embedded Linux system <https://github.com/tprrt/slides/blob/master/20191116/building_linux.pdf>`_
    * - Nov 2018
-     - `Capitole du libre`_
+     - `Capitole du Libre`_
      - `Measured boot: how to link the operating system to the platform integrity <https://github.com/tprrt/slides/blob/master/20181117/measured_boot.pdf>`_
    * - Jan 2018
      - `Toulouse Embedded Linux Meetup`_
@@ -197,6 +196,6 @@ Training
 
 * `Yocto Project and OpenEmbedded development training <https://bootlin.com/training/yocto/>`_
 
-.. _Capitole du libre: https://capitoledulibre.org
+.. _Capitole du Libre: https://capitoledulibre.org
 .. _Live Embedded Event: https://www.linkedin.com/company/live-embedded-event
 .. _Toulouse Embedded Linux Meetup: https://www.meetup.com/Toulouse-Embedded-Linux-Android-Meetup

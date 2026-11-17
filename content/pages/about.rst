@@ -31,7 +31,7 @@ You can find a full list of my open-source contributions on the
 About this blog
 ===============
 
-This blog is a place where I write about topics I find interesting:
+Topics:
 
 * **Embedded Linux** — Yocto Project releases, toolchain notes, board bring-up.
 * **Zephyr RTOS** — device drivers, Bluetooth, build system.
